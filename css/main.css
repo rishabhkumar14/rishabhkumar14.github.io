@@ -4068,9 +4068,17 @@ form textarea:required:valid {
   text-align: center;
 }
 
+@media only screen and (max-width: 767px) {
+  .tools-cards__card {
+    padding: 2rem;
+  }
+}
+
 .tools-cards__icon {
   width: auto;
-  height: 60px;
+  max-width: 100%; /* Make sure the image doesn't exceed its container */
+  height: auto;
+  max-height: 60px; /* Limit the height to avoid distortion */
   margin: 0 auto;
   filter: grayscale(100%); /* Convert image to black and white */
   transition: filter 0.3s ease; /* Add transition for smooth effect */
@@ -4079,22 +4087,6 @@ form textarea:required:valid {
 /* Apply zoom and color effect on hover */
 .tools-cards__item:hover .tools-cards__icon {
   filter: grayscale(0%); /* Revert to color on hover */
-}
-
-@media only screen and (min-width: 768px) {
-  .tools-cards__icon {
-    height: 90px;
-  }
-}
-@media only screen and (min-width: 1200px) {
-  .tools-cards__icon {
-    height: 6rem;
-  }
-}
-@media only screen and (min-width: 1600px) {
-  .tools-cards__icon {
-    height: 7rem;
-  }
 }
 
 .tools-cards__caption {
@@ -4125,6 +4117,12 @@ form textarea:required:valid {
 .tools-card__caption {
   line-height: 1;
   margin-top: 1.5rem;
+}
+@media only screen and (max-width: 767px) {
+  .tools-cards__caption {
+    font-size: 0.8rem; /* Adjust font size */
+    margin-top: 1rem; /* Reduce margin top */
+  }
 }
 
 /* ------------------------------------------------*/

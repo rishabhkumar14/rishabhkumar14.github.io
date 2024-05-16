@@ -5,7 +5,7 @@
  * Table of Contents
  * ------------------------------------------------
  *  01. Fonts
- *  02. Template Backgrounds
+ *  02. Backgrounds
  *  03. Variables
  *  04. Basic Styles
  *  05. Animations - Backgrounds
@@ -40,14 +40,14 @@
 /* Fonts End */
 /* ------------------------------------------------*/
 /* ------------------------------------------------*/
-/* Template Backgrounds Start */
+/* Backgrounds Start */
 /* ------------------------------------------------*/
 .image-background {
   background-image: url(../img/backgrounds/1920x1080-main-bg.webp);
 }
 
 /* ------------------------------------------------*/
-/* Template Backgrounds End */
+/* Backgrounds End */
 /* ------------------------------------------------*/
 /* ------------------------------------------------*/
 /* Variables Start */
@@ -3598,12 +3598,11 @@ form textarea:required:valid {
   }
 }
 @media only screen and (max-width: 768px) {
-  /* Adjust max-width to your desired breakpoint */
   .gallery__descr .rounded-tag {
-    font-size: 1.2rem; /* Adjust the font size as per your preference */
-    height: auto; /* Allow the tag height to adjust based on content */
-    padding: 0.8rem 1.2rem; /* Adjust padding as needed */
-    margin: 0.3rem 0.6rem 0.3rem 0; /* Adjust margin as needed */
+    font-size: 1.2rem;
+    height: auto;
+    padding: 0.8rem 1.2rem;
+    margin: 0.3rem 0.6rem 0.3rem 0;
   }
 }
 

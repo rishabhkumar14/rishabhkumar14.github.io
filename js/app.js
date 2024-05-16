@@ -75,6 +75,22 @@ $(function () {
   // Bootstrap Scroll Spy Plugin Settings End
   // --------------------------------------------- //
 
+  // Get the avatar image element
+  const avatarImage = document.getElementById("avatarImage");
+  const originalSrc = avatarImage.src;
+  const altSrc = avatarImage.getAttribute("data-alt-src");
+
+  avatarImage.addEventListener("click", function () {
+    // Check if the current source is the original source
+    if (this.src === originalSrc) {
+      // If it is, switch to the alternate source
+      this.src = altSrc;
+    } else {
+      // If it's not, switch back to the original source
+      this.src = originalSrc;
+    }
+  });
+
   // --------------------------------------------- //
   // Lenis Scroll Plugin Start
   // --------------------------------------------- //

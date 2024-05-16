@@ -2554,6 +2554,9 @@ form textarea:required:valid {
 .inner {
   padding: 6rem 0;
 }
+.inner-last {
+  padding-bottom: 6rem;
+}
 .inner.inner-grid-top {
   padding: 3rem 0 6rem 0;
 }
@@ -3594,6 +3597,15 @@ form textarea:required:valid {
     width: calc(100% - 5rem);
   }
 }
+@media only screen and (max-width: 768px) {
+  /* Adjust max-width to your desired breakpoint */
+  .gallery__descr .rounded-tag {
+    font-size: 1.2rem; /* Adjust the font size as per your preference */
+    height: auto; /* Allow the tag height to adjust based on content */
+    padding: 0.8rem 1.2rem; /* Adjust padding as needed */
+    margin: 0.3rem 0.6rem 0.3rem 0; /* Adjust margin as needed */
+  }
+}
 
 .pswp__bg {
   background: var(--per-base-tint);
@@ -3791,6 +3803,38 @@ form textarea:required:valid {
   -moz-border-radius: var(--_radius-xl);
   border-radius: var(--_radius-xl);
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievements__card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 2px solid var(--stroke-controls);
+  border-right: 2px solid var(--stroke-controls);
+  transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+}
+
+.achievements__card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 2px solid var(--stroke-controls);
+  border-left: 2px solid var(--stroke-controls);
+  transition: width 0.3s, height 0.3s, bottom 0.3s, right 0.3s;
+}
+
+.achievements__card:hover::before,
+.achievements__card:hover::after {
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
 }
 
 .achievements__number {
@@ -3848,16 +3892,16 @@ form textarea:required:valid {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  height: 520px;
+  height: auto;
 }
 @media only screen and (min-width: 1400px) {
   .cards__item {
-    height: 620px;
+    height: auto;
   }
 }
 
 .cards__card {
-  height: 100%;
+  width: 100%;
   background-color: var(--base);
   border: 1px solid var(--stroke-elements);
   -moz-border-radius: var(--_radius-xl);
@@ -3873,7 +3917,6 @@ form textarea:required:valid {
     padding: 5rem;
   }
 }
-
 .cards__tags {
   margin-top: 0.7rem;
 }
@@ -3903,7 +3946,7 @@ form textarea:required:valid {
   -o-object-fit: cover;
   object-fit: cover;
   max-width: 100%;
-  max-height: 100%;
+  height: auto;
 }
 
 /* ------------------------------------------------*/
@@ -3989,6 +4032,12 @@ form textarea:required:valid {
 .tools-cards {
   padding: 0 0.5rem;
 }
+
+.tools-cards__item:hover .tools-cards__card {
+  transform: scale(1.05); /* Increase size on hover */
+  transition: transform 0.3s ease; /* Add smooth transition */
+}
+
 @media only screen and (min-width: 1400px) {
   .tools-cards {
     padding: 0 1.5rem;
@@ -3996,7 +4045,7 @@ form textarea:required:valid {
 }
 
 .tools-cards__item {
-  width: 50%;
+  width: 33.33333334%;
 }
 @media only screen and (min-width: 768px) {
   .tools-cards__item {
@@ -4024,7 +4073,15 @@ form textarea:required:valid {
   width: auto;
   height: 60px;
   margin: 0 auto;
+  filter: grayscale(100%); /* Convert image to black and white */
+  transition: filter 0.3s ease; /* Add transition for smooth effect */
 }
+
+/* Apply zoom and color effect on hover */
+.tools-cards__item:hover .tools-cards__icon {
+  filter: grayscale(0%); /* Revert to color on hover */
+}
+
 @media only screen and (min-width: 768px) {
   .tools-cards__icon {
     height: 90px;

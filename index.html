@@ -208,8 +208,8 @@
           </div>
         </div>
         <div class="avatar__image">
-          <!-- <img src="img/avatars/1024x1024_a01.webp" alt="Rishabh Kumar Avatar"> -->
-          <img src="img/avatars/1693919772379.jpeg" alt="Rishabh Kumar Avatar">
+          <img src="img/avatars/1693919772379.jpeg" alt="Rishabh Kumar Avatar" id="avatarImage"
+            data-alt-src="img/avatars/1715794805623.jpg">
         </div>
       </div>
       <!-- data caption #1 -->
@@ -302,7 +302,7 @@
 
         <!-- Scroll Button Start -->
         <div class="rotating-btn">
-          <a href="#portfolio" class="rotating-btn__link slide-down">
+          <a href="#tech" class="rotating-btn__link slide-down">
             <!-- SVG rotating text -->
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
               y="0px" viewBox="0 0 120 120" style="enable-background:new 0 0 120 120;" xml:space="preserve"
@@ -329,9 +329,9 @@
       <!-- Intro Section End -->
 
       <!-- OPortfolio Start -->
-      <section id="portfolio" class="inner inner-first portfolio">
 
-        <!-- Tools List End -->
+      <!-- Tools List End -->
+      <section id="tech" class="inner">
         <div class="content__block section-grid-title">
           <p class="h2__subtitle animate-in-up">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13px" height="13px" viewBox="0 0 13 13"
@@ -527,13 +527,6 @@
             <!-- tools simgle item -->
             <div class="tools-cards__item d-flex grid-item-s animate-card-5">
               <div class="tools-cards__card">
-                <img class="tools-cards__icon animate-in-up" src="img/tools/dart.png" alt="Tools Icon">
-                <h6 class="tools-cards__caption animate-in-up">Dart</h6>
-              </div>
-            </div>
-            <!-- tools simgle item -->
-            <div class="tools-cards__item d-flex grid-item-s animate-card-5">
-              <div class="tools-cards__card">
                 <img class="tools-cards__icon animate-in-up" src="img/tools/android.png" alt="Tools Icon">
                 <h6 class="tools-cards__caption animate-in-up">Android</h6>
               </div>
@@ -541,15 +534,20 @@
             <!-- tools simgle item -->
             <div class="tools-cards__item d-flex grid-item-s animate-card-5">
               <div class="tools-cards__card">
-                <img class="tools-cards__icon animate-in-up" src="img/tools/dialogflow.png" alt="Tools Icon">
-                <h6 class="tools-cards__caption animate-in-up">Dialogflow</h6>
+                <img class="tools-cards__icon animate-in-up" src="img/tools/dart.png" alt="Tools Icon">
+                <h6 class="tools-cards__caption animate-in-up">Dart</h6>
               </div>
             </div>
+
+
 
           </div>
           <!-- Tools List End -->
         </div>
         <!-- Tools List End -->
+      </section>
+
+      <section id="portfolio" class="portfolio">
 
         <!-- Content Block - H2 Section Title Start -->
         <div class="content__block section-grid-title">
@@ -560,93 +558,104 @@
         <!-- Content Block - Services Start -->
         <div class="content__block grid-block">
           <div class="container-fluid p-0">
+
             <div class="row g-0 align-items-stretch cards">
-              <!-- services cards grid single item -->
-              <div class="col-12 col-md-6 cards__item grid-item animate-card-2">
-                <div class="cards__card d-flex flex-column">
-                  <div class="cards__descr">
-                    <h4 class="cards__title animate-in-up">Full Stack React MUI<br>Dashboards</h4>
-                    <div class="cards__tags d-flex flex-wrap animate-in-up">
-                      <!-- <span class="rounded-tag tag-outline">UI/UX Design</span> -->
-                      <span class="rounded-tag tag-outline">Github (coming soon)</span>
-                    </div>
-                    <p class="small cards__text animate-in-up">
-                      React | MUI | Prisma | Middleware | AuthO | ChartJs | CRUD | Services | Express | Morgan | Junit
+              <!-- Left column -->
+              <div class="col-md-6">
+                <div class="row g-0">
+                  <div class="col-12 col-md-12 cards__item grid-item animate-card-2">
+                    <div class="cards__card d-flex flex-column">
+                      <div class="cards__descr">
+                        <h4 class="cards__title animate-in-up">Full Stack React MUI<br>Dashboards</h4>
+                        <div class="cards__tags d-flex flex-wrap animate-in-up">
+                          <!-- <span class="rounded-tag tag-outline">UI/UX Design</span> -->
+                          <span class="rounded-tag tag-outline">Github (coming soon)</span>
+                        </div>
+                        <p class="small cards__text animate-in-up">
+                          React | MUI | Prisma | Middleware | AuthO | ChartJs | CRUD | Services | Express | Morgan |
+                          Junit
 
-                    </p>
-                  </div>
-                  <div class="cards__image d-flex animate-in-up">
-                    <img src="img/works/project/retailhub.png" alt="Service/Feature Image">
-                  </div>
+                        </p>
+                      </div>
+                      <div class="cards__image d-flex animate-in-up">
+                        <img src="img/works/project/retailhub.png" alt="Service/Feature Image">
+                      </div>
 
-                </div>
-              </div>
-              <!-- services grid cards single item -->
-              <div class="col-12 col-md-6 cards__item grid-item animate-card-2">
-                <div class="cards__card d-flex flex-column">
-                  <div class="cards__descr">
-                    <h4 class="cards__title animate-in-up">Gitlab CICD Automation</h4>
-                    <div class="cards__tags d-flex flex-wrap animate-in-up">
-                      <span class="rounded-tag tag-outline">Github (coming soon)</span>
                     </div>
-                    <p class="small cards__text animate-in-up">Incorporated the GitLab API for creating a user interface
-                      for delivery teams to have ease of access upon using GitLab and its features, avoiding the use of
-                      any command line input. Automated the end-to-end project which led to zero training cost for
-                      onboarding new members and more accurate creation of repositories and commits
-                    </p>
                   </div>
-                  <div class="cards__image d-flex animate-in-up">
-                    <img src="img/works/project/opencv.png" alt="Service/Feature Image">
-                  </div>
-                </div>
-              </div>
-              <!-- services grid cards single item -->
-              <div class="col-12 col-md-6 cards__item grid-item animate-card-2">
-                <div class="cards__card d-flex flex-column">
-                  <div class="cards__descr">
-                    <h4 class="cards__title animate-in-up">Image Augmenting Desktop App from scratch</h4>
-                    <div class="cards__tags d-flex flex-wrap animate-in-up">
-                      <span class="rounded-tag tag-outline">Github (coming soon)</span>
-                    </div>
-                    <p class="small cards__text animate-in-up">A image processing software complete with
-                      diverse functionalities, file format support, and a robust MVC architecture, ensuring seamless
-                      image manipulation.
-                    </p>
-                  </div>
-                  <div class="cards__image d-flex animate-in-up">
-                    <img src="img/works/project/ImageEditor.png" alt="Service/Feature Image">
+                  <div class="col-12 col-md-12 cards__item grid-item animate-card-2">
+                    <div class="cards__card d-flex flex-column">
+                      <div class="cards__descr">
+                        <h4 class="cards__title animate-in-up">Image Augmenting Desktop App from scratch</h4>
+                        <div class="cards__tags d-flex flex-wrap animate-in-up">
+                          <span class="rounded-tag tag-outline">Github (coming soon)</span>
+                        </div>
+                        <p class="small cards__text animate-in-up">A image processing software complete with
+                          diverse functionalities, file format support, and a robust MVC architecture, ensuring seamless
+                          image manipulation.
+                        </p>
+                      </div>
+                      <div class="cards__image d-flex animate-in-up">
+                        <img src="img/works/project/ImageEditor.png" alt="Service/Feature Image">
 
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <!-- services grid cards single item -->
-              <div class="col-12 col-md-6 cards__item grid-item animate-card-2">
-                <div class="cards__card d-flex flex-column">
-                  <div class="cards__descr">
-                    <h4 class="cards__title animate-in-up">Computer Vision based Fatigue Discernment</h4>
-                    <div class="cards__tags d-flex flex-wrap animate-in-up">
-                      <span class="rounded-tag tag-outline">Github (coming soon)</span>
-                      <span class="rounded-tag tag-outline">PATENTED: 202211036401</span>
+              <!-- Right column -->
+              <div class="col-md-6">
+                <div class="row g-0">
+                  <div class="col-12 col-md-12 cards__item grid-item animate-card-2">
+                    <div class="cards__card d-flex flex-column">
+                      <div class="cards__descr">
+                        <h4 class="cards__title animate-in-up">Gitlab CICD Automation</h4>
+                        <div class="cards__tags d-flex flex-wrap animate-in-up">
+                          <span class="rounded-tag tag-outline">Github (coming soon)</span>
+                        </div>
+                        <p class="small cards__text animate-in-up">Incorporated the GitLab API for creating a user
+                          interface
+                          for delivery teams to have ease of access upon using GitLab and its features, avoiding the use
+                          of
+                          any command line input. Automated the end-to-end project which led to zero training cost for
+                          onboarding new members and more accurate creation of repositories and commits
+                        </p>
+                      </div>
+                      <div class="cards__image d-flex animate-in-up">
+                        <img src="img/works/project/opencv.png" alt="Service/Feature Image">
+                      </div>
                     </div>
-                    <p class="small cards__text animate-in-up">
-                      Developed a facial landmark-based unique algorithm supporting various human movement parameters
-                      for discerning
-                      drowsiness or fatigue with high accuracy based on self-proclaimed thresholds.
-                    </p>
                   </div>
-                  <div class="cards__image d-flex animate-in-up">
-                    <img src="img/works/project/dlib.png" alt="Service/Feature Image">
+                  <div class="col-12 col-md-12 cards__item grid-item animate-card-2">
+                    <div class="cards__card d-flex flex-column">
+                      <div class="cards__descr">
+                        <h4 class="cards__title animate-in-up">Computer Vision based Fatigue Discernment</h4>
+                        <div class="cards__tags d-flex flex-wrap animate-in-up">
+                          <span class="rounded-tag tag-outline">Github (coming soon)</span>
+                          <span class="rounded-tag tag-outline">PATENTED: 202211036401</span>
+                        </div>
+                        <p class="small cards__text animate-in-up">
+                          Developed a facial landmark-based unique algorithm supporting various human movement
+                          parameters
+                          for discerning
+                          drowsiness or fatigue with high accuracy based on self-proclaimed thresholds.
+                        </p>
+                      </div>
+                      <div class="cards__image d-flex animate-in-up">
+                        <img src="img/works/project/dlib.png" alt="Service/Feature Image">
 
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
+
+
+
           </div>
         </div>
         <!-- Content Block - Services End -->
-
-
       </section>
       <!-- OPortfolio Section End -->
 
@@ -788,7 +797,6 @@
                     CS:1301 Computer Architecture<br />
                     CS:1433 Micro Processor and Controllers<br />
                     CS:1630 Data Mining and Warehousing <br />
-                    (and more ...)
                   </p>
                 </div>
               </div>
@@ -942,7 +950,7 @@
               <!-- Works Gallery Single Item End -->
 
               <!-- Works Gallery Single Item Start -->
-              <figure class="col-12 col-md-6 gallery__item grid-item animate-card-2" itemprop="associatedMedia"
+              <!-- <figure class="col-12 col-md-6 gallery__item grid-item animate-card-2" itemprop="associatedMedia"
                 itemscope itemtype="http://schema.org/ImageObject">
                 <a href="img/works/research/upcoming.png" data-image="img/works/research/cctv.jpeg"
                   class="gallery__link" itemprop="contentUrl" data-size="1400x1400">
@@ -961,7 +969,7 @@
 
                   </p>
                 </figcaption>
-              </figure>
+              </figure> -->
               <!-- Works Gallery Single Item End -->
             </div>
           </div>
@@ -992,25 +1000,35 @@
         <div class="content__block grid-block">
           <div class="achievements d-flex flex-column flex-md-row align-items-md-stretch">
             <!-- achievements single item -->
+
             <div class="achievements__item d-flex flex-column grid-item animate-card-3">
-              <div class="achievements__card">
-                <p class="achievements__number">20+</p>
-                <p class="achievements__descr">Events Organized</p>
-              </div>
+              <a href="https://drive.google.com/file/d/1xLtrW9OdHboJhsAPDPU7354SvxiOXPkV/view?usp=sharing"
+                target="_blank">
+                <div class="achievements__card">
+                  <p class="achievements__number">20+</p>
+                  <p class="achievements__descr">Events Organized</p>
+                </div>
+              </a>
+
             </div>
             <!-- achievements single item -->
             <div class="achievements__item d-flex flex-column grid-item animate-card-3">
-              <div class="achievements__card">
-                <p class="achievements__number">2yr +</p>
-                <p class="achievements__descr">Teaching experience</p>
-              </div>
+              <a href="https://drive.google.com/file/d/1SJ87Rlq3x_mySbesHHP0B775XUaUTiq4/view?usp=sharing"
+                target="_blank">
+                <div class="achievements__card">
+                  <p class="achievements__number">2yr +</p>
+                  <p class="achievements__descr">Teaching experience</p>
+                </div>
+              </a>
             </div>
             <!-- achievements single item -->
             <div class="achievements__item d-flex flex-column grid-item animate-card-3">
-              <div class="achievements__card">
-                <p class="achievements__number">50+</p>
-                <p class="achievements__descr">Designs Created</p>
-              </div>
+              <a href="https://www.behance.net/gallery/177691749/Personal-Portfolio" target="_blank">
+                <div class="achievements__card">
+                  <p class="achievements__number">50+</p>
+                  <p class="achievements__descr">Designs Created</p>
+                </div>
+              </a>
             </div>
           </div>
         </div>
@@ -1044,7 +1062,7 @@
                     <small class="top">Leadership Exp Doc:</small>
 
                     <a href="https://drive.google.com/file/d/1xLtrW9OdHboJhsAPDPU7354SvxiOXPkV/view?usp=sharing"
-                      class="small text-link-bold" target="_blank">Goto Leadership Document</a>
+                      class="small text-link-bold" target="_blank"><u>Goto Leadership Doc ↗</u></a>
 
                   </h6>
                 </div>
@@ -1052,14 +1070,14 @@
                   <h6>
                     <small class="top">Teaching Exp Doc:</small>
                     <a href="https://drive.google.com/file/d/1SJ87Rlq3x_mySbesHHP0B775XUaUTiq4/view?usp=sharing"
-                      class="small text-link-bold" target="_blank">Goto Teaching Document</a>
+                      class="small text-link-bold" target="_blank"><u>Goto Teaching Document ↗</u></a>
                   </h6>
                 </div>
                 <div class="about-info__item animate-in-up">
                   <h6>
                     <small class="top">Design Exp Doc:</small>
                     <a href="https://www.behance.net/gallery/177691749/Personal-Portfolio" class="small text-link-bold"
-                      target="_blank">Goto Design Portfolio</a>
+                      target="_blank"><u>Goto Design Portfolio ↗</u></a>
                   </h6>
                 </div>
 
@@ -1075,7 +1093,7 @@
       <!-- OAbout Section End -->
 
       <!-- Contact Section Start -->
-      <section id="contact" class="inner contact">
+      <section id="contact" class="inner-last contact">
 
         <!-- Content Block - H2 Section Title Start -->
         <div class="content__block section-title">

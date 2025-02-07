@@ -76,17 +76,22 @@ $(function () {
   // --------------------------------------------- //
 
   // Get the avatar image element
-  const avatarImage = document.getElementById("avatarImage");
+  //const avatarImage = document.getElementById("avatarImage");
   const originalSrc = avatarImage.src;
-  const altSrc = avatarImage.getAttribute("data-alt-src");
+  const altSrc1 = "img/avatars/1715794805623.jpg";
+  const altSrc2 = "img/avatars/1715794805624.jpg";
 
   avatarImage.addEventListener("click", function () {
-    // Check if the current source is the original source
-    if (this.src === originalSrc) {
-      // If it is, switch to the alternate source
-      this.src = altSrc;
+    const currentSrc = this.src.split("/").pop();
+    const origSrcFilename = originalSrc.split("/").pop();
+    const altSrc1Filename = altSrc1.split("/").pop();
+    const altSrc2Filename = altSrc2.split("/").pop();
+
+    if (currentSrc === origSrcFilename) {
+      this.src = altSrc1;
+    } else if (currentSrc === altSrc1Filename) {
+      this.src = altSrc2;
     } else {
-      // If it's not, switch back to the original source
       this.src = originalSrc;
     }
   });

@@ -217,24 +217,29 @@
             <div id="heart-container">
               <svg viewBox="0 0 32 29.6" width="100" height="100">
                 <path id="heart-outline" d="M23.6,0c-3.4,0-6.4,2.5-7.6,5.6C14.8,2.5,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4
-                         c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" fill="none" stroke="#d63384"
+                          c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" fill="none" stroke="#d63384"
                   stroke-width="1" />
                 <clippath id="heartClip">
                   <path d="M23.6,0c-3.4,0-6.4,2.5-7.6,5.6C14.8,2.5,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4
-                         c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" />
+                          c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" />
                 </clippath>
                 <rect id="heartFill" x="0" y="29.6" width="32" height="29.6" fill="#d63384"
                   clip-path="url(#heartClip)" />
               </svg>
             </div>
-            <p style="font-size: 1em;">Type the digits of π :</p>
-            <input type="text" id="piInput" style="font-size: 1em; padding: 2px; width: 100px; max-width: 90%;"
-              autofocus>
-            <p id="message" style="font-size: 1em; color: #d63384; height: 4.5em; margin-top: 10px;"> </p>
 
+            <!-- Container for the prompt text and input -->
+            <div id="pi-interaction">
+              <p style="font-size: 1em;">Type the digits of π :</p>
+              <input type="text" id="piInput" style="font-size: 1em; padding: 2px; width: 100px; max-width: 90%;"
+                autofocus>
+            </div>
+
+            <p id="message" style="font-size: 1em; color: #d63384; height: 4.5em; margin-top: 10px;"></p>
           </div>
 
           <script>
+            // Avatar reveal logic remains the same.
             const avatarImage = document.getElementById("avatarImage");
             const gameSection = document.getElementById("game-section");
             let clickCount = 0;
@@ -247,9 +252,17 @@
               }
             });
 
-
+            // Game elements and logic
             const piDigits = "3.14159265358979323846";
             let progress = 0;
+
+            // Array with multiple error prompts.
+            const errorMessages = [
+              "Naah! You don't deserve me. Try again!",
+              "Ayyyy Poda, that's not pi. Give it another go!",
+              "Wrong digits, darling, Respect for Subi -1",
+              "Close, but not quite. Let's try again!"
+            ];
 
             const inputField = document.getElementById("piInput");
             const messageEl = document.getElementById("message");
@@ -271,18 +284,25 @@
                 progress = value.length;
                 updateHeartFill();
                 if (value === piDigits) {
-                  messageEl.textContent = "Happy Valentine's Day My Subi Dubi <3! Didnt wanna test you or anything but just felt like make you work hard a lil 😘";
-                  //NOW SAY YES
                   inputField.disabled = true;
+                  // Replace the heart with the victory GIF.
+                  const heartContainer = document.getElementById("heart-container");
+                  heartContainer.innerHTML = '<img id="victoryGif" src="img/avatars/victory.gif" width="100" height="100" alt="Victory">';
+                  // Hide the prompt and input container.
+                  document.getElementById("pi-interaction").style.display = "none";
+                  messageEl.textContent = "Happy Valentine's Day My Subi Dubi <3! Didnt wanna test you or anything but just felt like making you work hard a lil 😘.";
                 } else {
                   messageEl.textContent = "";
                 }
               } else {
-                messageEl.textContent = "Naah! You dont deserve me. Try again!";
+                // Randomly select one error message on a mistake.
+                const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+                messageEl.textContent = randomError;
                 inputField.value = piDigits.substring(0, progress);
               }
             });
           </script>
+
 
 
         </div>

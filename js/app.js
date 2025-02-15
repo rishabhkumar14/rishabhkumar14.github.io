@@ -78,8 +78,8 @@ $(function () {
   // Get the avatar image element
   //const avatarImage = document.getElementById("avatarImage");
   const originalSrc = avatarImage.src;
-  const altSrc1 = "img/avatars/1715794805623.jpg";
-  const altSrc2 = "img/avatars/1715794805624.jpg";
+  const altSrc1 = "img/avatars/1715794805623.jpeg";
+  const altSrc2 = "img/avatars/1715794805624.jpeg";
 
   avatarImage.addEventListener("click", function () {
     const currentSrc = this.src.split("/").pop();

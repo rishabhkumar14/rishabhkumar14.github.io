@@ -255,6 +255,7 @@
             // Game elements and logic
             const piDigits = "3.1415926535897932384626433832795028841971693993751058209";
             let progress = 0;
+            let allowLetters = false; // Start with only numbers allowed
 
             // Array with multiple error prompts.
             const errorMessages = [
@@ -278,31 +279,50 @@
               heartFill.setAttribute("height", fillHeight);
             }
 
+            function triggerSuccess() {
+              inputField.disabled = true;
+              // Replace the heart with the victory GIF.
+              const heartContainer = document.getElementById("heart-container");
+              heartContainer.innerHTML = '<img id="victoryGif" src="img/avatars/victory.gif" width="100" height="100" alt="Victory">';
+              // Hide the prompt and input container.
+              document.getElementById("pi-interaction").style.display = "none";
+              messageEl.textContent = "Happy Valentine's Day My Subi Dubi 💝! Didn't wanna test you or anything but just felt like making you work hard a lil 😘💌";
+            }
+
             inputField.addEventListener("input", function () {
               const value = inputField.value;
+
+              // **Check if the user typed "Pi!" exactly, only after failing**
+              if (allowLetters && value === "Pi!") {
+                triggerSuccess();
+                return;
+              }
+
+              // **If letters are not yet allowed, block non-numeric input**
+              if (!allowLetters && /[^0-9.Pi!]/.test(value)) {
+                messageEl.textContent = "Only digits of π allowed!";
+                inputField.value = piDigits.substring(0, progress);
+                return;
+              }
+
+              // **If input follows π sequence, allow it**
               if (piDigits.startsWith(value)) {
                 progress = value.length;
                 updateHeartFill();
                 if (value === piDigits) {
-                  inputField.disabled = true;
-                  // Replace the heart with the victory GIF.
-                  const heartContainer = document.getElementById("heart-container");
-                  heartContainer.innerHTML = '<img id="victoryGif" src="img/avatars/victory.gif" width="100" height="100" alt="Victory">';
-                  // Hide the prompt and input container.
-                  document.getElementById("pi-interaction").style.display = "none";
-                  messageEl.textContent = "Happy Valentine's Day My Subi Dubi 💝! Didnt wanna test you or anything but just felt like making you work hard a lil 😘💌";
+                  triggerSuccess();
                 } else {
                   messageEl.textContent = "";
                 }
               } else {
-                // Randomly select one error message on a mistake.
+                // **Wrong number input → Reset and allow letters**
+                allowLetters = true; // Now the user can type "Pi!"
                 const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
                 messageEl.textContent = randomError;
                 inputField.value = piDigits.substring(0, progress);
               }
             });
           </script>
-
 
 
         </div>
@@ -384,8 +404,8 @@
               <span class="btn-caption">My Works</span>
               <i class="ph-bold ph-squares-four"></i>
             </a>
-            <a class="btn mobile-vertical btn-default btn-hover btn-hover-accent"
-              href="https://drive.google.com/file/d/1SQ50_6xhNKhdb5Tlx_-j_7DWZYZpYBII/view?usp=sharing" target="_blank">
+            <a class="btn mobile-vertical btn-default btn-hover btn-hover-accent" href="https://dub.sh/rishabhresume"
+              target="_blank">
               <span class="btn-caption">Download CV</span>
               <i class="ph-bold ph-download-simple"></i>
             </a>

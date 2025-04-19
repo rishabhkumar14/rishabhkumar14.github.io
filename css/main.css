@@ -2557,6 +2557,10 @@ form textarea:required:valid {
 .inner-last {
   padding-bottom: 6rem;
 }
+.inner-tech {
+  padding: 6rem 0;
+  padding-bottom: 0rem;
+}
 .inner.inner-grid-top {
   padding: 3rem 0 6rem 0;
 }
@@ -2699,7 +2703,7 @@ form textarea:required:valid {
   margin-bottom: 4rem;
 }
 .content__block.section-grid-title {
-  margin-bottom: 1.4rem;
+  margin-bottom: 1rem;
 }
 .content__block.block-large {
   margin-bottom: 11rem;

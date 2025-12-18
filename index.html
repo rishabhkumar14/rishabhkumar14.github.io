@@ -396,8 +396,24 @@
             </svg>
             <span>Hi there!</span>
           </p>
-          <h1 class="headline__title animate-headline">I'm Rishabh. <br>CS Grad student @ Northeastern
-            University</h1>
+          <h1 class="headline__title animate-headline">I'm Rishabh. <br>Cloud & AI Engineer @ Microsoft</h1>
+          <div id="microsoftBanner"
+            style="margin-top: 20px; padding: 15px 20px; background: linear-gradient(135deg, #0078d4 0%, #50e6ff 100%); border-radius: 10px; border-left: 4px solid #0078d4; animation: pulse 2s infinite; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+            class="animate-headline"
+            onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(0,120,212,0.4)';"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/200px-Microsoft_logo.svg.png"
+              alt="Microsoft Logo" style="width: 28px; height: 28px; flex-shrink: 0;">
+            <p
+              style="margin: 0; font-size: 0.95em; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px;">
+              🚀 <span>Office @ Cambridge, MA! Working on AI Foundry and Microsoft Agent
+                Framework</span>
+            </p>
+          </div>
+          <div id="confettiContainer"
+            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;">
+          </div>
           <div class="headline__btnholder d-flex flex-column flex-sm-row">
             <a class="btn mobile-vertical btn-default btn-hover btn-hover-accent-mobile animate-headline"
               href="#portfolio">
@@ -864,6 +880,25 @@
               <!-- experience single item -->
               <div class="row g-0 resume-lines__item animate-in-up">
                 <div class="col-12 col-md-2">
+                  <span class="resume-lines__date animate-in-up">2025 - Present</span>
+                  <span class="resume-lines__date animate-in-up">Boston, MA</span>
+                </div>
+                <div class="col-12 col-md-5">
+                  <h5 class="resume-lines__title animate-in-up">Cloud and AI Solutions Engineer</h5>
+                  <p class="resume-lines__source animate-in-up">at
+                    <a href="https://www.microsoft.com" class="text-link-bold" target="_blank">Microsoft</a>
+                  </p>
+                </div>
+                <div class="col-12 col-md-5">
+                  <p class="small resume-lines__descr animate-in-up">• Contributing to building innovative cloud
+                    solutions and software products at scale.<br />
+                    • Collaborating with cross-functional teams to design and implement robust software systems.<br />
+                    • Driving technical excellence and best practices across engineering initiatives.</p>
+                </div>
+              </div>
+              <!-- experience single item -->
+              <div class="row g-0 resume-lines__item animate-in-up">
+                <div class="col-12 col-md-2">
                   <span class="resume-lines__date animate-in-up">2021 - 2023</span>
                   <span class="resume-lines__date animate-in-up">Banglore, India</span>
                 </div>
@@ -954,8 +989,10 @@
                     CS:5200 DB Management Systems<br />
                     CS:5800 Algorithms<br />
                     CS:5610 Web Development<br />
-                    CS:6620 Cloud Computing (incoming)<br />
-                    CS:5100 Fundamentals of Artificial Intelligence(incoming).
+                    CS:6620 Cloud Computing <br />
+                    CS:5100 Artificial Intelligence <br />
+                    CS:5150 Game Artificial Intelligence <br />
+                    CS:5340 Computer/Human Interaction
                   </p>
                 </div>
               </div>
@@ -1231,14 +1268,15 @@
               <!-- About Me Description Start -->
               <div class="col-12 col-xl-8 grid-item about-descr">
                 <p class="small animate-in-up">
-                  In addition to my SDE life, I have organized multiple city/national level events,
-                  including hackathons and entrepreneurial competitions, overseeing teams of nearly 200 individuals. As
-                  an educator and mentor, I've shared my coding knowledge through various platforms, while also serving
-                  as a judge and mentor in numerous coding-based events. Additionally, I possess a strong passion for
-                  design, utilizing my skills to enhance product aesthetics and marketability. Whether it's through
-                  refining UI/UX or crafting compelling branding elements, I thrive on leveraging my design
-                  skills to elevate products and captivate audiences. These experiences collectively shape my
-                  multifaceted approach to problem-solving and innovation.
+                  As a Cloud and AI Solutions Engineer, I design and build scalable cloud architectures and intelligent
+                  AI/ML solutions that drive innovation. In addition to my professional work, I have organized multiple
+                  city/national level events, including hackathons and entrepreneurial competitions, overseeing teams of
+                  nearly 200 individuals. As an educator and mentor, I've shared my technical knowledge through various
+                  platforms, while also serving as a judge and mentor in numerous tech-based events. Additionally, I
+                  possess a strong passion for design, utilizing my skills to enhance product aesthetics and user
+                  experience. Whether it's through refining UI/UX or crafting compelling branding elements, I thrive on
+                  leveraging my design skills to create exceptional digital solutions. These experiences collectively
+                  shape my multifaceted approach to solving complex problems and driving innovation.
                 </p>
 
               </div>
@@ -1509,6 +1547,52 @@
         document.getElementById("svgBackground").classList.add("loaded");
       }, "1000");
     });
+
+    // Microsoft Confetti Explosion
+    const microsoftEmojis = ['🪟', '📱', '☁️', '🔵', '💻', '🎮', '📧', '📊', '🔐', '⚡', '🤖', '🧠'];
+
+    document.getElementById('microsoftBanner').addEventListener('click', function () {
+      createConfetti();
+    });
+
+    function createConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const confettiCount = 50;
+
+      for (let i = 0; i < confettiCount; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          const emoji = microsoftEmojis[Math.floor(Math.random() * microsoftEmojis.length)];
+
+          confetti.textContent = emoji;
+          confetti.style.position = 'fixed';
+          confetti.style.left = Math.random() * window.innerWidth + 'px';
+          confetti.style.top = '-10px';
+          confetti.style.fontSize = (Math.random() * 20 + 20) + 'px';
+          confetti.style.opacity = '1';
+          confetti.style.pointerEvents = 'none';
+          confetti.style.zIndex = '9999';
+          confetti.style.animation = `fall ${Math.random() * 2 + 3}s linear forwards`;
+          confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+          container.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), 5000);
+        }, i * 30);
+      }
+    }
+
+    // Add CSS animation for falling confetti
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fall {
+        to {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
   <script src="https://smtpjs.com/v3/smtp.js"></script>
   <script src="js/app.js"></script>

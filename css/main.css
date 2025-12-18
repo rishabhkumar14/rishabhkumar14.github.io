@@ -4010,6 +4010,10 @@ form textarea:required:valid {
   font: normal 400 1.5rem/1.4 var(--_font-default);
   color: var(--t-medium);
   margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
 }
 .resume-lines__source a {
   font-weight: 700;
@@ -4024,6 +4028,25 @@ form textarea:required:valid {
   .resume-lines__descr {
     margin-top: 0;
   }
+}
+
+.resume-lines__source-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+}
+
+.resume-lines__company-logo {
+  display: block;
+  height: 2.8rem;
+  width: 2.8rem;
+  flex-shrink: 0;
+  object-fit: contain;
+  opacity: 1;
+  background-color: transparent;
+  border-radius: 4px;
+  padding: 2px;
 }
 
 /* ------------------------------------------------*/

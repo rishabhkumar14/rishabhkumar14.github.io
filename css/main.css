@@ -4049,6 +4049,13 @@ form textarea:required:valid {
   padding: 2px;
 }
 
+@media only screen and (max-width: 767px) {
+  .resume-lines__company-logo {
+    height: 1.8rem;
+    width: 1.8rem;
+  }
+}
+
 /* ------------------------------------------------*/
 /* Features Resume End */
 /* ------------------------------------------------*/

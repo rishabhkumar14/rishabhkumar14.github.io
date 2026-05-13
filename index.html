@@ -402,9 +402,8 @@
             class="animate-headline"
             onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(0,120,212,0.4)';"
             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/200px-Microsoft_logo.svg.png"
-              alt="Microsoft Logo" style="width: 28px; height: 28px; flex-shrink: 0;">
+            <img src="img/works/experience/microsoft.png" alt="Microsoft Logo"
+              style="width: 28px; height: 28px; flex-shrink: 0;">
             <p
               style="margin: 0; font-size: 0.95em; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px;">
               🚀 <span>Working on AI Foundry and Microsoft Agent
@@ -1563,13 +1562,6 @@
   <!-- Load Scripts Start -->
   <script src="js/libs.min.js"></script>
   <script>
-    const content = document.querySelector('body');
-    const imgLoad = imagesLoaded(content);
-    imgLoad.on('done', instance => {
-      setTimeout(() => {
-        document.getElementById("svgBackground").classList.add("loaded");
-      }, "1000");
-    });
 
     // Microsoft Confetti Explosion
     const microsoftEmojis = ['🪟', '📱', '☁️', '🔵', '💻', '🎮', '📧', '📊', '🔐', '⚡', '🤖', '🧠'];

@@ -32,10 +32,11 @@ $(function () {
   const content = document.querySelector("body");
   const imgLoad = imagesLoaded(content);
 
-  imgLoad.on("done", (instance) => {
+  imgLoad.on("always", (instance) => {
     document.getElementById("loaderContent").classList.add("fade-out");
     setTimeout(() => {
       document.getElementById("loader").classList.add("loaded");
+      document.getElementById("svgBackground").classList.add("loaded");
     }, 300);
 
     gsap.set(".animate-headline", { y: 50, opacity: 0 });
@@ -148,7 +149,7 @@ $(function () {
           trigger: element,
           toggleActions: "play none none reverse",
         },
-      }
+      },
     );
   });
 
@@ -169,7 +170,7 @@ $(function () {
           scrub: true,
           toggleActions: "play none none reverse",
         },
-      }
+      },
     );
   });
 
@@ -238,13 +239,13 @@ $(function () {
   });
 
   ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-2", { y: 0, opacity: 1 })
+    gsap.set(".animate-card-2", { y: 0, opacity: 1 }),
   );
   ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-3", { y: 0, opacity: 1 })
+    gsap.set(".animate-card-3", { y: 0, opacity: 1 }),
   );
   ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-5", { y: 0, opacity: 1 })
+    gsap.set(".animate-card-5", { y: 0, opacity: 1 }),
   );
   // --------------------------------------------- //
   // Scroll Animations End
@@ -282,7 +283,7 @@ $(function () {
                 $target.attr("tabindex", "-1");
                 $target.focus();
               }
-            }
+            },
           );
         }
       }
@@ -384,7 +385,7 @@ $(function () {
       } else {
         // Show error message
         alert(
-          "An error occurred while sending the email. Please try again later."
+          "An error occurred while sending the email. Please try again later.",
         );
       }
     });
@@ -444,7 +445,7 @@ $(function () {
   var isMobile = false;
   if (
     /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
+      navigator.userAgent,
     )
   ) {
     $("html").addClass("touch");

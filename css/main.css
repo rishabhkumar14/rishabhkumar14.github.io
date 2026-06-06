@@ -5635,6 +5635,7 @@ form textarea:required:valid {
   user-select: none;
   color: #222;
   line-height: 1.4;
+  position: relative;
 }
 
 .ms-paint *,
@@ -5743,6 +5744,105 @@ form textarea:required:valid {
   height: 2px;
   background: #fff;
   border-radius: 1px;
+}
+
+/* Flat round blue "?" help button, positioned just below the close (X)
+   button at the right edge of the menu/toolbar row (classic Windows
+   ribbon help affordance). */
+.ms-paint .mp-help-btn {
+  position: absolute;
+  top: 33px;
+  right: 8px;
+  z-index: 75;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #1f7ad0;
+  border: 1px solid #1059a0;
+  color: #fff;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  font-weight: bold;
+  font-size: 11px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ms-paint .mp-help-btn:hover,
+.ms-paint .mp-help-btn.active {
+  background: #2e8def;
+}
+
+/* Hover tooltip listing the widget's interactive features. A small arrow
+   on top points up at the "?" help button (classic balloon-tip look). */
+.ms-paint .mp-help-pop {
+  position: absolute;
+  top: 56px;
+  right: 4px;
+  z-index: 80;
+  width: min(300px, calc(100% - 12px));
+  background: #ffffe1;
+  border: 1px solid #8c8c5a;
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.28);
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  color: #1a1a1a;
+  animation: mpHelpIn 0.12s ease-out;
+}
+
+.ms-paint .mp-help-pop[hidden] {
+  display: none;
+}
+
+/* Arrow: a small diamond rotated 45deg, sitting on the top edge near the
+   right so it appears to point up at the "?" button above it. */
+.ms-paint .mp-help-pop::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 9px;
+  width: 9px;
+  height: 9px;
+  background: #ffffe1;
+  border-left: 1px solid #8c8c5a;
+  border-top: 1px solid #8c8c5a;
+  transform: rotate(45deg);
+}
+
+@keyframes mpHelpIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ms-paint .mp-help-body {
+  padding: 7px 9px 8px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #6b6a5e;
+  text-shadow: 0 0 0.6px rgba(0, 0, 0, 0.25);
+  filter: blur(0.25px);
+}
+
+.ms-paint .mp-help-body ul {
+  margin: 0;
+  padding-left: 14px;
+  list-style: square;
+}
+
+.ms-paint .mp-help-body li {
+  margin: 0 0 4px;
+}
+
+.ms-paint .mp-help-body li:last-child {
+  margin-bottom: 0;
 }
 
 .ms-paint .mp-menubar {

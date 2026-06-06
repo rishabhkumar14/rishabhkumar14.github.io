@@ -507,6 +507,25 @@
               </div>
             </div>
 
+            <!-- Flat round blue "?" help button, sitting just below the close
+                 (X) button at the right edge (classic Windows ribbon help). -->
+            <div class="mp-help-btn" id="mpHelp" title="Help &mdash; what can I do here?" role="button" tabindex="0" aria-label="Help">?</div>
+
+            <!-- Hover tooltip listing what's interactive here. Opens when the
+                 ? help button is hovered/clicked; arrow points up at it. -->
+            <div class="mp-help-pop" id="mpHelpPop" role="tooltip" aria-label="Help" hidden>
+              <div class="mp-help-body">
+                <ul>
+                  <li><b>Draw</b> &mdash; click &amp; drag on the canvas (or use your finger on touch).</li>
+                  <li><b>Pick a colour</b> from the palette, and a tool from the tool box on the left.</li>
+                  <li><b>&#8634; Redraw</b> replays the architecture animation; the <b>&#10005;</b> button clears the board.</li>
+                  <li>The <b>File</b> menu works too &mdash; <b>Open</b> an image, <b>Save</b> / <b>Save As</b> your drawing, or <b>Print</b> it.</li>
+                  <li><b>Move</b> the window by dragging the blue title bar; <b>resize</b> from any edge or corner.</li>
+                  <li><b>Minimize / Maximize</b> with the title-bar buttons.</li>
+                </ul>
+              </div>
+            </div>
+
             <div class="mp-menubar" id="mpMenubar">
               <div class="mp-menu"><span class="mp-menu-label"><u>F</u>ile</span>
                 <ul class="mp-dropdown">
@@ -3647,6 +3666,60 @@
         if (status) status.textContent = 'Whiteboard cleared.';
       });
       document.getElementById('mpRedraw').addEventListener('click', () => { pushHistory(); doRedraw(); });
+
+      // ===== Help: classic "?" title-bar button toggles a "What's This?"
+      //       popup that lists what's interactive in the widget. =====
+      (function () {
+        const helpBtn = document.getElementById('mpHelp');
+        const helpPop = document.getElementById('mpHelpPop');
+        if (!helpBtn || !helpPop) return;
+
+        function openHelp() {
+          helpPop.hidden = false;
+          helpBtn.classList.add('active');
+        }
+        function closeHelp() {
+          helpPop.hidden = true;
+          helpBtn.classList.remove('active');
+        }
+        function toggleHelp() { helpPop.hidden ? openHelp() : closeHelp(); }
+
+        helpBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleHelp(); });
+        helpBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleHelp(); }
+        });
+
+        // Open on hover (classic help affordance). A short close delay lets
+        // the pointer travel from the button down onto the popup without it
+        // vanishing; hovering either the button or the popup keeps it open.
+        let hideTimer = null;
+        const cancelHide = () => { if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; } };
+        const scheduleHide = () => {
+          cancelHide();
+          hideTimer = setTimeout(closeHelp, 180);
+        };
+        helpBtn.addEventListener('mouseenter', () => { cancelHide(); openHelp(); });
+        helpBtn.addEventListener('mouseleave', scheduleHide);
+        helpPop.addEventListener('mouseenter', cancelHide);
+        helpPop.addEventListener('mouseleave', scheduleHide);
+
+        // Click outside or Esc dismisses the popup.
+        document.addEventListener('click', (e) => {
+          if (helpPop.hidden) return;
+          if (e.target.closest('#mpHelpPop') || e.target.closest('#mpHelp')) return;
+          closeHelp();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !helpPop.hidden) closeHelp();
+        });
+
+        // "Help Topics" in the Help menu opens the same popup.
+        document.querySelectorAll('#msPaint .mp-dropdown li').forEach(li => {
+          if (/help topics/i.test(li.textContent || '')) {
+            li.addEventListener('click', () => setTimeout(openHelp, 0));
+          }
+        });
+      })();
 
       // ===== Text tool: inline input that commits to the canvas on blur/Enter =====
       let textInput = null;

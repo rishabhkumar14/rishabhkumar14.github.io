@@ -3149,7 +3149,7 @@
       }
 
       let animTimer = null;
-      function cancelAnim() { if (animTimer) { clearTimeout(animTimer); animTimer = null; } }
+      function cancelAnim() { if (animTimer) { clearTimeout(animTimer); animTimer = null; } redrawAnimating = false; }
 
       function animateArchitecture(stepMs) {
         cancelAnim();
@@ -3166,12 +3166,14 @@
             inkPixels = countInk();
             if (status) status.textContent = finalStatus;
             animTimer = null;
+            redrawAnimating = false;
             return;
           }
           if (i >= steps.length) {
             inkPixels = countInk();
             if (status) status.textContent = finalStatus;
             animTimer = null;
+            redrawAnimating = false;
             return;
           }
           steps[i](); i++;
@@ -3207,7 +3209,20 @@
         if (reward) reward.classList.remove('shown');
         setNudgeOpacity('1');
         fitCanvas();
-        if (typeof startDraw === 'function') { startDraw(); } else { animateArchitecture(); }
+        // On phones the reveal is normally scroll-driven (no autoplay), so a
+        // plain re-render would just snap to the current scroll position with
+        // no animation. An explicit Redraw should replay the drawing
+        // animation, so force the step-by-step autoplay regardless of
+        // viewport. Suppress scroll-driven repainting until it finishes so the
+        // two render paths don't fight.
+        if (window.innerWidth < 992) {
+          scrollProgress = -1;
+          // animateArchitecture() calls cancelAnim() internally (which clears
+          // the flag), so set redrawAnimating AFTER it to keep scroll-driven
+          // repainting paused for the duration of the replay.
+          animateArchitecture();
+          redrawAnimating = true;
+        } else if (typeof startDraw === 'function') { startDraw(); } else { animateArchitecture(); }
       }
       fitCanvas();
       loadIcons().then(() => { startDraw(); });
@@ -3222,10 +3237,14 @@
       // erases them. Desktop keeps the autoplay animation.
       const wrap = document.getElementById('homeCanvasWrap');
       let scrollProgress = -1;
+      // True while an explicit Redraw is replaying the drawing animation on
+      // mobile; scroll-driven repainting is paused until it completes.
+      let redrawAnimating = false;
 
       function isScrollMode() {
         return window.innerWidth < 992
           && !touched
+          && !redrawAnimating
           && wrap
           && !wrap.classList.contains('is-maximized')
           && !wrap.classList.contains('is-minimized-bottom')

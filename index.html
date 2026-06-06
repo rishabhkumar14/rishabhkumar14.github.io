@@ -1966,6 +1966,9 @@
       const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
       const onPointerDown = (e) => {
+        // Disable drag on mobile (in-flow layout below 992px — same
+        // breakpoint used to hide resize handles).
+        if (window.innerWidth < 992) return;
         // Don't start a drag when clicking the close/min/max buttons
         if (e.target.closest('.mp-window-controls')) return;
         // Don't drag when the widget is maximized
@@ -2631,6 +2634,9 @@
       let dragging = false, dx = 0, dy = 0, dragMoved = false, dragStart = { x: 0, y: 0 };
 
       head.addEventListener('pointerdown', (e) => {
+        // Disable drag on mobile (in-flow layout below 992px — same
+        // breakpoint used to hide resize handles).
+        if (window.innerWidth < 992) return;
         // Don't start a drag on header buttons (sound/min/close)
         if (e.target.closest('button')) return;
         if (e.button !== undefined && e.button !== 0) return;

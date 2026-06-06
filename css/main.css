@@ -6194,6 +6194,13 @@ body.rz-resizing-active * {
   .rz-handle {
     display: none !important;
   }
+  /* Also kill the drag cursors so the headers don't *look* draggable
+     when the JS drag handler is gated off on mobile. */
+  .home-chat .hc-head,
+  .ms-paint .mp-titlebar {
+    cursor: default;
+    touch-action: auto;
+  }
 }
 
 /* Hide handles when widget is in a "non-resizable" state */

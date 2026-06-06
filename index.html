@@ -3365,6 +3365,10 @@
 
       function down(e) {
         e.preventDefault(); const p = pos(e);
+        // Starting to draw should dismiss any open menu dropdown or the help
+        // popup (they don't get a "click" because we preventDefault + drag).
+        if (typeof closeMenus === 'function') closeMenus();
+        document.dispatchEvent(new CustomEvent('mp:dismiss-overlays'));
         // If the user starts interacting before the scroll-driven draw has
         // finished, snap to the complete architecture first so they don't get
         // stuck with a half-drawn diagram (mirrors the desktop autoplay path).
@@ -3712,6 +3716,9 @@
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape' && !helpPop.hidden) closeHelp();
         });
+
+        // Drawing on the canvas (or any explicit dismiss) closes the popup.
+        document.addEventListener('mp:dismiss-overlays', closeHelp);
 
         // "Help Topics" in the Help menu opens the same popup.
         document.querySelectorAll('#msPaint .mp-dropdown li').forEach(li => {

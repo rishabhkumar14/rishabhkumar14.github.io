@@ -247,25 +247,69 @@ $(function () {
       gsap.set(batch, { opacity: 0, y: 100, overwrite: true }),
   });
 
-  // Grid 3x
-  gsap.set(".animate-card-3", { y: 50, opacity: 0 });
-  ScrollTrigger.batch(".animate-card-3", {
-    interval: 0.1,
-    batchMax: 3,
-    duration: 3,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        opacity: 1,
-        y: 0,
-        ease: "sine",
-        stagger: { each: 0.15, grid: [1, 3] },
-        overwrite: true,
-      }),
-    onLeave: (batch) => gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
-    onEnterBack: (batch) =>
-      gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
-    onLeaveBack: (batch) =>
-      gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
+  // Grid 3x — Achievement cards: no reveal animation, interactive 3D tilt
+  gsap.set(".animate-card-3", { opacity: 1, y: 0 });
+
+  // Reusable interactive 3D tilt that follows the cursor
+  const applyTilt = (selector, maxTilt, hoverScale) => {
+    document.querySelectorAll(selector).forEach((card) => {
+      gsap.set(card, { transformPerspective: 800, transformStyle: "preserve-3d" });
+
+      const move = (e) => {
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width; // 0..1
+        const py = (e.clientY - rect.top) / rect.height; // 0..1
+        gsap.to(card, {
+          rotationY: (px - 0.5) * 2 * maxTilt,
+          rotationX: -(py - 0.5) * 2 * maxTilt,
+          scale: hoverScale,
+          duration: 0.4,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      };
+
+      const reset = () => {
+        gsap.to(card, {
+          rotationX: 0,
+          rotationY: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: "power3.out",
+          overwrite: "auto",
+        });
+      };
+
+      card.addEventListener("mousemove", move);
+      card.addEventListener("mouseleave", reset);
+    });
+  };
+
+  applyTilt(".animate-card-3 .achievements__card", 12, 1.04);
+  applyTilt(".tools-cards__card", 16, 1.08);
+
+  // Achievement numbers: count-up on scroll into view
+  document.querySelectorAll(".achievements__number").forEach((el) => {
+    const match = el.textContent.trim().match(/^(\d+)(.*)$/);
+    if (!match) return;
+    const target = parseInt(match[1], 10);
+    const suffix = match[2];
+    const counter = { val: 0 };
+    el.textContent = "0" + suffix;
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 90%",
+      once: true,
+      onEnter: () =>
+        gsap.to(counter, {
+          val: target,
+          duration: 1.6,
+          ease: "power2.out",
+          onUpdate: () => {
+            el.textContent = Math.round(counter.val) + suffix;
+          },
+        }),
+    });
   });
 
   // Grid 5x
@@ -293,7 +337,7 @@ $(function () {
     gsap.set(".animate-card-2", { y: 0, opacity: 1 }),
   );
   ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-3", { y: 0, opacity: 1 }),
+    gsap.set(".animate-card-3", { y: 0, opacity: 1, rotationX: 0, scale: 1 }),
   );
   ScrollTrigger.addEventListener("refreshInit", () =>
     gsap.set(".animate-card-5", { y: 0, opacity: 1 }),

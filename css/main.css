@@ -4052,9 +4052,10 @@ form textarea:required:valid {
 }
 
 .achievements__number {
-  font: normal 700 6rem/1 var(--_font-accent);
-  letter-spacing: -0.2rem;
+  font: normal 700 5.4rem/1 var(--_font-accent);
+  letter-spacing: -0.25rem;
   font-variant-numeric: lining-nums;
+  white-space: nowrap;
   background: var(--t-accent);
   background: -webkit-linear-gradient(
     15deg,
@@ -4067,28 +4068,29 @@ form textarea:required:valid {
 }
 @media only screen and (min-width: 1200px) {
   .achievements__number {
-    font-size: 7rem;
+    font-size: 6.3rem;
   }
 }
 @media only screen and (min-width: 1600px) {
   .achievements__number {
-    font-size: 8rem;
+    font-size: 7.2rem;
   }
 }
 
 .achievements__descr {
-  font: normal 700 1.6rem/1.2 var(--_font-default);
+  font: normal 700 1.4rem/1.2 var(--_font-default);
   color: var(--t-bright);
   margin-top: 0.6rem;
+  white-space: nowrap;
 }
 @media only screen and (min-width: 1200px) {
   .achievements__descr {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 }
 @media only screen and (min-width: 1600px) {
   .achievements__descr {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 }
 

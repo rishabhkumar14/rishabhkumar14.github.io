@@ -6130,10 +6130,32 @@ form textarea:required:valid {
 
 .ms-paint .mp-redraw {
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: #1a1a1a;
+  background: #ece9d8;
+  border: 1px solid #fff !important;
+  border-right: 1px solid #6b6b58 !important;
+  border-bottom: 1px solid #6b6b58 !important;
+  border-radius: 0;
+  padding: 2px 9px !important;
+  margin: 2px 4px;
+  box-shadow: 1px 1px 0 #b0aa90;
+  white-space: nowrap;
 }
 
 .ms-paint .mp-redraw:hover {
-  background: #c5d9f1;
+  background: #f4f2e6;
+}
+
+.ms-paint .mp-redraw:active {
+  border: 1px solid #6b6b58 !important;
+  border-right: 1px solid #fff !important;
+  border-bottom: 1px solid #fff !important;
+  box-shadow: none;
+  padding: 3px 8px 1px 10px !important;
 }
 
 .home-canvas-wrap .erase-reward {

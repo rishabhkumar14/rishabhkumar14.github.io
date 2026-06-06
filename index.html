@@ -2094,6 +2094,13 @@
         el.classList.add('is-floating');
         el.style.left = (r.left + window.scrollX) + 'px';
         el.style.top = (r.top + window.scrollY) + 'px';
+        // Pin the current rendered box size. Promoting to position:absolute
+        // drops the left/right (and top/bottom) anchoring that previously
+        // sized the widget, so without this the width would jump or collapse
+        // to its content. box-sizing:border-box on both widgets means the
+        // bounding-rect dimensions map 1:1 to width/height.
+        el.style.width = r.width + 'px';
+        el.style.height = r.height + 'px';
       };
 
       window.__unfloatWidget = function (el) {
@@ -2847,6 +2854,13 @@
         if (!body.classList.contains('is-greeting')) {
           chipsHidden = 0;
           applyChipsHidden();
+          // Only snap back to the CSS-defined box when the panel is in its
+          // normal anchored position. If the user has dragged the chat
+          // (is-floating), it's absolutely positioned on <body> via inline
+          // left/top/width/height — clearing those here would drop it to the
+          // bottom of the page (auto top) and collapse its width, so leave
+          // the floating geometry intact.
+          if (chat.classList.contains('is-floating')) return;
           chat.style.top = '';
           chat.style.bottom = '';
           chat.style.height = '';

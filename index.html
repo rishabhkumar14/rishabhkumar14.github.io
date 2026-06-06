@@ -3670,6 +3670,22 @@
           wrapNow.style.display = 'none';
           return;
         }
+        // When minimized, the X restores the default (normal) view instead of
+        // clearing the board — the board isn't visible to clear anyway.
+        const paintRootNow = document.getElementById('msPaint');
+        if (paintRootNow && paintRootNow.classList.contains('minimized')) {
+          cancelAnim();
+          paintRootNow.classList.remove('minimized');
+          wrapNow.classList.remove('is-minimized-bottom');
+          if (preMinState) {
+            wrapNow.style.left = preMinState.left;
+            wrapNow.style.top = preMinState.top;
+            if (!preMinState.wasFloating) wrapNow.classList.remove('is-floating');
+            preMinState = null;
+          }
+          refitAndRedrawIfPossible();
+          return;
+        }
         // Otherwise acts as a "Clear" button: wipe the board to a blank white
         // canvas (same as File > Clear), keeping the window where it is.
         cancelAnim();

@@ -5846,6 +5846,13 @@ form textarea:required:valid {
   margin-bottom: 0;
 }
 
+/* Drag/resize isn't available on phones, so hide that help line there. */
+@media (max-width: 991px) {
+  .ms-paint .mp-help-body li.mp-help-desktop-only {
+    display: none;
+  }
+}
+
 .ms-paint .mp-menubar {
   background: #ece9d8;
   display: flex;

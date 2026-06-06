@@ -29,10 +29,19 @@ $(function () {
   // --------------------------------------------- //
   // Loader & Loading Animation Start
   // --------------------------------------------- //
-  const content = document.querySelector("body");
-  const imgLoad = imagesLoaded(content);
+  // Only wait for above-the-fold imagery (the hero avatar) before
+  // dismissing the loader. Below-the-fold images are lazy-loaded, so
+  // waiting on the whole <body> would keep the loader up for the full
+  // ~25 MB of media. A hard timeout guarantees the loader never sticks
+  // even if the hero image is slow or cached oddly.
+  const heroImg = document.getElementById("avatarImage");
+  const imgLoad = imagesLoaded(heroImg ? [heroImg] : []);
 
-  imgLoad.on("always", (instance) => {
+  let loaderDismissed = false;
+  const dismissLoader = () => {
+    if (loaderDismissed) return;
+    loaderDismissed = true;
+
     document.getElementById("loaderContent").classList.add("fade-out");
     setTimeout(() => {
       document.getElementById("loader").classList.add("loaded");
@@ -59,7 +68,12 @@ $(function () {
       onLeaveBack: (batch) =>
         gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
     });
-  });
+  };
+
+  // Dismiss as soon as the hero image is ready...
+  imgLoad.on("always", dismissLoader);
+  // ...or after 2s no matter what, so a slow hero never blocks the page.
+  setTimeout(dismissLoader, 2000);
   // --------------------------------------------- //
   // Loader & Loading Animation End
   // --------------------------------------------- //

@@ -3847,7 +3847,8 @@
           maxBtn.innerHTML = '&#9634;';
           maxBtn.title = 'Maximize';
         } else {
-          // If minimized, exit min first
+          // If minimized, clicking Maximize just restores to the default
+          // (normal) size — it does NOT go to maximized.
           if (paintRoot.classList.contains('minimized')) {
             paintRoot.classList.remove('minimized');
             wrapEl.classList.remove('is-minimized-bottom');
@@ -3857,6 +3858,8 @@
               if (!preMinState.wasFloating) wrapEl.classList.remove('is-floating');
               preMinState = null;
             }
+            refitAndRedrawIfPossible();
+            return;
           }
           preMaxState = {
             wasFloating: wrapEl.classList.contains('is-floating'),

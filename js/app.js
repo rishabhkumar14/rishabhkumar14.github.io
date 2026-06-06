@@ -253,7 +253,10 @@ $(function () {
   // Reusable interactive 3D tilt that follows the cursor
   const applyTilt = (selector, maxTilt, hoverScale) => {
     document.querySelectorAll(selector).forEach((card) => {
-      gsap.set(card, { transformPerspective: 800, transformStyle: "preserve-3d" });
+      gsap.set(card, {
+        transformPerspective: 800,
+        transformStyle: "preserve-3d",
+      });
 
       const move = (e) => {
         const rect = card.getBoundingClientRect();

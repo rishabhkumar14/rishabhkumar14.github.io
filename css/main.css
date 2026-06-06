@@ -3729,8 +3729,10 @@ form textarea:required:valid {
 }
 .my-gallery .gallery__link {
   border-radius: var(--_radius-l) var(--_radius-l) 0 0;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V384L288 379 276 393 264 381 252 396 240 380 228 391 216 378 204 394 192 382 180 390 168 379 156 395 144 381 132 392 120 378 108 393 96 380 84 391 72 379 60 396 48 382 36 390 24 378 12 393 0 384Z' fill='%23fff'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V384L288 379 276 393 264 381 252 396 240 380 228 391 216 378 204 394 192 382 180 390 168 379 156 395 144 381 132 392 120 378 108 393 96 380 84 391 72 379 60 396 48 382 36 390 24 378 12 393 0 384Z' fill='%23fff'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V384L288 379 276 393 264 381 252 396 240 380 228 391 216 378 204 394 192 382 180 390 168 379 156 395 144 381 132 392 120 378 108 393 96 380 84 391 72 379 60 396 48 382 36 390 24 378 12 393 0 384Z' fill='%23fff'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V384L288 379 276 393 264 381 252 396 240 380 228 391 216 378 204 394 192 382 180 390 168 379 156 395 144 381 132 392 120 378 108 393 96 380 84 391 72 379 60 396 48 382 36 390 24 378 12 393 0 384Z' fill='%23fff'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
   -webkit-filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.32));
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.32));
 }

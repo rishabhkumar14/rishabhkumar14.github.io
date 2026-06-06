@@ -503,7 +503,7 @@
               <div class="mp-window-controls">
                 <div class="mp-wc mp-wc-min" id="mpMin" title="Minimize"><span></span></div>
                 <div class="mp-wc" id="mpMax" title="Maximize">&#9634;</div>
-                <div class="mp-wc close" id="mpClose" title="Reset to default">&#10005;</div>
+                <div class="mp-wc close" id="mpClose" title="Clear">&#10005;</div>
               </div>
             </div>
 
@@ -2392,11 +2392,11 @@
       const head = chat.querySelector('.hc-head');
 
       const REPLIES = {
-        "Who are you?": "I'm Rishabh — Cloud & AI Architect at Microsoft. I help design AI Foundry agents, RAG architectures and the occasional pixel-perfect side project.",
-        "What do you work on?": "Right now: agentic services on Azure AI Foundry — orchestrating LLM agents with tools, vector retrieval and Azure-grade governance.",
-        "Tell me about Microsoft AI": "Microsoft AI Foundry is our platform for building, evaluating and operating AI agents end-to-end. I work on the Agent Service that makes it all click.",
+        "Who are you?": "I'm Rishabh — I work as a Cloud & AI Architect at Microsoft. I help businesses and clients design scalable AI solutions using Azure AI Foundry, helping them with building robust AI architectures and the even hands on support.",
+        "What do you work on?": "Right now: Using the Azure AI Foundry agent service — to orchestrate multimodal agents with tools, mcps, vector indexes, sharepoint, blob storage and  AI Search binding it all together.",
+        "Tell me about Foundry": "Microsoft AI Foundry is our platform for building, evaluating and orchestrating AI agents end-to-end. I work majorly with my clients on the AI Search service that makes it all click.",
       };
-      const FALLBACK = "Looks like my LLM tokens for this session are exhausted — serving you a cached reply instead. Try one of the suggested questions above, or ping me directly via the contact section.";
+      const FALLBACK = "Looks like my LLM tokens for this session are exhausted — serving you a cached reply instead. Try asking another time, or ping me directly via the contact section below.";
 
       function appendMessage(text, who) {
         // First message: switch the body from greeting layout to chat layout
@@ -3616,37 +3616,16 @@
       }
 
       document.getElementById('mpClose').addEventListener('click', () => {
-        // "Reset to default": discard the user's strokes, snap the
-        // window back to its original position/size, and re-run the
-        // baseline architecture render. Same effect as Redraw plus a
-        // full visual reset of any drag/resize state.
+        // Acts as a "Clear" button: wipe the board to a blank white
+        // canvas (same as File > Clear), keeping the window where it is.
+        cancelAnim();
+        touched = true;
         pushHistory();
-        const wrapEl0 = document.getElementById('homeCanvasWrap');
-        if (wrapEl0) {
-          wrapEl0.classList.remove('is-maximized', 'is-minimized-bottom');
-          wrapEl0.style.removeProperty('--mp-scale');
-          if (typeof window.__unfloatWidget === 'function') {
-            // Restores original DOM parent, clears inline left/top/etc
-            window.__unfloatWidget(wrapEl0);
-          } else {
-            wrapEl0.classList.remove('is-floating');
-            wrapEl0.style.left = '';
-            wrapEl0.style.top = '';
-            wrapEl0.style.right = '';
-            wrapEl0.style.bottom = '';
-            wrapEl0.style.width = '';
-            wrapEl0.style.height = '';
-          }
-        }
-        const paintRoot0 = document.getElementById('msPaint');
-        if (paintRoot0) paintRoot0.classList.remove('minimized');
-        const maxBtn0 = document.getElementById('mpMax');
-        if (maxBtn0) { maxBtn0.innerHTML = '&#9634;'; maxBtn0.title = 'Maximize'; }
-        // Forget any captured pre-min/max state — those refer to a
-        // floating position the user no longer has.
-        preMaxState = null;
-        preMinState = null;
-        doRedraw();
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        inkPixels = countInk();
+        checkReveal();
+        if (status) status.textContent = 'Whiteboard cleared.';
       });
       document.getElementById('mpRedraw').addEventListener('click', () => { pushHistory(); doRedraw(); });
 

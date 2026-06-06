@@ -3689,6 +3689,75 @@ form textarea:required:valid {
 
 .gallery__image {
   opacity: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Force every research card to the same portrait "paper" proportions
+     regardless of the underlying image's own aspect ratio, so the row
+     reads as a set of uniform pages instead of mismatched squares. The
+     ratio is kept only gently portrait so the near-square paper crop
+     fills the card without leaving a blank strip at the bottom. */
+  aspect-ratio: 1 / 1.05;
+}
+
+/* --- Research papers as torn-off pages ---------------------------------
+   The thumbnails are the actual first page of each paper. We crop to the
+   top so the title + authors are always visible, and give every card an
+   identical ragged bottom edge (via an SVG alpha mask) so the gallery
+   looks like a stack of sheets torn from a journal rather than six flat
+   rectangles. The drop-shadow follows the masked (torn) silhouette to
+   add a subtle paper depth against the dark background. */
+.my-gallery .gallery__link .picture {
+  /* Fit the FULL paper width inside the card (no side-cropping) with a
+     small inset so the page doesn't bleed to the edges, and a paper tone
+     behind it for the margin. The paper is pushed toward the top so the
+     title stays visible while the lower body of the page reaches the
+     torn bottom edge — leaving an even framed padding rather than a
+     blank strip. Override the shared 112% zoom box so the percentages
+     below are predictable. */
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  transform: none;
+  background-color: #ffffff;
+  background-position: center top;
+  background-size: 94% auto;
+}
+.my-gallery .gallery__link {
+  border-radius: var(--_radius-l) var(--_radius-l) 0 0;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V384L288 379 276 393 264 381 252 396 240 380 228 391 216 378 204 394 192 382 180 390 168 379 156 395 144 381 132 392 120 378 108 393 96 380 84 391 72 379 60 396 48 382 36 390 24 378 12 393 0 384Z' fill='%23fff'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V384L288 379 276 393 264 381 252 396 240 380 228 391 216 378 204 394 192 382 180 390 168 379 156 395 144 381 132 392 120 378 108 393 96 380 84 391 72 379 60 396 48 382 36 390 24 378 12 393 0 384Z' fill='%23fff'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  -webkit-filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.32));
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.32));
+}
+/* Lift the tag overlay clear of the ragged bottom edge. */
+.my-gallery .gallery__descr {
+  bottom: 1.6rem;
+}
+/* Compact chips over the research papers — sized to fit their text. */
+.my-gallery .gallery__descr .rounded-tag {
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem 0.6rem 0.3rem 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+/* Cards 5 (patent) and 6 (ongoing) get soft gradient chips that follow the theme. */
+.my-gallery .gallery__item:nth-child(5) .gallery__descr .rounded-tag,
+.my-gallery .gallery__item:nth-child(6) .gallery__descr .rounded-tag {
+  background-color: var(--base);
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--base) 86%, #ffffff) 0%,
+    var(--base) 45%,
+    color-mix(in srgb, var(--base) 86%, #000000) 100%
+  );
+  color: var(--t-bright);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .gallery__descr {

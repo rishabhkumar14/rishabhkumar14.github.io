@@ -481,14 +481,22 @@ img {
   -webkit-transform: translate3d(50px, -50px, 0);
   -moz-transform: translate3d(50px, -50px, 0);
   transform: translate3d(50px, -50px, 0);
-  -webkit-transition: opacity 0.8s var(--_animbezier),
+  -webkit-transition:
+    opacity 0.8s var(--_animbezier),
     -webkit-transform 0.8s var(--_animbezier);
-  transition: opacity 0.8s var(--_animbezier),
+  transition:
+    opacity 0.8s var(--_animbezier),
     -webkit-transform 0.8s var(--_animbezier);
-  -moz-transition: transform 0.8s var(--_animbezier),
-    opacity 0.8s var(--_animbezier), -moz-transform 0.8s var(--_animbezier);
-  transition: transform 0.8s var(--_animbezier), opacity 0.8s var(--_animbezier);
-  transition: transform 0.8s var(--_animbezier), opacity 0.8s var(--_animbezier),
+  -moz-transition:
+    transform 0.8s var(--_animbezier),
+    opacity 0.8s var(--_animbezier),
+    -moz-transform 0.8s var(--_animbezier);
+  transition:
+    transform 0.8s var(--_animbezier),
+    opacity 0.8s var(--_animbezier);
+  transition:
+    transform 0.8s var(--_animbezier),
+    opacity 0.8s var(--_animbezier),
     -webkit-transform 0.8s var(--_animbezier),
     -moz-transform 0.8s var(--_animbezier);
 }
@@ -545,14 +553,22 @@ img {
   -webkit-transform: translate3d(-50px, 50px, 0);
   -moz-transform: translate3d(-50px, 50px, 0);
   transform: translate3d(-50px, 50px, 0);
-  -webkit-transition: opacity 0.8s var(--_animbezier),
+  -webkit-transition:
+    opacity 0.8s var(--_animbezier),
     -webkit-transform 0.8s var(--_animbezier);
-  transition: opacity 0.8s var(--_animbezier),
+  transition:
+    opacity 0.8s var(--_animbezier),
     -webkit-transform 0.8s var(--_animbezier);
-  -moz-transition: transform 0.8s var(--_animbezier),
-    opacity 0.8s var(--_animbezier), -moz-transform 0.8s var(--_animbezier);
-  transition: transform 0.8s var(--_animbezier), opacity 0.8s var(--_animbezier);
-  transition: transform 0.8s var(--_animbezier), opacity 0.8s var(--_animbezier),
+  -moz-transition:
+    transform 0.8s var(--_animbezier),
+    opacity 0.8s var(--_animbezier),
+    -moz-transform 0.8s var(--_animbezier);
+  transition:
+    transform 0.8s var(--_animbezier),
+    opacity 0.8s var(--_animbezier);
+  transition:
+    transform 0.8s var(--_animbezier),
+    opacity 0.8s var(--_animbezier),
     -webkit-transform 0.8s var(--_animbezier),
     -moz-transform 0.8s var(--_animbezier);
 }
@@ -608,7 +624,7 @@ h1 {
 }
 @media only screen and (min-width: 1400px) {
   h1 {
-    font-size: 7rem;
+    font-size: rem;
   }
 }
 @media only screen and (min-width: 1600px) {
@@ -1052,72 +1068,120 @@ p.additional-text a {
   color: inherit;
   color: var(--t-medium);
   text-decoration: none;
-  background: -webkit-gradient(
+  background:
+    -webkit-gradient(
       linear,
       left top,
       right top,
       from(var(--stroke-controls)),
       to(var(--stroke-controls))
     ),
-    -webkit-gradient(linear, left top, right top, from(var(--accent)), to(var(--secondary)));
-  background: -moz-linear-gradient(
-      left,
-      var(--stroke-controls),
-      var(--stroke-controls)
-    ),
+    -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        from(var(--accent)),
+        to(var(--secondary))
+      );
+  background:
+    -moz-linear-gradient(left, var(--stroke-controls), var(--stroke-controls)),
     -moz-linear-gradient(left, var(--accent), var(--secondary));
-  background: linear-gradient(
-      to right,
-      var(--stroke-controls),
-      var(--stroke-controls)
-    ),
+  background:
+    linear-gradient(to right, var(--stroke-controls), var(--stroke-controls)),
     linear-gradient(to right, var(--accent), var(--secondary));
-  -moz-background-size: 100% 1px, 0 1px;
-  background-size: 100% 1px, 0 1px;
-  background-position: 100% 100%, 0 100%;
+  -moz-background-size:
+    100% 1px,
+    0 1px;
+  background-size:
+    100% 1px,
+    0 1px;
+  background-position:
+    100% 100%,
+    0 100%;
   background-repeat: no-repeat;
-  -webkit-transition: background-size 400ms, color 300ms;
-  -moz-transition: background-size 400ms, color 300ms,
+  -webkit-transition:
+    background-size 400ms,
+    color 300ms;
+  -moz-transition:
+    background-size 400ms,
+    color 300ms,
     -moz-background-size 400ms;
-  transition: background-size 400ms, color 300ms;
-  transition: background-size 400ms, color 300ms, -moz-background-size 400ms;
+  transition:
+    background-size 400ms,
+    color 300ms;
+  transition:
+    background-size 400ms,
+    color 300ms,
+    -moz-background-size 400ms;
 }
 .no-touch .text-link:hover {
   color: var(--t-bright);
-  -moz-background-size: 0 1px, 100% 1px;
-  background-size: 0 1px, 100% 1px;
+  -moz-background-size:
+    0 1px,
+    100% 1px;
+  background-size:
+    0 1px,
+    100% 1px;
 }
 
 .text-link-bold {
   color: inherit;
   color: var(--t-bright);
   text-decoration: none;
-  background: -webkit-gradient(
+  background:
+    -webkit-gradient(
       linear,
       left top,
       right top,
       from(rgba(0, 0, 0, 0)),
       to(rgba(0, 0, 0, 0))
     ),
-    -webkit-gradient(linear, left top, right top, from(var(--accent)), to(var(--secondary)));
-  background: -moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
+    -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        from(var(--accent)),
+        to(var(--secondary))
+      );
+  background:
+    -moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
     -moz-linear-gradient(left, var(--accent), var(--secondary));
-  background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
+  background:
+    linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
     linear-gradient(to right, var(--accent), var(--secondary));
-  -moz-background-size: 100% 1px, 0 1px;
-  background-size: 100% 1px, 0 1px;
-  background-position: 100% 100%, 0 100%;
+  -moz-background-size:
+    100% 1px,
+    0 1px;
+  background-size:
+    100% 1px,
+    0 1px;
+  background-position:
+    100% 100%,
+    0 100%;
   background-repeat: no-repeat;
-  -webkit-transition: background-size 400ms, color 300ms;
-  -moz-transition: background-size 400ms, color 300ms,
+  -webkit-transition:
+    background-size 400ms,
+    color 300ms;
+  -moz-transition:
+    background-size 400ms,
+    color 300ms,
     -moz-background-size 400ms;
-  transition: background-size 400ms, color 300ms;
-  transition: background-size 400ms, color 300ms, -moz-background-size 400ms;
+  transition:
+    background-size 400ms,
+    color 300ms;
+  transition:
+    background-size 400ms,
+    color 300ms,
+    -moz-background-size 400ms;
 }
 .no-touch .text-link-bold:hover {
   color: var(--t-bright);
-  -moz-background-size: 0 1px, 100% 1px;
-  background-size: 0 1px, 100% 1px;
+  -moz-background-size:
+    0 1px,
+    100% 1px;
+  background-size:
+    0 1px,
+    100% 1px;
 }
 
 /* ------------------------------------------------*/
@@ -1240,10 +1304,12 @@ p.additional-text a {
   will-change: transform;
   -webkit-transition: -webkit-transform 0.3s var(--_animbezier);
   transition: -webkit-transform 0.3s var(--_animbezier);
-  -moz-transition: transform 0.3s var(--_animbezier),
+  -moz-transition:
+    transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
   transition: transform 0.3s var(--_animbezier);
-  transition: transform 0.3s var(--_animbezier),
+  transition:
+    transform 0.3s var(--_animbezier),
     -webkit-transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
 }
@@ -1282,22 +1348,30 @@ p.additional-text a {
 }
 .btn-hover-accent i,
 .btn-hover-accent span {
-  text-shadow: 0 0 var(--t-opp-bright), 0 5rem var(--t-opp-bright);
+  text-shadow:
+    0 0 var(--t-opp-bright),
+    0 5rem var(--t-opp-bright);
 }
 @media only screen and (min-width: 1200px) {
   .no-touch .btn-hover-accent:hover i,
   .no-touch .btn-hover-accent:hover span {
-    text-shadow: 0 -5rem var(--t-opp-bright), 0 0 var(--t-opp-bright);
+    text-shadow:
+      0 -5rem var(--t-opp-bright),
+      0 0 var(--t-opp-bright);
   }
 }
 @media only screen and (min-width: 1600px) {
   .btn-hover-accent i,
   .btn-hover-accent span {
-    text-shadow: 0 0 var(--t-opp-bright), 0 6rem var(--t-opp-bright);
+    text-shadow:
+      0 0 var(--t-opp-bright),
+      0 6rem var(--t-opp-bright);
   }
   .no-touch .btn-hover-accent:hover i,
   .no-touch .btn-hover-accent:hover span {
-    text-shadow: 0 -6rem var(--t-opp-bright), 0 0 var(--t-opp-bright);
+    text-shadow:
+      0 -6rem var(--t-opp-bright),
+      0 0 var(--t-opp-bright);
   }
 }
 
@@ -1339,21 +1413,29 @@ p.additional-text a {
   .btn-hover-accent-mobile i,
   .btn-hover-accent-mobile span {
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0 0 var(--t-bright), 0 5rem var(--t-bright);
+    text-shadow:
+      0 0 var(--t-bright),
+      0 5rem var(--t-bright);
   }
   .no-touch .btn-hover-accent-mobile:hover i,
   .no-touch .btn-hover-accent-mobile:hover span {
-    text-shadow: 0 -5rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -5rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 @media only screen and (min-width: 1600px) {
   .btn-hover-accent-mobile i,
   .btn-hover-accent-mobile span {
-    text-shadow: 0 0 var(--t-bright), 0 6rem var(--t-bright);
+    text-shadow:
+      0 0 var(--t-bright),
+      0 6rem var(--t-bright);
   }
   .no-touch .btn-hover-accent-mobile:hover i,
   .no-touch .btn-hover-accent-mobile:hover span {
-    text-shadow: 0 -6rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -6rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 
@@ -1381,22 +1463,30 @@ p.additional-text a {
 }
 .btn-hover-outline i,
 .btn-hover-outline span {
-  text-shadow: 0 0 var(--t-bright), 0 5rem var(--t-bright);
+  text-shadow:
+    0 0 var(--t-bright),
+    0 5rem var(--t-bright);
 }
 @media only screen and (min-width: 1200px) {
   .no-touch .btn-hover-outline:hover i,
   .no-touch .btn-hover-outline:hover span {
-    text-shadow: 0 -5rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -5rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 @media only screen and (min-width: 1600px) {
   .btn-hover-outline i,
   .btn-hover-outline span {
-    text-shadow: 0 0 var(--t-bright), 0 6rem var(--t-bright);
+    text-shadow:
+      0 0 var(--t-bright),
+      0 6rem var(--t-bright);
   }
   .no-touch .btn-hover-outline:hover i,
   .no-touch .btn-hover-outline:hover span {
-    text-shadow: 0 -6rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -6rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 
@@ -1428,21 +1518,29 @@ p.additional-text a {
   .btn-hover-outline-mobile i,
   .btn-hover-outline-mobile span {
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0 0 var(--t-disabled), 0 5rem var(--t-disabled);
+    text-shadow:
+      0 0 var(--t-disabled),
+      0 5rem var(--t-disabled);
   }
   .no-touch .btn-hover-outline-mobile:hover i,
   .no-touch .btn-hover-outline-mobile:hover span {
-    text-shadow: 0 -5rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -5rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 @media only screen and (min-width: 1600px) {
   .btn-hover-outline-mobile i,
   .btn-hover-outline-mobile span {
-    text-shadow: 0 0 var(--t-disabled), 0 6rem var(--t-disabled);
+    text-shadow:
+      0 0 var(--t-disabled),
+      0 6rem var(--t-disabled);
   }
   .no-touch .btn-hover-outline-mobile:hover i,
   .no-touch .btn-hover-outline-mobile:hover span {
-    text-shadow: 0 -6rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -6rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 
@@ -1464,22 +1562,30 @@ p.additional-text a {
 }
 .btn-hover-transparent i,
 .btn-hover-transparent span {
-  text-shadow: 0 0 var(--t-disabled), 0 5rem var(--t-disabled);
+  text-shadow:
+    0 0 var(--t-disabled),
+    0 5rem var(--t-disabled);
 }
 @media only screen and (min-width: 1200px) {
   .no-touch .btn-hover-transparent:hover i,
   .no-touch .btn-hover-transparent:hover span {
-    text-shadow: 0 -5rem var(--t-disabled), 0 0 var(--t-disabled);
+    text-shadow:
+      0 -5rem var(--t-disabled),
+      0 0 var(--t-disabled);
   }
 }
 @media only screen and (min-width: 1600px) {
   .btn-hover-transparent i,
   .btn-hover-transparent span {
-    text-shadow: 0 0 var(--t-disabled), 0 6rem var(--t-disabled);
+    text-shadow:
+      0 0 var(--t-disabled),
+      0 6rem var(--t-disabled);
   }
   .no-touch .btn-hover-transparent:hover i,
   .no-touch .btn-hover-transparent:hover span {
-    text-shadow: 0 -6rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -6rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 
@@ -2443,7 +2549,7 @@ form textarea:required:valid {
 }
 @media only screen and (min-width: 1600px) {
   .headline__title {
-    max-width: 900px;
+    max-width: 940px;
   }
 }
 
@@ -2902,10 +3008,12 @@ form textarea:required:valid {
   will-change: transform;
   -webkit-transition: -webkit-transform 0.3s var(--_animbezier);
   transition: -webkit-transform 0.3s var(--_animbezier);
-  -moz-transition: transform 0.3s var(--_animbezier),
+  -moz-transition:
+    transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
   transition: transform 0.3s var(--_animbezier);
-  transition: transform 0.3s var(--_animbezier),
+  transition:
+    transform 0.3s var(--_animbezier),
     -webkit-transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
 }
@@ -2941,7 +3049,9 @@ form textarea:required:valid {
   .header__trigger span {
     line-height: 5rem;
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0 0 var(--t-opp-bright), 0 5rem var(--t-opp-bright);
+    text-shadow:
+      0 0 var(--t-opp-bright),
+      0 5rem var(--t-opp-bright);
   }
   .header__trigger span {
     display: block;
@@ -2958,7 +3068,9 @@ form textarea:required:valid {
   }
   .no-touch .header__trigger:hover i,
   .no-touch .header__trigger:hover span {
-    text-shadow: 0 -5rem var(--t-opp-bright), 0 0 var(--t-opp-bright);
+    text-shadow:
+      0 -5rem var(--t-opp-bright),
+      0 0 var(--t-opp-bright);
   }
 }
 @media only screen and (min-width: 1600px) {
@@ -2971,14 +3083,18 @@ form textarea:required:valid {
   .header__trigger i,
   .header__trigger span {
     line-height: 6rem;
-    text-shadow: 0 0 var(--t-opp-bright), 0 6rem var(--t-opp-bright);
+    text-shadow:
+      0 0 var(--t-opp-bright),
+      0 6rem var(--t-opp-bright);
   }
   .header__trigger i {
     font-size: 2.2rem;
   }
   .no-touch .header__trigger:hover i,
   .no-touch .header__trigger:hover span {
-    text-shadow: 0 -6rem var(--t-opp-bright), 0 0 var(--t-opp-bright);
+    text-shadow:
+      0 -6rem var(--t-opp-bright),
+      0 0 var(--t-opp-bright);
   }
 }
 
@@ -3515,18 +3631,34 @@ form textarea:required:valid {
   -webkit-transition: background-position 0.5s;
   -moz-transition: background-position 0.5s;
   transition: background-position 0.5s;
-  -webkit-transition: opacity 0.5s ease-in-out, width 0.3s var(--_animbezier),
-    height 0.3s var(--_animbezier), -webkit-transform 0.7s ease-in-out;
-  transition: opacity 0.5s ease-in-out, width 0.3s var(--_animbezier),
-    height 0.3s var(--_animbezier), -webkit-transform 0.7s ease-in-out;
-  -moz-transition: transform 0.7s ease-in-out, opacity 0.5s ease-in-out,
-    width 0.3s var(--_animbezier), height 0.3s var(--_animbezier),
+  -webkit-transition:
+    opacity 0.5s ease-in-out,
+    width 0.3s var(--_animbezier),
+    height 0.3s var(--_animbezier),
+    -webkit-transform 0.7s ease-in-out;
+  transition:
+    opacity 0.5s ease-in-out,
+    width 0.3s var(--_animbezier),
+    height 0.3s var(--_animbezier),
+    -webkit-transform 0.7s ease-in-out;
+  -moz-transition:
+    transform 0.7s ease-in-out,
+    opacity 0.5s ease-in-out,
+    width 0.3s var(--_animbezier),
+    height 0.3s var(--_animbezier),
     -moz-transform 0.7s ease-in-out;
-  transition: transform 0.7s ease-in-out, opacity 0.5s ease-in-out,
-    width 0.3s var(--_animbezier), height 0.3s var(--_animbezier);
-  transition: transform 0.7s ease-in-out, opacity 0.5s ease-in-out,
-    width 0.3s var(--_animbezier), height 0.3s var(--_animbezier),
-    -webkit-transform 0.7s ease-in-out, -moz-transform 0.7s ease-in-out;
+  transition:
+    transform 0.7s ease-in-out,
+    opacity 0.5s ease-in-out,
+    width 0.3s var(--_animbezier),
+    height 0.3s var(--_animbezier);
+  transition:
+    transform 0.7s ease-in-out,
+    opacity 0.5s ease-in-out,
+    width 0.3s var(--_animbezier),
+    height 0.3s var(--_animbezier),
+    -webkit-transform 0.7s ease-in-out,
+    -moz-transform 0.7s ease-in-out;
 }
 @media only screen and (min-width: 1200px) {
   .gallery__link {
@@ -3535,10 +3667,12 @@ form textarea:required:valid {
     transform: scale3d(1, 1, 1);
     -webkit-transition: -webkit-transform 0.3s var(--_animbezier);
     transition: -webkit-transform 0.3s var(--_animbezier);
-    -moz-transition: transform 0.3s var(--_animbezier),
+    -moz-transition:
+      transform 0.3s var(--_animbezier),
       -moz-transform 0.3s var(--_animbezier);
     transition: transform 0.3s var(--_animbezier);
-    transition: transform 0.3s var(--_animbezier),
+    transition:
+      transform 0.3s var(--_animbezier),
       -webkit-transform 0.3s var(--_animbezier),
       -moz-transform 0.3s var(--_animbezier);
   }
@@ -3819,7 +3953,11 @@ form textarea:required:valid {
   height: 0;
   border-top: 2px solid var(--stroke-controls);
   border-right: 2px solid var(--stroke-controls);
-  transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+  transition:
+    width 0.3s,
+    height 0.3s,
+    top 0.3s,
+    left 0.3s;
 }
 
 .achievements__card::after {
@@ -3831,7 +3969,11 @@ form textarea:required:valid {
   height: 0;
   border-bottom: 2px solid var(--stroke-controls);
   border-left: 2px solid var(--stroke-controls);
-  transition: width 0.3s, height 0.3s, bottom 0.3s, right 0.3s;
+  transition:
+    width 0.3s,
+    height 0.3s,
+    bottom 0.3s,
+    right 0.3s;
 }
 
 .achievements__card:hover::before,
@@ -4395,16 +4537,28 @@ form textarea:required:valid {
   -moz-transform: scale3d(1, 1, 1);
   transform: scale3d(1, 1, 1);
   will-change: transform;
-  -webkit-transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out,
+  -webkit-transition:
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out,
     -webkit-transform 0.3s var(--_animbezier);
-  transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out,
+  transition:
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out,
     -webkit-transform 0.3s var(--_animbezier);
-  -moz-transition: transform 0.3s var(--_animbezier), border 0.3s ease-in-out,
-    background-color 0.3s ease-in-out, -moz-transform 0.3s var(--_animbezier);
-  transition: transform 0.3s var(--_animbezier), border 0.3s ease-in-out,
+  -moz-transition:
+    transform 0.3s var(--_animbezier),
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out,
+    -moz-transform 0.3s var(--_animbezier);
+  transition:
+    transform 0.3s var(--_animbezier),
+    border 0.3s ease-in-out,
     background-color 0.3s ease-in-out;
-  transition: transform 0.3s var(--_animbezier), border 0.3s ease-in-out,
-    background-color 0.3s ease-in-out, -webkit-transform 0.3s var(--_animbezier),
+  transition:
+    transform 0.3s var(--_animbezier),
+    border 0.3s ease-in-out,
+    background-color 0.3s ease-in-out,
+    -webkit-transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
 }
 .socials-cards__card i {
@@ -4463,10 +4617,12 @@ form textarea:required:valid {
   will-change: transform;
   -webkit-transition: -webkit-transform 0.3s var(--_animbezier);
   transition: -webkit-transform 0.3s var(--_animbezier);
-  -moz-transition: transform 0.3s var(--_animbezier),
+  -moz-transition:
+    transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
   transition: transform 0.3s var(--_animbezier);
-  transition: transform 0.3s var(--_animbezier),
+  transition:
+    transform 0.3s var(--_animbezier),
     -webkit-transform 0.3s var(--_animbezier),
     -moz-transform 0.3s var(--_animbezier);
 }
@@ -4484,7 +4640,9 @@ form textarea:required:valid {
 @media only screen and (min-width: 1200px) {
   .socials-square__link i {
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0 0 var(--t-bright), 0 4.4rem var(--t-bright);
+    text-shadow:
+      0 0 var(--t-bright),
+      0 4.4rem var(--t-bright);
   }
   .no-touch .socials-square__link:hover::before {
     -webkit-transform: scale3d(1.08, 1.08, 1.08);
@@ -4492,7 +4650,9 @@ form textarea:required:valid {
     transform: scale3d(1.08, 1.08, 1.08);
   }
   .no-touch .socials-square__link:hover i {
-    text-shadow: 0 -4.4rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -4.4rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 @media only screen and (min-width: 1400px) {
@@ -4507,13 +4667,1538 @@ form textarea:required:valid {
   .socials-square__link i {
     line-height: 5rem;
     font-size: 1.8rem;
-    text-shadow: 0 0 var(--t-bright), 0 5rem var(--t-bright);
+    text-shadow:
+      0 0 var(--t-bright),
+      0 5rem var(--t-bright);
   }
   .no-touch .socials-square__link:hover i {
-    text-shadow: 0 -5rem var(--t-bright), 0 0 var(--t-bright);
+    text-shadow:
+      0 -5rem var(--t-bright),
+      0 0 var(--t-bright);
   }
 }
 
 /* ------------------------------------------------*/
 /* Features Socials End */
 /* ------------------------------------------------*/
+
+/* ============================================================== */
+/* The blocks below were inlined inside <style> tags in index.html.   */
+/* Moved here so index.html stays focused on markup.                  */
+/* Order matches the original document order in index.html.          */
+/* ============================================================== */
+
+/* ------------------------------------------------*/
+/* Extracted inline <style> block #1 from index.html */
+/* ------------------------------------------------*/
+/* Wrapper that places the widget on the right side of the home section.
+   The widget is designed at a fixed pixel size (820 × 510) and the whole
+   thing is scaled uniformly via the --mp-scale CSS variable using
+   transform: scale(), so EVERY internal element (toolbox, fonts,
+   swatches, icons, canvas frame) shrinks/grows proportionally. The
+   wrapper's width/height are calc'd from the same variable so layout
+   stays correct. To resize the widget, change --mp-scale at the
+   relevant breakpoint below. */
+.home-canvas-wrap {
+  --mp-scale: 0.48;
+  --mp-design-w: 820;
+  --mp-design-h: 510;
+  position: relative;
+  width: calc(var(--mp-design-w) * 1px * var(--mp-scale));
+  height: calc(var(--mp-design-h) * 1px * var(--mp-scale));
+  max-width: 100%;
+  margin: 2rem auto 0;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.home-canvas-wrap .ms-paint {
+  width: calc(var(--mp-design-w) * 1px);
+  transform: scale(var(--mp-scale));
+  transform-origin: top left;
+}
+
+.home-canvas-wrap .canvas-caption {
+  /* Sits visually ABOVE the wrap but stays inside the wrap's DOM, so
+     it contributes ZERO height to the wrap. This way the wrap's box
+     exactly matches the .ms-paint height and bottom-alignment with
+     the chat panel stays pixel-perfect. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--t-bright, #555);
+  opacity: 0.75;
+  margin: 0 0 8px;
+}
+
+.home-canvas-wrap .canvas-caption b {
+  opacity: 1;
+}
+
+/* Mobile-only spacing tweaks: push the canvas further away from the
+   chat panel above it, and tighten the gap below the canvas before
+   the next section starts. Also add safe side padding so the canvas
+   and chat never sit flush against the screen edge on phones. */
+@media only screen and (max-width: 991.98px) {
+  .home-canvas-wrap {
+    margin-top: 4rem;
+    /* The .ms-paint widget's natural laid-out height is ~514px
+       (title + menu + body + palette + statusbar), not 510px.
+       Use the real height here so the wrap doesn't clip the
+       bottom color palette + statusbar on mobile. */
+    --mp-design-h: 514;
+    /* On phones the canvas spans nearly the full viewport width
+       with a comfortable side breathing room (1.6rem each side),
+       and its height auto-adjusts from the 820:514 design ratio.
+       We break out of #home's side padding using negative margins
+       so the canvas can extend past #home's content box, then add
+       1.6rem inset of its own.
+
+       Note: --mp-scale is consumed by transform: scale(...) on
+       .ms-paint, which requires a UNITLESS number. Dividing two
+       lengths (length / length) in calc() yields a unitless value,
+       so we write `(100vw - 3.2rem) / (820 * 1px)` to get a
+       unitless ratio. */
+    --mp-scale: calc((100vw - 3.2rem) / (var(--mp-design-w) * 1px));
+    width: calc(100vw - 3.2rem);
+    max-width: calc(100vw - 3.2rem);
+    margin-left: auto;
+    margin-right: auto;
+    /* The inner .ms-paint is laid out at its design 820px width and
+       only visually scaled via transform. Clip just in case of
+       sub-pixel rounding. */
+    overflow: hidden;
+  }
+
+  .home-chat {
+    /* Match the canvas width on mobile. The parent #home already
+       provides 1.6rem side padding, so chat just fills 100% of it.
+       Drop the desktop 36rem cap and zero out the auto-centering
+       margin so chat aligns with the canvas's left edge instead of
+       sitting in a narrower centered column. */
+    width: 100%;
+    max-width: 100%;
+    margin: 2rem 0 0;
+  }
+
+  /* On phones the canvas wrap clips its overflow, which would hide
+     the absolutely-positioned caption sitting above it. Put the
+     caption back in normal flow so it stays visible above the
+     widget on mobile. Pin its height so the wrap height calc below
+     can reserve space for it. */
+  .home-canvas-wrap .canvas-caption {
+    position: static;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.5;
+    height: 1.8rem;
+    /* 18px \u2014 matches the in-flow caption row */
+    margin: 0 0 0.8rem;
+    /* 8px gap below the caption */
+  }
+
+  /* The wrap's default height = design-h * scale = 514px * scale,
+     but the in-flow caption above the scaled paint pushes the paint
+     (and its palette + statusbar) past that, so we add the caption
+     row (1.8rem) + gap (0.8rem) into the wrap's height. */
+  .home-canvas-wrap {
+    height: calc(var(--mp-design-h) * 1px * var(--mp-scale) + 2.6rem);
+  }
+
+  #home {
+    padding-bottom: 3.2rem;
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+  }
+
+  /* Tighten the gap from the canvas down to the Portfolio heading
+     on phones — .inner gives 6rem of padding-top by default which
+     feels like a long blank scroll between the two sections. */
+  #portfolio.inner {
+    padding-top: 4rem;
+  }
+
+  /* Hard cap the Microsoft banner so it can NEVER push the page
+     wider than the viewport, even before the JS auto-fit runs. */
+  #microsoftBanner {
+    max-width: 100% !important;
+    /* Let the banner wrap onto a second line on phones instead of
+       ellipsizing — the inline markup forces nowrap on the wrapper,
+       the inner <p>, and the <span>; we override all three here. */
+    white-space: normal !important;
+    align-items: flex-start !important;
+  }
+
+  #microsoftBanner p,
+  #microsoftBanner span {
+    white-space: normal !important;
+    /* No ellipsis on mobile — show the full text wrapped onto two
+       lines instead of cutting it off. */
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: inline !important;
+  }
+
+  /* The img sits next to the wrapped text; keep it top-aligned so
+     the second line of text doesn't push it off-center. */
+  #microsoftBanner img {
+    align-self: flex-start;
+    margin-top: 0.2rem;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .home-canvas-wrap {
+    --mp-scale: 0.55;
+    position: absolute;
+    bottom: 3rem;
+    right: 2.5rem;
+    top: auto;
+    margin: 0;
+  }
+
+  /* Pull the headline up so it sits just under the menu instead of at
+     the bottom. (Was top: 16rem -> reduced gap from sidebar/menu to h1.) */
+  #home .headline {
+    bottom: auto;
+    top: 11rem;
+    padding-left: 1.2rem;
+    padding-right: 3rem;
+  }
+
+  #home .headline__title {
+    font-size: 4.2rem;
+  }
+
+  /* #home fills the full viewport so the bottom-anchored canvas
+     and chat reach the SCREEN bottom (not just the bottom of
+     #home's content). max() keeps a content-driven minimum for
+     very short windows so the canvas can't be crushed. */
+  #home {
+    height: auto;
+    min-height: max(100vh, 60rem);
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .home-canvas-wrap {
+    --mp-scale: 0.7;
+    right: 4rem;
+  }
+
+  #home .headline {
+    padding-left: 1.5rem;
+    padding-right: 6rem;
+  }
+
+  #home .headline__title {
+    font-size: 4.8rem;
+  }
+
+  /* Canvas grows to 510 * 0.7 = 357px tall here; bump min-height. */
+  #home {
+    min-height: max(100vh, 68rem);
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .home-canvas-wrap {
+    --mp-scale: 0.5;
+    bottom: 5rem;
+    right: 6rem;
+  }
+
+  #home .headline {
+    top: 12rem;
+    padding-left: 2rem;
+    padding-right: 8rem;
+  }
+
+  #home .headline__title {
+    font-size: 5.4rem;
+  }
+
+  /* Canvas shrinks back to 510 * 0.5 = 255px; headline font is 5.4rem. */
+  #home {
+    min-height: max(100vh, 62rem);
+  }
+}
+
+@media only screen and (min-width: 1600px) {
+  .home-canvas-wrap {
+    --mp-scale: 0.65;
+    right: 6rem;
+    bottom: 5rem;
+  }
+
+  #home .headline {
+    top: 13rem;
+    padding-left: 2rem;
+    padding-right: 10rem;
+  }
+
+  #home .headline__title {
+    font-size: 6rem;
+  }
+
+  /* Canvas 510 * 0.65 = 331.5px; headline font is 6rem. */
+  #home {
+    min-height: max(100vh, 74rem);
+  }
+}
+
+/* ---- Headline buttons (My Projects / Download CV) ----
+   Override the theme defaults so:
+     (1) the gap between the Microsoft banner and the buttons is
+         tighter at every breakpoint (theme defaults: 4 -> 5.1rem),
+     (2) the buttons themselves are a touch smaller (theme default:
+         5rem tall, 1.6rem font; 1600+ jumps to 6rem / 2rem). */
+#home .headline__btnholder {
+  margin-top: 2rem;
+}
+
+@media only screen and (min-width: 768px) {
+  #home .headline__btnholder {
+    margin-top: 2.4rem;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  #home .headline__btnholder {
+    margin-top: 2.4rem;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  #home .headline__btnholder {
+    margin-top: 2.8rem;
+  }
+}
+
+@media only screen and (min-width: 1600px) {
+  #home .headline__btnholder {
+    margin-top: 2.8rem;
+  }
+}
+
+#home .headline__btnholder .btn-default {
+  height: 4.2rem;
+  padding: 0 1.6rem;
+  font-size: 1.4rem;
+  line-height: 4.2rem;
+}
+
+#home .headline__btnholder .btn-default i {
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+@media only screen and (min-width: 1600px) {
+  #home .headline__btnholder .btn-default {
+    height: 4.8rem;
+    padding: 0 2rem;
+    font-size: 1.6rem;
+    line-height: 4.8rem;
+  }
+
+  #home .headline__btnholder .btn-default i {
+    font-size: 1.8rem;
+  }
+}
+
+/* ============ HOME CHAT (Rishabh assistant widget) ============
+   Default (mobile / <992px): renders as a stacked card -- its own
+   section -- in normal flow below the canvas, so canvas and chat
+   never fight for space. From 992px upward it becomes an absolutely-
+   positioned panel inside #home, sized to match the canvas widget's
+   height and bottom-edge so both tops AND bottoms align perfectly. */
+.home-chat {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: rgba(20, 20, 22, 0.78);
+  border: 1px solid var(--stroke-elements);
+  border-radius: 2.4rem;
+  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  color: var(--t-bright);
+  /* Mobile-first stacked layout: chat is its own block-flow section.
+     On mobile, the mobile media query below sets width:100% so the
+     chat matches the canvas. Desktop media queries override width
+     and position to anchor it next to the canvas. */
+  position: relative;
+  width: 100%;
+  height: 38rem;
+  margin: 2rem auto 0;
+}
+
+[color-scheme="light"] .home-chat {
+  background: rgba(240, 240, 244, 0.82);
+}
+
+/* Drag handle: header acts like a window titlebar */
+.home-chat .hc-head {
+  cursor: grab;
+  touch-action: none;
+}
+
+.home-chat .hc-head.dragging {
+  cursor: grabbing;
+}
+
+/* Floating: promoted to position:absolute on <body> so the widget
+   stays anchored to the page (scrolls with content) instead of being
+   pinned to the viewport. left/top are page coords. */
+.home-chat.is-floating {
+  position: absolute !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  z-index: 9000;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Minimized: collapses to a Portfolio-style pill in place. The pill
+   sits at the same bottom-left corner the full panel occupied. */
+.home-chat.is-minimized {
+  width: auto !important;
+  right: auto !important;
+  max-width: none !important;
+  height: 3.4rem !important;
+  padding: 0;
+  border: 1px solid var(--stroke-elements);
+  border-radius: var(--_radius-s, 1.2rem);
+  background-color: var(--base);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  cursor: pointer;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.home-chat.is-minimized .hc-head {
+  height: 100%;
+  padding: 0 1.4rem;
+  border-bottom: none;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+
+.home-chat.is-minimized .hc-avatar {
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1rem;
+}
+
+.home-chat.is-minimized .hc-titles {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.home-chat.is-minimized .hc-name {
+  font: normal 700 1.3rem/1 var(--_font-default, inherit);
+  color: var(--t-bright);
+}
+
+.home-chat.is-minimized .hc-sub,
+.home-chat.is-minimized .hc-body,
+.home-chat.is-minimized .hc-footer,
+.home-chat.is-minimized #hcSoundBtn,
+.home-chat.is-minimized #hcResetBtn {
+  display: none;
+}
+
+.home-chat.is-minimized #hcMinBtn {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: none;
+  color: var(--accent);
+}
+
+@media only screen and (min-width: 992px) {
+  .home-chat {
+    /* Shared gap (right wall of chat <-> left wall of canvas).
+       Same value reused at every breakpoint so the padding looks
+       identical regardless of viewport. */
+    --chat-canvas-gap: 2.8rem;
+    position: absolute;
+    bottom: 3rem;
+    left: 1.2rem;
+    /* Anchor the right edge to the canvas's left edge minus the gap.
+       canvas wrap right offset = 2.5rem, canvas width = 820 * 0.55 = 451px */
+    right: calc(2.5rem + 451px + var(--chat-canvas-gap));
+    width: auto;
+    max-width: none;
+    height: 28.05rem;
+    /* matches canvas wrap height: 510 * 0.55 = 280.5px */
+    margin: 0;
+    z-index: 3;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .home-chat {
+    bottom: 3rem;
+    left: 2rem;
+    /* canvas right 4rem, width 820 * 0.7 = 574px */
+    right: calc(4rem + 574px + var(--chat-canvas-gap));
+    height: 35.7rem;
+    /* 510 * 0.7 = 357px */
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .home-chat {
+    bottom: 5rem;
+    left: 3rem;
+    /* canvas right 6rem, width 820 * 0.5 = 410px */
+    right: calc(6rem + 410px + var(--chat-canvas-gap));
+    height: 25.5rem;
+    /* 510 * 0.5 = 255px */
+  }
+}
+
+@media only screen and (min-width: 1600px) {
+  .home-chat {
+    bottom: 5rem;
+    left: 3rem;
+    /* canvas right 6rem, width 820 * 0.65 = 533px */
+    right: calc(6rem + 533px + var(--chat-canvas-gap));
+    height: 33.15rem;
+    /* 510 * 0.65 = 331.5px */
+  }
+}
+
+.hc-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem;
+  border-bottom: 1px solid var(--stroke-elements);
+}
+
+.hc-avatar {
+  flex-shrink: 0;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--secondary));
+  color: var(--per-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+
+.hc-avatar-lg {
+  /* Driven dynamically by condense() so the avatar shrinks as the
+     chat panel's height shrinks. Falls back to 5.6rem when no var
+     is set (e.g. before JS runs). */
+  width: var(--hc-avatar-lg-size, 5.6rem);
+  height: var(--hc-avatar-lg-size, 5.6rem);
+  font-size: calc(var(--hc-avatar-lg-size, 5.6rem) * 0.36);
+}
+
+/* Drop-in entrance for the greeting avatar. Plays on first paint
+   (class is on the element in markup) and is re-triggered whenever
+   the user resets the chat by toggling .is-dropping in JS. */
+@keyframes hcAvatarDrop {
+  0% {
+    transform: translateY(-260%) rotate(-14deg);
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  72% {
+    transform: translateY(0) rotate(0);
+  }
+  84% {
+    transform: translateY(-14%) rotate(0);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+.hc-avatar-lg.is-dropping {
+  animation: hcAvatarDrop 0.85s cubic-bezier(0.5, 0.1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-avatar-lg.is-dropping {
+    animation: none;
+  }
+}
+
+.hc-titles {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.hc-name {
+  color: var(--t-bright);
+  font-size: 1.3rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hc-sub {
+  color: var(--t-muted);
+  font-size: 1.1rem;
+}
+
+.hc-icon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 1px solid var(--stroke-elements);
+  background: transparent;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.hc-icon:hover {
+  background: var(--secondary-rgba);
+  color: var(--t-bright);
+}
+
+/* Voice input states for the mic button. Solid red while listening,
+     pulsing ring to make it obvious. Greyed out when the browser
+     has no SpeechRecognition support so the user knows it's a no-op. */
+.hc-icon.is-listening {
+  background: #d83a3a;
+  border-color: #d83a3a;
+  color: #fff;
+  animation: hcMicPulse 1.2s ease-out infinite;
+}
+
+.hc-icon.is-listening:hover {
+  background: #b62929;
+  border-color: #b62929;
+  color: #fff;
+}
+
+.hc-icon.is-unsupported {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@keyframes hcMicPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(216, 58, 58, 0.55);
+  }
+
+  70% {
+    box-shadow: 0 0 0 8px rgba(216, 58, 58, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(216, 58, 58, 0);
+  }
+}
+
+.hc-icon svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.hc-body {
+  flex: 1;
+  min-height: 0;
+  padding: 1.6rem 1.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  overflow-y: auto;
+}
+
+.hc-body.is-greeting {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 2.4rem;
+}
+
+.hc-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.hc-body::-webkit-scrollbar-thumb {
+  background: var(--stroke-elements);
+  border-radius: 3px;
+}
+
+.hc-greet {
+  margin: 0.6rem 0 0;
+  color: var(--t-bright);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.hc-greet-sub {
+  margin: 0 0 1.2rem;
+  color: var(--t-muted);
+  font-size: 1.2rem;
+}
+
+.hc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.hc-chip {
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--stroke-elements);
+  background: transparent;
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.hc-chip:hover {
+  background: var(--secondary-rgba);
+  color: var(--t-bright);
+}
+
+.hc-msg {
+  max-width: 88%;
+  padding: 0.9rem 1.2rem;
+  border-radius: 1.4rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.hc-msg-user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: var(--per-base);
+  border-bottom-right-radius: 4px;
+}
+
+.hc-msg-bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--t-bright);
+  border: 1px solid var(--stroke-elements);
+  border-bottom-left-radius: 4px;
+}
+
+[color-scheme="light"] .hc-msg-bot {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Caret that blinks at the end of a streaming bot message so it
+   feels like the LLM is still typing. Removed once streaming ends. */
+.hc-msg-bot.is-streaming::after {
+  content: "▏";
+  display: inline-block;
+  margin-left: 1px;
+  color: var(--accent);
+  animation: hcCaret 0.9s steps(2) infinite;
+  transform: translateY(1px);
+}
+
+@keyframes hcCaret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Three-dot typing indicator shown while we 'think' before streaming. */
+.hc-typing {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 4px;
+  padding: 1rem 1.2rem;
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--stroke-elements);
+  border-bottom-left-radius: 4px;
+}
+
+[color-scheme="light"] .hc-typing {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.hc-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--t-muted);
+  animation: hcDot 1.2s ease-in-out infinite;
+}
+
+.hc-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.hc-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes hcDot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+.hc-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--stroke-elements);
+}
+
+.hc-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.9rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--stroke-elements);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--t-bright);
+  font-family: inherit;
+  font-size: 1.2rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+[color-scheme="light"] .hc-input {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.hc-input::placeholder {
+  color: var(--t-placeholder);
+}
+
+.hc-input:focus {
+  border-color: var(--accent);
+}
+
+.hc-send {
+  flex-shrink: 0;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: var(--secondary-rgba);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.hc-send:hover {
+  background: var(--accent);
+  color: var(--per-base);
+}
+
+.hc-send svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ============ PAINT WIDGET (scoped, self-contained) ============ */
+.ms-paint {
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  width: 100%;
+  border: 1px solid #0831d9;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  color: #222;
+  line-height: 1.4;
+}
+
+.ms-paint *,
+.ms-paint *::before,
+.ms-paint *::after {
+  box-sizing: border-box;
+}
+
+.ms-paint .mp-titlebar {
+  background: linear-gradient(180deg, #2e8def, #0a64ad);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 4px 8px;
+  height: 30px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.ms-paint .mp-titlebar.dragging {
+  cursor: grabbing;
+}
+
+/* When user drags the window, the wrapper is moved to <body> and
+   becomes position:absolute so it stays at its dropped page location
+   (scrolls with the page) instead of following the viewport. */
+.home-canvas-wrap.is-floating {
+  position: absolute !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  z-index: 9000;
+}
+
+.ms-paint .mp-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.ms-paint .mp-logo {
+  display: grid;
+  grid-template-columns: 7px 7px;
+  grid-template-rows: 7px 7px;
+  gap: 1px;
+}
+
+.ms-paint .mp-logo i {
+  display: block;
+  border-radius: 1px;
+}
+
+.ms-paint .mp-logo i:nth-child(1) {
+  background: #f25022;
+}
+
+.ms-paint .mp-logo i:nth-child(2) {
+  background: #7fba00;
+}
+
+.ms-paint .mp-logo i:nth-child(3) {
+  background: #00a4ef;
+}
+
+.ms-paint .mp-logo i:nth-child(4) {
+  background: #ffb900;
+}
+
+.ms-paint .mp-window-controls {
+  display: flex;
+  gap: 3px;
+}
+
+.ms-paint .mp-wc {
+  width: 21px;
+  height: 19px;
+  background: linear-gradient(180deg, #2e8def, #0a64ad);
+  border: 1px solid #fff;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.ms-paint .mp-wc.close {
+  background: linear-gradient(180deg, #e98b7e, #d24f33);
+  cursor: pointer;
+}
+
+.ms-paint .mp-wc-min {
+  align-items: flex-end;
+  padding-bottom: 4px;
+}
+
+.ms-paint .mp-wc-min span {
+  display: block;
+  width: 9px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+}
+
+.ms-paint .mp-menubar {
+  background: #ece9d8;
+  display: flex;
+  gap: 0;
+  padding: 1px 3px;
+  font-size: 12px;
+  border-bottom: 1px solid #b0aa90;
+  position: relative;
+  z-index: 60;
+}
+
+.ms-paint .mp-menu {
+  position: relative;
+}
+
+.ms-paint .mp-menu-label {
+  padding: 3px 9px;
+  cursor: default;
+  display: inline-block;
+  color: #222;
+}
+
+.ms-paint .mp-menu-label u {
+  text-decoration: underline;
+}
+
+.ms-paint .mp-menu.open .mp-menu-label,
+.ms-paint .mp-menu-label:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+.ms-paint .mp-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 158px;
+  background: #f4f3ee;
+  border: 1px solid #7c7c7c;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.35);
+  z-index: 120;
+  padding: 2px;
+  list-style: none;
+  margin: 0;
+}
+
+.ms-paint .mp-menu.open .mp-dropdown {
+  display: block;
+}
+
+.ms-paint .mp-dropdown li {
+  padding: 3px 24px 3px 26px;
+  font-size: 12px;
+  cursor: default;
+  white-space: nowrap;
+  position: relative;
+  color: #222;
+}
+
+.ms-paint .mp-dropdown li:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+.ms-paint .mp-dropdown li.sep {
+  height: 0;
+  padding: 0;
+  margin: 3px 6px;
+  border-top: 1px solid #cdc9bd;
+  pointer-events: none;
+}
+
+.ms-paint .mp-dropdown li.dim {
+  color: #999;
+}
+
+.ms-paint .mp-dropdown li.dim:hover {
+  background: transparent;
+  color: #999;
+}
+
+.ms-paint .mp-body {
+  display: flex;
+  background: #ece9d8;
+}
+
+.ms-paint .mp-toolbox {
+  padding: 5px 5px 7px;
+  background: #d4d0c8;
+  border-right: 1px solid #888;
+  width: 55px;
+  flex-shrink: 0;
+}
+
+.ms-paint .mp-tools {
+  display: grid;
+  grid-template-columns: 24px 24px;
+  gap: 0;
+  justify-content: center;
+}
+
+.ms-paint .mp-tool {
+  width: 24px;
+  height: 23px;
+  background: #d4d0c8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-top: 1px solid #fdfdfd;
+  border-left: 1px solid #fdfdfd;
+  border-bottom: 1px solid #888;
+  border-right: 1px solid #888;
+}
+
+.ms-paint .mp-tool:hover {
+  background: #dcd9d2;
+}
+
+.ms-paint .mp-tool.active {
+  border-top: 1px solid #888;
+  border-left: 1px solid #888;
+  border-bottom: 1px solid #fdfdfd;
+  border-right: 1px solid #fdfdfd;
+  background: #c2bdb2;
+}
+
+.ms-paint .mp-tool svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  display: block;
+}
+
+.ms-paint .mp-sizes {
+  margin-top: 9px;
+  background: #fff;
+  border-top: 1px solid #888;
+  border-left: 1px solid #888;
+  border-bottom: 1px solid #fff;
+  border-right: 1px solid #fff;
+  padding: 7px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.ms-paint .mp-size-bar {
+  width: 34px;
+  background: #000;
+  cursor: pointer;
+}
+
+.ms-paint .mp-size-bar.active {
+  outline: 2px solid #0a64ad;
+  outline-offset: 1px;
+}
+
+.ms-paint .mp-canvas-area {
+  flex: 1;
+  padding: 6px;
+  background: #808080;
+  position: relative;
+  min-width: 0;
+}
+
+.ms-paint .mp-canvas-frame {
+  background: #fff;
+  border: 1px solid #404040;
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    1px 1px 0 #fff;
+  position: relative;
+  height: 380px;
+  /* design height in px — scales with --mp-scale */
+}
+
+.ms-paint .mp-canvas-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* Grid overlay (default ON; toggle via the Grid tool) */
+.ms-paint .mp-canvas-frame.show-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Inline text-input that appears where the user clicks with the Text tool */
+.ms-paint .mp-text-input {
+  position: absolute;
+  border: 1px dashed #0a64ad;
+  background: rgba(255, 255, 255, 0.92);
+  color: #000;
+  padding: 1px 3px;
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.15;
+  outline: none;
+  min-width: 60px;
+  z-index: 10;
+}
+
+/* Minimized: hide everything below the titlebar */
+.ms-paint.minimized .mp-menubar,
+.ms-paint.minimized .mp-body,
+.ms-paint.minimized .mp-palette-bar,
+.ms-paint.minimized .mp-statusbar {
+  display: none !important;
+}
+
+/* When minimized, dock the whole wrap to the bottom-right of the viewport as a slim titlebar bar */
+.home-canvas-wrap.is-minimized-bottom {
+  position: fixed !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  top: auto !important;
+  left: auto !important;
+  width: 280px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  opacity: 1 !important;
+  z-index: 9001;
+}
+
+.home-canvas-wrap.is-minimized-bottom .canvas-caption {
+  display: none;
+}
+
+.home-canvas-wrap.is-minimized-bottom .ms-paint {
+  width: 100% !important;
+  transform: none !important;
+}
+
+/* Disabled appearance for undo/redo buttons when their stacks are empty */
+.ms-paint .mp-tool.is-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Maximized: fill the viewport */
+.home-canvas-wrap.is-maximized {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  opacity: 1 !important;
+  z-index: 9999;
+}
+
+.home-canvas-wrap.is-maximized .ms-paint {
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+}
+
+.home-canvas-wrap.is-maximized .mp-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.home-canvas-wrap.is-maximized .mp-canvas-area {
+  display: flex;
+  /* Pin the drawing area to the top-left of the grey workspace, just
+     like classic Paint did. The remaining space stays grey so the
+     letterboxed canvas reads as a "window with empty workspace". */
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 12px;
+}
+
+.home-canvas-wrap.is-maximized .mp-canvas-frame {
+  /* Letterbox the drawing area to the original 820:510 design ratio
+     so the architecture diagram never gets stretched vertically
+     (or horizontally) when the user maximizes the window. */
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  aspect-ratio: 820 / 510;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.ms-paint .mp-palette-bar {
+  background: #ece9d8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-top: 1px solid #b0aa90;
+}
+
+.ms-paint .mp-current {
+  display: flex;
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.ms-paint .mp-current .fg,
+.ms-paint .mp-current .bg {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #808080;
+  position: absolute;
+}
+
+.ms-paint .mp-current .bg {
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.ms-paint .mp-current .fg {
+  left: 0;
+  top: 0;
+  background: #000;
+  z-index: 2;
+}
+
+.ms-paint .mp-colors {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-auto-flow: column;
+  gap: 2px;
+}
+
+.ms-paint .mp-color {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #808080;
+  cursor: pointer;
+}
+
+.ms-paint .mp-color:hover {
+  outline: 1px solid #0a64ad;
+  outline-offset: 1px;
+}
+
+.ms-paint .mp-statusbar {
+  background: #ece9d8;
+  border-top: 1px solid #b0aa90;
+  display: flex;
+  font-size: 11px;
+  color: #333;
+}
+
+.ms-paint .mp-statusbar div {
+  padding: 3px 8px;
+  border-right: 1px solid #b0aa90;
+  border-top: 1px solid #fff;
+}
+
+.ms-paint .mp-statusbar .grow {
+  flex: 1;
+}
+
+.ms-paint .mp-redraw {
+  cursor: pointer;
+}
+
+.ms-paint .mp-redraw:hover {
+  background: #c5d9f1;
+}
+
+.home-canvas-wrap .erase-reward {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--t-bright, #555);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.6s;
+  pointer-events: none;
+}
+
+.home-canvas-wrap .erase-reward.shown {
+  opacity: 0.9;
+  transform: translateY(0);
+}
+
+.home-canvas-wrap .erase-reward b {
+  font-weight: 700;
+}
+
+/* ------------------------------------------------*/
+/* Extracted inline <style> block #2 from index.html */
+/* ------------------------------------------------*/
+.bg01 {
+  fill: url(#color-gradient);
+}
+
+/* ------------------------------------------------*/
+/* Extracted inline <style> block #3 from index.html */
+/* ------------------------------------------------*/
+.bg02 {
+  fill: url(#color-gradient-2);
+}
+
+/* ------------------------------------------------*/
+/* Extracted inline <style> block #4 from index.html */
+/* ------------------------------------------------*/
+.gradient-fill {
+  fill: url(#gradientFill);
+}
+
+/* =================================================
+   Resize handles for draggable widgets (chat + paint)
+   8 handles per widget (4 edges + 4 corners). Each
+   handle sits just outside the widget's edge so it
+   never overlaps the visible content. Hidden on
+   mobile (in-flow layout, no drag).
+   ================================================= */
+.rz-handle {
+  position: absolute;
+  z-index: 50;
+  touch-action: none;
+  background: transparent;
+}
+.rz-n,
+.rz-s {
+  left: 12px;
+  right: 12px;
+  height: 8px;
+  cursor: ns-resize;
+}
+.rz-e,
+.rz-w {
+  top: 12px;
+  bottom: 12px;
+  width: 8px;
+  cursor: ew-resize;
+}
+.rz-n {
+  top: -4px;
+}
+.rz-s {
+  bottom: -4px;
+}
+.rz-e {
+  right: -4px;
+}
+.rz-w {
+  left: -4px;
+}
+
+.rz-ne,
+.rz-nw,
+.rz-se,
+.rz-sw {
+  width: 16px;
+  height: 16px;
+}
+.rz-ne {
+  top: -5px;
+  right: -5px;
+  cursor: nesw-resize;
+}
+.rz-nw {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+.rz-se {
+  bottom: -5px;
+  right: -5px;
+  cursor: nwse-resize;
+}
+.rz-sw {
+  bottom: -5px;
+  left: -5px;
+  cursor: nesw-resize;
+}
+
+/* Subtle hover affordance on corner handles only — keeps the
+   resting state invisible so it never looks busy. */
+.rz-ne:hover::after,
+.rz-nw:hover::after,
+.rz-se:hover::after,
+.rz-sw:hover::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1.5px solid rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+}
+
+/* While resizing, kill text selection across the page */
+body.rz-resizing-active,
+body.rz-resizing-active * {
+  user-select: none !important;
+  cursor: inherit !important;
+}
+
+/* Mobile: hide all handles. Below 992px the chat is in normal flow
+   and the paint widget stretches to fill — resize would conflict
+   with the responsive layout. */
+@media (max-width: 991px) {
+  .rz-handle {
+    display: none !important;
+  }
+}
+
+/* Hide handles when widget is in a "non-resizable" state */
+.home-chat.is-minimized .rz-handle,
+.home-canvas-wrap.is-maximized .rz-handle,
+.home-canvas-wrap.is-minimized-bottom .rz-handle {
+  display: none !important;
+}

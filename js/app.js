@@ -65,15 +65,52 @@ $(function () {
   // --------------------------------------------- //
 
   // --------------------------------------------- //
-  // Bootstrap Scroll Spy Plugin Settings Start
+  // Scroll Spy Start \u2014 lightweight IntersectionObserver-based replacement
+  // for bootstrap.ScrollSpy. Highlights the menu link whose target section
+  // is currently the most visible in the viewport (mirrors the original
+  // behaviour: toggles `.active` on the matching `#menu .menu__link`).
   // --------------------------------------------- //
-  const scrollSpy = new bootstrap.ScrollSpy(document.body, {
-    target: "#menu",
-    smoothScroll: true,
-    rootMargin: "0px 0px -40%",
-  });
+  (function initScrollSpy() {
+    const menu = document.getElementById("menu");
+    if (!menu) return;
+    const links = Array.from(menu.querySelectorAll('a[href^="#"]'));
+    const byId = new Map();
+    const sections = [];
+    links.forEach((link) => {
+      const id = link.getAttribute("href").slice(1);
+      const section = id && document.getElementById(id);
+      if (section) {
+        byId.set(section, link);
+        sections.push(section);
+      }
+    });
+    if (!sections.length) return;
+    function activate(link) {
+      links.forEach((l) => l.classList.toggle("active", l === link));
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Pick the visible section with the largest intersection ratio.
+        let best = null;
+        entries.forEach((e) => {
+          if (
+            e.isIntersecting &&
+            (!best || e.intersectionRatio > best.intersectionRatio)
+          ) {
+            best = e;
+          }
+        });
+        if (best) {
+          const link = byId.get(best.target);
+          if (link) activate(link);
+        }
+      },
+      { rootMargin: "0px 0px -40% 0px", threshold: [0.1, 0.5, 1] },
+    );
+    sections.forEach((s) => io.observe(s));
+  })();
   // --------------------------------------------- //
-  // Bootstrap Scroll Spy Plugin Settings End
+  // Scroll Spy End
   // --------------------------------------------- //
 
   // Get the avatar image element
@@ -293,109 +330,45 @@ $(function () {
   // --------------------------------------------- //
 
   // --------------------------------------------- //
-  // Swiper Slider Start
-  // --------------------------------------------- //
-  const toolsSlider = document.querySelector("tools-slider");
-  const testimonialsSlider = document.querySelector("testimonials-slider");
-
-  if (!toolsSlider) {
-    const swiper = new Swiper(".swiper-tools", {
-      spaceBetween: 20,
-      autoplay: {
-        delay: 1500,
-        disableOnInteraction: false,
-      },
-      loop: true,
-      grabCursor: true,
-      loopFillGroupWithBlank: true,
-      breakpoints: {
-        1600: {
-          slidesPerView: 5,
-        },
-        1200: {
-          slidesPerView: 4,
-        },
-        768: {
-          slidesPerView: 3,
-        },
-        576: {
-          slidesPerView: 2,
-        },
-        0: {
-          slidesPerView: 2,
-        },
-      },
-      pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-      },
-    });
-  }
-
-  if (!toolsSlider) {
-    const swiper = new Swiper(".swiper-testimonials", {
-      slidesPerView: 1,
-      spaceBetween: 20,
-      autoplay: true,
-      speed: 1000,
-      loop: true,
-      loopFillGroupWithBlank: true,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
-  }
-  // --------------------------------------------- //
-  // Swiper Slider Start
+  // Swiper Slider — removed (no .swiper-tools / .swiper-testimonials
+  // markup exists in index.html; Swiper bundle stripped from libs.min.js).
   // --------------------------------------------- //
 
   // --------------------------------------------- //
-  // Contact Form Start
+  // Contact Form Start (Web3Forms)
   // --------------------------------------------- //
-  const form = document.querySelector("form");
-  const fullName = document.getElementById("name");
-  const email = document.getElementById("email");
-  const messageForm = document.getElementById("message");
+  const form = document.getElementById("contact-form");
 
-  function sendEmail() {
-    event.preventDefault();
-
-    const bodyMessage = `Full Name: ${fullName.value} 
-    <br> Email: ${email.value} 
-    <br> Message: ${messageForm.value} `;
-
-    Email.send({
-      Host: "smtp.elasticemail.com",
-      Username: "rishabhdell14@gmail.com",
-      Password: "58F05561FCAAF13851F62B0DCFB4F537584F",
-      To: "rishabhdell14@gmail.com",
-      From: "rishabhdell14@gmail.com",
-      Subject: "Mail From Portfolio Website",
-      Body: bodyMessage,
-    }).then((message) => {
-      if (message === "OK") {
-        // Show success message
-        const replyContainer = document.querySelector(".form__reply");
-        replyContainer.classList.add("is-visible");
-        fullName.value = "";
-        email.value = "";
-        messageForm.value = "";
-        document.querySelector(".form").classList.add("is-hidden");
-      } else {
-        // Show error message
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = form.querySelector("button[type='submit']");
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          document.querySelector(".form__reply").classList.add("is-visible");
+          form.classList.add("is-hidden");
+          form.reset();
+        } else {
+          alert(
+            "An error occurred while sending the email. Please try again later.",
+          );
+        }
+      } catch (err) {
         alert(
           "An error occurred while sending the email. Please try again later.",
         );
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
-
-  form.addEventListener("submit", (e) => {
-    console.log("SUBMITTT");
-    e.preventDefault();
-    sendEmail();
-  });
   // --------------------------------------------- //
   // Contact Form End
   // --------------------------------------------- //

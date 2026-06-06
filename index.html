@@ -3658,7 +3658,20 @@
       }
 
       document.getElementById('mpClose').addEventListener('click', () => {
-        // Acts as a "Clear" button: wipe the board to a blank white
+        // On phone, when the widget is maximized (full screen), the X closes
+        // the whole thing: exit full screen and hide the canvas widget.
+        const wrapNow = document.getElementById('homeCanvasWrap');
+        const isPhone = window.matchMedia('(max-width: 991px)').matches
+          || window.matchMedia('(hover: none), (pointer: coarse)').matches;
+        if (isPhone && wrapNow && wrapNow.classList.contains('is-maximized')) {
+          cancelAnim();
+          wrapNow.classList.remove('is-maximized');
+          const maxBtnEl = document.getElementById('mpMax');
+          if (maxBtnEl) { maxBtnEl.innerHTML = '&#9634;'; maxBtnEl.title = 'Maximize'; }
+          wrapNow.style.display = 'none';
+          return;
+        }
+        // Otherwise acts as a "Clear" button: wipe the board to a blank white
         // canvas (same as File > Clear), keeping the window where it is.
         cancelAnim();
         touched = true;

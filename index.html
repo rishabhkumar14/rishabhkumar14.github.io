@@ -458,8 +458,8 @@
             <div class="hc-chips" id="hcChips">
               <button class="hc-chip" type="button" data-q="Who are you?">Who are you?</button>
               <button class="hc-chip" type="button" data-q="What do you work on?">What do you work on?</button>
-              <button class="hc-chip" type="button" data-q="Tell me about Microsoft AI">Tell me about
-                Microsoft AI</button>
+              <button class="hc-chip" type="button" data-q="Tell me about Foundry">Tell me about
+                Foundry</button>
             </div>
           </div>
           <form class="hc-footer" id="hcForm" autocomplete="off">
@@ -2752,9 +2752,9 @@
       const homeSection = document.getElementById('home');
       const canvasWrap = document.getElementById('homeCanvasWrap');
       // Chip drop order: when there's no room for all 3, drop the rightmost
-      // one first ("Tell me about Microsoft AI"), then the next, etc.
+      // one first ("Tell me about Foundry"), then the next, etc.
       const chipDropOrder = [
-        () => chat.querySelector('.hc-chip[data-q="Tell me about Microsoft AI"]'),
+        () => chat.querySelector('.hc-chip[data-q="Tell me about Foundry"]'),
         () => chat.querySelector('.hc-chip[data-q="What do you work on?"]'),
         () => chat.querySelector('.hc-chip[data-q="Who are you?"]'),
       ];

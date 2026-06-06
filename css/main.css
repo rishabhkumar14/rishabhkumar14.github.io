@@ -5746,13 +5746,14 @@ form textarea:required:valid {
   border-radius: 1px;
 }
 
-/* Flat round blue "?" help button, positioned just below the close (X)
-   button at the right edge of the menu/toolbar row (classic Windows
-   ribbon help affordance). */
+/* Flat round blue "?" help button, anchored to the right end of the menu
+   row (classic Windows ribbon help affordance). In-flow inside the
+   flex menubar so it always aligns on that row across devices. */
 .ms-paint .mp-help-btn {
-  position: absolute;
-  top: 33px;
-  right: 8px;
+  margin-left: auto;
+  align-self: center;
+  flex: 0 0 auto;
+  margin-right: 4px;
   z-index: 75;
   width: 17px;
   height: 17px;

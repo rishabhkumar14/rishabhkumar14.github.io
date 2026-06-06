@@ -3688,24 +3688,32 @@
         }
         function toggleHelp() { helpPop.hidden ? openHelp() : closeHelp(); }
 
+        // Touch devices fire a synthetic mouseenter right before click, so the
+        // hover-open + click-toggle combo would open then immediately close the
+        // popup (needing a second tap). Detect touch and use click-only there.
+        const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches
+          || ('ontouchstart' in window);
+
         helpBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleHelp(); });
         helpBtn.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleHelp(); }
         });
 
-        // Open on hover (classic help affordance). A short close delay lets
-        // the pointer travel from the button down onto the popup without it
-        // vanishing; hovering either the button or the popup keeps it open.
+        // Open on hover (classic help affordance) — pointer devices only. A
+        // short close delay lets the pointer travel from the button down onto
+        // the popup without it vanishing; hovering either keeps it open.
         let hideTimer = null;
         const cancelHide = () => { if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; } };
         const scheduleHide = () => {
           cancelHide();
           hideTimer = setTimeout(closeHelp, 180);
         };
-        helpBtn.addEventListener('mouseenter', () => { cancelHide(); openHelp(); });
-        helpBtn.addEventListener('mouseleave', scheduleHide);
-        helpPop.addEventListener('mouseenter', cancelHide);
-        helpPop.addEventListener('mouseleave', scheduleHide);
+        if (!isTouch) {
+          helpBtn.addEventListener('mouseenter', () => { cancelHide(); openHelp(); });
+          helpBtn.addEventListener('mouseleave', scheduleHide);
+          helpPop.addEventListener('mouseenter', cancelHide);
+          helpPop.addEventListener('mouseleave', scheduleHide);
+        }
 
         // Click outside or Esc dismisses the popup.
         document.addEventListener('click', (e) => {

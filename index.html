@@ -3327,6 +3327,15 @@
 
       function down(e) {
         e.preventDefault(); const p = pos(e);
+        // If the user starts interacting before the scroll-driven draw has
+        // finished, snap to the complete architecture first so they don't get
+        // stuck with a half-drawn diagram (mirrors the desktop autoplay path).
+        if (!touched && isScrollMode() && scrollProgress < 1) {
+          cancelAnim();
+          drawArchitectureSync();
+          scrollProgress = 1;
+          if (status) status.textContent = 'Azure AI Foundry RAG baseline — network isolated.';
+        }
         startX = lastX = p.x; startY = lastY = p.y; setNudgeOpacity('0');
         if (tool === 'picker') { pickColor(p.x, p.y); return; }
         if (tool === 'grid' || tool === 'undo' || tool === 'redo') { return; }

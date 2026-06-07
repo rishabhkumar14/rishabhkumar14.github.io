@@ -5019,8 +5019,7 @@ form textarea:required:valid {
    the static scale(var(--mp-scale)), so it lands pixel-identical. */
 @keyframes mpIntroOpen {
   0% {
-    transform:
-      translate(
+    transform: translate(
         calc(var(--mp-design-w) * 1px * var(--mp-scale) * 0.68),
         calc(var(--mp-design-h) * 1px * var(--mp-scale) * 0.68)
       )

@@ -7212,12 +7212,49 @@ form textarea:required:valid {
   margin: 0 0 0.6rem;
   font: 700 2.6rem/1.15 var(--_font-accent, "Poppins", sans-serif);
   color: #d6337f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.bday-title .bday-title-text {
+  /* Keep each line intact (the <br> still makes the two lines); without this
+     the flex row squeezed "Happy Birthday," onto two lines. */
+  white-space: nowrap;
+}
+.bday-title .bday-star {
+  /* Sit beside the whole two-line block, vertically centred between the
+     two lines (flex align-items:center handles the centring). */
+  display: inline-block;
+  flex: 0 0 auto;
+  font-size: 1.8rem;
+  color: #f4a23d;
+  -webkit-text-fill-color: initial;
+  animation: bdayStarTwinkle 1.8s ease-in-out infinite;
+}
+.bday-title .bday-star:last-child {
+  animation-delay: 0.9s;
+}
+@keyframes bdayStarTwinkle {
+  0%,
+  100% {
+    transform: scale(0.8) rotate(-8deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15) rotate(8deg);
+    opacity: 1;
+  }
 }
 .bday-sub {
   margin: 0 0 0.4rem;
-  font-size: 1.4rem;
+  /* Scale with viewport so the smirky one-liner always fits a single line,
+     even on narrow phones, without wrapping. */
+  font-size: clamp(9px, 3.05vw, 13px);
+  line-height: 1.4;
   color: #8a5a76;
-  min-height: 3.6rem;
+  min-height: 2.6rem;
+  white-space: nowrap;
 }
 
 .bday-cake {

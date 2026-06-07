@@ -4198,6 +4198,7 @@ form textarea:required:valid {
 }
 
 .cards__card {
+  position: relative;
   width: 100%;
   background-color: var(--base);
   border: 1px solid var(--stroke-elements);
@@ -5134,7 +5135,8 @@ form textarea:required:valid {
 }
 
 .avatar__container,
-.home-chat {
+.home-chat,
+.cards__card {
   --gx: 50%;
   --gy: 50%;
   transition:
@@ -5143,7 +5145,8 @@ form textarea:required:valid {
 }
 
 .avatar__container::after,
-.home-chat::after {
+.home-chat::after,
+.cards__card::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -5178,7 +5181,8 @@ form textarea:required:valid {
 }
 
 .no-touch .avatar__container:hover::after,
-.no-touch .home-chat:hover::after {
+.no-touch .home-chat:hover::after,
+.no-touch .cards__card:hover::after {
   opacity: 1;
 }
 
@@ -5224,7 +5228,8 @@ form textarea:required:valid {
 }
 
 .avatar__container.is-edge-sweeping::after,
-.home-chat.is-edge-sweeping::after {
+.home-chat.is-edge-sweeping::after,
+.cards__card.is-edge-sweeping::after {
   background: linear-gradient(
     115deg,
     transparent 30%,
@@ -5235,6 +5240,27 @@ form textarea:required:valid {
   background-size: 250% 250%;
   background-repeat: no-repeat;
   animation: edgeSweep 1.7s ease-in-out 1 both;
+}
+
+/* ===== Scroll-scrubbed border-shine (phones) =====
+   Instead of playing the sweep once, the project tiles tie the highlight
+   band's position directly to how far the card has scrolled through the
+   viewport. JS sets --sweep (a background-position) from scroll progress,
+   so scrolling down moves the streak across the border and scrolling back
+   up rewinds it. opacity stays on while the card is on screen. ===== */
+.cards__card.is-edge-scrub::after {
+  background: linear-gradient(
+    115deg,
+    transparent 44%,
+    color-mix(in srgb, var(--accent) 80%, #fff) 49%,
+    var(--secondary) 50%,
+    transparent 56%
+  );
+  background-size: 250% 250%;
+  background-repeat: no-repeat;
+  background-position: var(--sweep, 130% 130%);
+  opacity: 0.85;
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

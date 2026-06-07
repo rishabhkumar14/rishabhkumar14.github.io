@@ -1227,14 +1227,17 @@
                   </p>
                 </div>
                 <div class="col-12 col-md-5">
-                  <p class="small resume-lines__descr animate-in-up">• Implemented Python scripts leveraging GitLab API
-                    to automate file conversion processes, optimizing pipeline-flow efficiency within the team at Dell
+                  <p class="small resume-lines__descr animate-in-up"> • Worked on GitLab automation APIs to orchestrate
+                    file conversion processes, optimizing pipeline
+                    efficiency within the team at Dell
                     Technologies.<br />
-                    • Elevated to a pivotal role within the Business Intelligence department, focusing on GitLab CI/CD
-                    Automotive pipelines, and contributed to the development of performance quantification dashboards
-                    using React.<br />
-                    • Recognized with an Inspire award for Innovation for significant contributions to ELT Automation
-                    via DataOps, enhancing data processing efficiency and effectiveness.</p>
+                    • Got promoted to a pivotal role within the
+                    Business Intelligence department, focusing on GitLab
+                    CI/CD
+                    Automotive pipelines, and contributed to the development of performance metrics dashboards.<br />
+
+
+                  </p>
                 </div>
               </div>
               <!-- experience single item -->
@@ -1256,9 +1259,9 @@
                 </div>
                 <div class="col-12 col-md-5">
                   <p class="small resume-lines__descr animate-in-up">Demonstrated adaptive usage of multiple ML Models
-                    and worked persistently towards the timely completion of tasks involving researching a
-                    Kubeflow-centric architecture, developing technical PoCs, and upgrading Bitgrit’s AI portfolio as a
-                    whole.</p>
+                    and worked persistently towards timely completion of tasks involving researching
+                    Kubeflow-centric architectures, developing technical PoCs, & upgrading Bitgrit’s entire AI
+                    portfolio.</p>
                 </div>
               </div>
               <!-- experience single item -->
@@ -2407,11 +2410,56 @@
         cards.forEach((card) => io.observe(card));
       }
 
+      // On phones there's no cursor to follow, so tie each project tile's
+      // border-shine to scroll position: as the card travels up through the
+      // viewport the highlight band moves across its border, and scrolling
+      // back down rewinds it. (Driven by --sweep, see .is-edge-scrub in CSS.)
+      if (isTouch) {
+        const scrubCards = Array.from(
+          document.querySelectorAll('.cards__card'),
+        );
+        if (scrubCards.length) {
+          scrubCards.forEach((card) => card.classList.add('is-edge-scrub'));
+
+          let ticking = false;
+          const update = () => {
+            ticking = false;
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            scrubCards.forEach((card) => {
+              const r = card.getBoundingClientRect();
+              // 0 when the card's top first enters from the bottom edge,
+              // 1 once it has fully passed the top edge. Clamped to [0,1].
+              let p = (vh - r.top) / (vh + r.height);
+              p = p < 0 ? 0 : p > 1 ? 1 : p;
+              // Map progress to the same travel the one-shot sweep used:
+              // 130% (off bottom-right) -> -30% (off top-left).
+              const pos = 130 - p * 160;
+              card.style.setProperty('--sweep', pos + '% ' + pos + '%');
+            });
+          };
+          const onScroll = () => {
+            if (!ticking) {
+              ticking = true;
+              requestAnimationFrame(update);
+            }
+          };
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', onScroll, { passive: true });
+          update();
+        }
+      }
+
       // On pointer devices, additionally let the border light follow the
       // cursor after the one-time sweep.
       if (isTouch) return;
 
-      cards.forEach((card) => {
+      // Hero cards plus every project portfolio tile get the same
+      // pointer-following border glow on hover.
+      const glowCards = cards.concat(
+        Array.from(document.querySelectorAll('.cards__card')),
+      );
+
+      glowCards.forEach((card) => {
         let raf = 0;
         let px = 0, py = 0;
         const paint = () => {

@@ -5247,10 +5247,10 @@ form textarea:required:valid {
   .no-touch .home-chat:hover {
     transform: none;
   }
-  .avatar__container.is-edge-sweeping::after,
-  .home-chat.is-edge-sweeping::after {
-    animation: none;
-  }
+  /* The one-time border sweep is a brief, signature intro touch (like the
+     avatar sonar rings), so it intentionally keeps playing under Reduce
+     Motion. Many Android phones enable reduced-motion via battery saver,
+     which previously suppressed the shine entirely on those devices. */
 }
 
 /* ------------------------------------------------*/

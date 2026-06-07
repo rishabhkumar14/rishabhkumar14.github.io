@@ -2491,11 +2491,14 @@
       ];
 
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) {
-        // Static first line, no animation.
-        el.innerHTML = '<b>' + MESSAGES[0].bold + '</b>' + MESSAGES[0].rest;
-        return;
-      }
+      // NOTE: we intentionally do NOT bail out under reduced-motion here.
+      // Many phones report prefers-reduced-motion: reduce simply because
+      // battery saver (Android) or iOS "Reduce Motion" is on, which would
+      // silence this small signature caption on the very devices it's meant
+      // for — it animated on desktop/devtools but not real phones. The
+      // typewriter is a brief, gentle effect (like the border sweep, which
+      // is also kept under reduced-motion), so we let it play everywhere.
+      void reduce;
 
       const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       function render(msg, n) {

@@ -5851,6 +5851,12 @@ form textarea:required:valid {
   .ms-paint .mp-help-body li.mp-help-desktop-only {
     display: none;
   }
+  /* iOS Safari renders filter:blur() far more aggressively than Android
+     Chrome, making the small help text mushy. Drop the blur on phones and
+     keep just the faded colour/shadow for the old-ink look. */
+  .ms-paint .mp-help-body {
+    filter: none;
+  }
 }
 
 .ms-paint .mp-menubar {

@@ -4630,14 +4630,8 @@ form textarea:required:valid {
      keeps scrolling even under Reduce Motion (just slower — the JS sets a
      longer --dur). We intentionally do NOT freeze it here; freezing left
      real phones with Reduce Motion enabled showing a static, half-hidden
-     row. Only the decorative burst + pop are disabled. */
-  .tools-burst {
-    display: none;
-  }
-  .tools-marquee .tools-cards__item.is-popping {
-    animation: none;
-    opacity: 0;
-  }
+     row. The click pop + burst are user-initiated tap feedback, so they
+     also stay enabled under Reduce Motion. */
 }
 
 .tools-card {

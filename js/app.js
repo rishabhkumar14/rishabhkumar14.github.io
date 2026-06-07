@@ -197,7 +197,6 @@ $(function () {
 
     // Spawn a short firework of particles at (x, y) in viewport coords.
     const explode = (x, y) => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const burst = document.createElement("div");
       burst.className = "tools-burst";
       burst.style.left = x + "px";

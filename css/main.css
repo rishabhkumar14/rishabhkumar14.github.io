@@ -6082,6 +6082,11 @@ form textarea:required:valid {
   flex-direction: column;
   gap: 0.8rem;
   overflow-y: auto;
+  /* Clip the x-axis so the pulsing greeting avatar rings (which scale well
+     beyond the panel width) don't periodically trigger a horizontal
+     scrollbar. Without this, overflow-y:auto forces overflow-x to compute
+     as auto, so each ring pulse flashed a horizontal scrollbar. */
+  overflow-x: hidden;
   /* Subtle graph-paper grid behind the messages. Default background-
      attachment keeps it pinned to the panel (it does not scroll with the
      message list), so it reads as faint stationary stationery. Message

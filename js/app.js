@@ -93,8 +93,8 @@ $(function () {
       // section is frozen and most icons are unreachable (this is why it
       // appeared static on real phones that have Reduce Motion enabled).
       // Under reduced-motion we just scroll more gently (slower) instead of
-      // stopping. The interactive extras (cursor repel, scroll-roulette)
-      // remain disabled under reduced-motion.
+      // stopping. The cursor repel and scroll-roulette speed-up also run under
+      // reduced-motion, since both only move in direct response to the user.
       const durSec = (reduce ? baseDur * 1.9 : baseDur) + r * 5;
       track.style.setProperty("--dur", durSec + "s");
 
@@ -254,7 +254,14 @@ $(function () {
   // scrolled, then ease back to their normal smooth crawl when scrolling
   // stops. Implemented by ramping each marquee animation's playbackRate
   // (smooth, no position jumps). Touch / coarse-pointer only; desktop keeps
-  // the magnet-repel. Reduced-motion skips it.
+  // the magnet-repel.
+  //
+  // NOTE: intentionally NOT gated by prefers-reduced-motion. The speed-up only
+  // happens in direct response to the user's own scrolling (no autonomous
+  // motion of its own), and many real phones run with Reduce Motion on — gating
+  // it left the speed-on-scroll effect dead on exactly those devices, which is
+  // why it appeared to "not work" on phone. This matches the marquee, repel and
+  // click-pop, which all run under Reduce Motion too.
   (function techMarqueeScrollRoulette() {
     const marquee = document.querySelector("#tech .tools-marquee");
     if (!marquee) return;
@@ -262,7 +269,6 @@ $(function () {
       "(hover: none), (pointer: coarse)",
     ).matches;
     if (!isTouch) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const tracks = Array.prototype.slice.call(
       marquee.querySelectorAll(".tools-marquee__track"),

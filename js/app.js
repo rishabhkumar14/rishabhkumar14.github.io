@@ -26,6 +26,280 @@ $(function () {
 
   gsap.registerPlugin(ScrollTrigger);
 
+  // Tech stack: classy multi-row MARQUEE carousel. Run BEFORE the GSAP
+  // scroll setup so it removes the animate-card-5/animate-in-up classes
+  // first — that way GSAP never attaches opacity-0 reveal tweens to these
+  // cards (which would otherwise leave clones invisible). The flat grid is
+  // reflowed into 3 rows that scroll horizontally in alternating directions
+  // (row 1 →, row 2 ←, row 3 →), looping seamlessly forever: each row's
+  // content is duplicated once and the track translates exactly -50%, so the
+  // loop has no seam (the per-card right margin bakes the gap into the width).
+  // Pauses on hover (desktop), respects reduced-motion, and shows ALL icons
+  // on phones too (they just scroll past). Progressive enhancement: if this
+  // never runs (old cache), the original wrapped grid still renders fine.
+  (function buildTechMarquee() {
+    const grid = document.querySelector("#tech .tools-cards");
+    if (!grid || grid.dataset.marquee === "1") return;
+    const items = Array.prototype.slice.call(
+      grid.querySelectorAll(".tools-cards__item"),
+    );
+    if (items.length < 6) return;
+
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const ROWS = 3;
+
+    // Distribute items round-robin so each row is evenly filled and mixed.
+    const rows = [];
+    for (let r = 0; r < ROWS; r++) rows.push([]);
+    items.forEach((item, i) => rows[i % ROWS].push(item));
+
+    // Strip animation hooks + any inline styles so cards are purely CSS-
+    // controlled (always visible), then drop the grid layout classes.
+    const clearAnim = (el) => {
+      el.classList.remove("animate-in-up");
+      const s = el.style;
+      s.opacity = "";
+      s.transform = "";
+      s.translate = "";
+      s.rotate = "";
+      s.scale = "";
+    };
+    const cleanCard = (item) => {
+      item.classList.remove("grid-item-s", "animate-card-5", "d-flex");
+      clearAnim(item);
+      item
+        .querySelectorAll(".tools-cards__icon, .tools-cards__caption")
+        .forEach(clearAnim);
+    };
+
+    grid.classList.remove("d-flex", "justify-content-start", "flex-wrap");
+    grid.classList.add("tools-marquee");
+    grid.innerHTML = "";
+    grid.dataset.marquee = "1";
+
+    const baseDur = 42; // seconds for one full loop (longer = slower/classier)
+    rows.forEach((rowItems, r) => {
+      const row = document.createElement("div");
+      row.className =
+        "tools-marquee__row" +
+        (r % 2 === 1 ? " tools-marquee__row--reverse" : "");
+
+      const track = document.createElement("div");
+      track.className = "tools-marquee__track";
+      track.style.setProperty("--dur", baseDur + r * 5 + "s");
+      if (reduce) track.style.animation = "none";
+
+      // Original cards, then a cleaned clone of each for the seamless loop.
+      rowItems.forEach((it) => {
+        cleanCard(it);
+        track.appendChild(it);
+      });
+      rowItems.forEach((it) => {
+        const clone = it.cloneNode(true);
+        clone.setAttribute("aria-hidden", "true");
+        track.appendChild(clone);
+      });
+
+      row.appendChild(track);
+      grid.appendChild(row);
+    });
+  })();
+
+  // Tech marquee MAGNET-REPEL: the rows keep scrolling, but individual cards
+  // flee the cursor like same-pole magnets — pushed away with a strength that
+  // grows as the cursor gets closer — and glide back to rest once it moves
+  // away. Fine-pointer only (including hybrid touch laptops). Runs a continuous
+  // rAF loop while the pointer is inside so cards still react to a stationary
+  // cursor as they scroll past it.
+  (function techMarqueeRepel() {
+    const marquee = document.querySelector("#tech .tools-marquee");
+    if (!marquee) return;
+    const canRepel =
+      window.matchMedia("(any-hover: hover) and (any-pointer: fine)").matches ||
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!canRepel) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const RADIUS = 210; // px: how close before a card starts fleeing
+    const STRENGTH = 92; // px: max push at closest range
+    const rows = Array.prototype.slice.call(
+      marquee.querySelectorAll(".tools-marquee__row"),
+    );
+    let mx = 0;
+    let my = 0;
+    let inside = false;
+    let raf = 0;
+
+    const frame = () => {
+      raf = 0;
+      let anyOffset = false;
+      rows.forEach((row) => {
+        row.querySelectorAll(".tools-cards__item").forEach((item) => {
+          const r = item.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const dx = cx - mx;
+          const dy = cy - my;
+          const dist = Math.hypot(dx, dy) || 0.001;
+          if (inside && dist < RADIUS) {
+            const force = (1 - dist / RADIUS) * STRENGTH;
+            const ox = (dx / dist) * force;
+            const oy = (dy / dist) * force;
+            item.style.transform = "translate(" + ox + "px," + oy + "px)";
+            anyOffset = true;
+          } else if (item.style.transform) {
+            item.style.transform = "";
+          }
+        });
+      });
+      // Keep looping while the cursor is inside, or for one extra pass to
+      // clear any lingering offsets after it leaves (CSS eases the return).
+      if (inside || anyOffset) raf = requestAnimationFrame(frame);
+    };
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+
+    marquee.addEventListener("pointermove", (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+      inside = true;
+      rows.forEach((row) => row.classList.add("is-repelling"));
+      kick();
+    });
+    marquee.addEventListener("pointerleave", () => {
+      inside = false;
+      rows.forEach((row) => row.classList.remove("is-repelling"));
+      kick();
+    });
+  })();
+
+  // Tech marquee CLICK-TO-POP: clicking a card makes it flash + collapse and
+  // disappear. The marquee is an endless loop (every card is duplicated), so
+  // removing one costs nothing visually. Works on every device (tap on phone,
+  // click on desktop). Delegated so it covers originals AND clones.
+  (function techMarqueePop() {
+    const marquee = document.querySelector("#tech .tools-marquee");
+    if (!marquee) return;
+
+    // Spawn a short firework of particles at (x, y) in viewport coords.
+    const explode = (x, y) => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const burst = document.createElement("div");
+      burst.className = "tools-burst";
+      burst.style.left = x + "px";
+      burst.style.top = y + "px";
+      const N = 14;
+      for (let i = 0; i < N; i++) {
+        const p = document.createElement("span");
+        p.className = "tools-burst__particle";
+        const ang = (Math.PI * 2 * i) / N + Math.random() * 0.5;
+        const dist = 36 + Math.random() * 46;
+        p.style.setProperty("--dx", Math.cos(ang) * dist + "px");
+        p.style.setProperty("--dy", Math.sin(ang) * dist + "px");
+        p.style.animationDelay = Math.random() * 0.05 + "s";
+        // Slight size + warm-tone variety for a livelier burst.
+        const sz = 5 + Math.random() * 6;
+        p.style.width = sz + "px";
+        p.style.height = sz + "px";
+        burst.appendChild(p);
+      }
+      document.body.appendChild(burst);
+      setTimeout(() => burst.remove(), 750);
+    };
+
+    marquee.addEventListener("click", (e) => {
+      const item = e.target.closest(".tools-cards__item");
+      if (!item || item.classList.contains("is-popping")) return;
+      item.style.transform = ""; // drop any repel offset so the pop is clean
+      item.classList.add("is-popping");
+      const done = () => {
+        // Explosion at the card's last position, just as it vanishes.
+        const r = item.getBoundingClientRect();
+        explode(r.left + r.width / 2, r.top + r.height / 2);
+        // Collapse the slot (eased) so the row reflows smoothly, then remove.
+        const w = item.getBoundingClientRect().width;
+        item.style.width = w + "px";
+        item.style.overflow = "hidden";
+        void item.offsetWidth; // reflow so the start width is registered
+        item.style.transition =
+          "width 0.3s ease, margin 0.3s ease, padding 0.3s ease";
+        item.style.width = "0px";
+        item.style.margin = "0";
+        item.style.padding = "0";
+        item.addEventListener("transitionend", () => item.remove(), {
+          once: true,
+        });
+        // Fallback removal in case no transition fires.
+        setTimeout(() => item.isConnected && item.remove(), 450);
+      };
+      item.addEventListener("animationend", done, { once: true });
+    });
+  })();
+
+  // Tech marquee PHONE ROULETTE-ON-SCROLL: touch users can't hover, so
+  // instead the rows spin FAST like a roulette wheel while the page is being
+  // scrolled, then ease back to their normal smooth crawl when scrolling
+  // stops. Implemented by ramping each marquee animation's playbackRate
+  // (smooth, no position jumps). Touch / coarse-pointer only; desktop keeps
+  // the magnet-repel. Reduced-motion skips it.
+  (function techMarqueeScrollRoulette() {
+    const marquee = document.querySelector("#tech .tools-marquee");
+    if (!marquee) return;
+    const isTouch = window.matchMedia(
+      "(hover: none), (pointer: coarse)",
+    ).matches;
+    if (!isTouch) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const tracks = Array.prototype.slice.call(
+      marquee.querySelectorAll(".tools-marquee__track"),
+    );
+    if (!tracks.length) return;
+
+    const BASE = 1; // normal smooth speed
+    const MAX = 9; // roulette top speed
+    let target = BASE; // where playbackRate is heading
+    let current = BASE; // eased actual rate
+    let lastY = window.scrollY || window.pageYOffset || 0;
+    let idleTimer = 0;
+
+    const setRate = (rate) => {
+      tracks.forEach((track) => {
+        track.getAnimations().forEach((a) => {
+          a.playbackRate = rate;
+        });
+      });
+    };
+
+    // Each frame: ease current → target, and apply. gsap.ticker is robust
+    // under Lenis smooth-scroll (native scroll events are unreliable there).
+    const tick = () => {
+      current += (target - current) * 0.12;
+      if (Math.abs(current - target) < 0.02) current = target;
+      setRate(current);
+    };
+    if (window.gsap && gsap.ticker) gsap.ticker.add(tick);
+
+    const onScroll = () => {
+      const y = window.scrollY || window.pageYOffset || 0;
+      const v = Math.abs(y - lastY);
+      lastY = y;
+      // Map scroll speed → target rate (more flick = faster spin).
+      target = Math.min(MAX, BASE + v * 0.25);
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        target = BASE;
+      }, 140);
+    };
+    // Listen on both window scroll and Lenis (via gsap.ticker sampling) so
+    // it works regardless of how the page scrolls.
+    window.addEventListener("scroll", onScroll, { passive: true });
+    if (window.gsap && gsap.ticker) gsap.ticker.add(onScroll);
+  })();
+
   // --------------------------------------------- //
   // Loader & Loading Animation Start
   // --------------------------------------------- //
@@ -157,6 +431,44 @@ $(function () {
     requestAnimationFrame(raf);
   }
   requestAnimationFrame(raf);
+
+  // Keep ScrollTrigger in lockstep with Lenis's virtual scroll position.
+  lenis.on("scroll", ScrollTrigger.update);
+
+  // ---- Keep scroll metrics fresh as the page grows ----
+  // The page has many lazy-loaded images (projects, research, tools). As they
+  // decode, the document height changes. If Lenis / ScrollTrigger keep a stale
+  // (shorter) measurement, a first-time visitor can hit a premature "bottom"
+  // before reaching the contact form. Recompute both whenever the height
+  // changes so the full page always stays scrollable.
+  let recomputeRaf = 0;
+  const recomputeScroll = () => {
+    if (recomputeRaf) cancelAnimationFrame(recomputeRaf);
+    recomputeRaf = requestAnimationFrame(() => {
+      recomputeRaf = 0;
+      if (typeof lenis.resize === "function") lenis.resize();
+      ScrollTrigger.refresh();
+    });
+  };
+  // After every asset the browser reports as fully loaded.
+  window.addEventListener("load", recomputeScroll);
+  // Each lazy image that finishes (or fails) can shift the layout.
+  document.querySelectorAll("img").forEach((img) => {
+    if (img.complete) return;
+    img.addEventListener("load", recomputeScroll, { passive: true });
+    img.addEventListener("error", recomputeScroll, { passive: true });
+  });
+  // Catch any other height changes (fonts, widgets settling, content reveals).
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(recomputeScroll);
+    const scrollRoot =
+      document.querySelector(".content__wrapper") || document.body;
+    ro.observe(scrollRoot);
+  }
+  // A couple of delayed passes cover assets that report ready before they have
+  // actually been laid out.
+  setTimeout(recomputeScroll, 600);
+  setTimeout(recomputeScroll, 2000);
   // --------------------------------------------- //
   // Lenis Scroll Plugin End
   // --------------------------------------------- //
@@ -289,7 +601,6 @@ $(function () {
   };
 
   applyTilt(".animate-card-3 .achievements__card", 12, 1.04);
-  applyTilt(".tools-cards__card", 16, 1.08);
 
   // Achievement numbers: count-up on scroll into view
   document.querySelectorAll(".achievements__number").forEach((el) => {
@@ -315,26 +626,35 @@ $(function () {
     });
   });
 
-  // Grid 5x
-  gsap.set(".animate-card-5", { y: 50, opacity: 0 });
-  ScrollTrigger.batch(".animate-card-5", {
-    interval: 0.1,
-    batchMax: 5,
-    delay: 1000,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        opacity: 1,
-        y: 0,
-        ease: "sine",
-        stagger: { each: 0.15, grid: [1, 5] },
-        overwrite: true,
-      }),
-    onLeave: (batch) => gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
-    onEnterBack: (batch) =>
-      gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
-    onLeaveBack: (batch) =>
-      gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
-  });
+  // Grid 5x — only the tech tool cards used this; if the marquee consumed
+  // them (no .animate-card-5 left) we skip the batch to avoid a GSAP
+  // "target not found" warning.
+  if (document.querySelector(".animate-card-5")) {
+    gsap.set(".animate-card-5", { y: 50, opacity: 0 });
+    ScrollTrigger.batch(".animate-card-5", {
+      interval: 0.1,
+      batchMax: 5,
+      delay: 1000,
+      onEnter: (batch) =>
+        gsap.to(batch, {
+          opacity: 1,
+          y: 0,
+          ease: "sine",
+          stagger: { each: 0.15, grid: [1, 5] },
+          overwrite: true,
+        }),
+      onLeave: (batch) =>
+        gsap.set(batch, { opacity: 1, y: 0, overwrite: true }),
+      onEnterBack: (batch) =>
+        gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
+      onLeaveBack: (batch) =>
+        gsap.set(batch, { opacity: 0, y: 50, overwrite: true }),
+    });
+
+    ScrollTrigger.addEventListener("refreshInit", () =>
+      gsap.set(".animate-card-5", { y: 0, opacity: 1 }),
+    );
+  }
 
   ScrollTrigger.addEventListener("refreshInit", () =>
     gsap.set(".animate-card-2", { y: 0, opacity: 1 }),
@@ -342,9 +662,7 @@ $(function () {
   ScrollTrigger.addEventListener("refreshInit", () =>
     gsap.set(".animate-card-3", { y: 0, opacity: 1, rotationX: 0, scale: 1 }),
   );
-  ScrollTrigger.addEventListener("refreshInit", () =>
-    gsap.set(".animate-card-5", { y: 0, opacity: 1 }),
-  );
+
   // --------------------------------------------- //
   // Scroll Animations End
   // --------------------------------------------- //

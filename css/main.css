@@ -2667,6 +2667,46 @@ form textarea:required:valid {
   padding: 6rem 0;
   padding-bottom: 0rem;
 }
+/* A touch more breathing room between the "Tech I have worked with" title
+   and the marquee rows below it. */
+#tech .content__block.section-grid-title {
+  margin-bottom: 3rem;
+}
+@media only screen and (min-width: 1400px) {
+  #tech .content__block.section-grid-title {
+    margin-bottom: 3.4rem;
+  }
+}
+/* Tighten the gap between the tech marquee and the Portfolio section below.
+   The tools list sits in a .block-large which carries a big bottom margin
+   (11–15.6rem); the marquee is self-contained so it doesn't need that. */
+#tech .content__block.block-large {
+  margin-bottom: 1rem;
+}
+#portfolio.inner {
+  padding-top: 3rem;
+}
+@media only screen and (min-width: 768px) {
+  #tech .content__block.block-large {
+    margin-bottom: 1.5rem;
+  }
+  #portfolio.inner {
+    padding-top: 4rem;
+  }
+}
+@media only screen and (min-width: 992px) {
+  #portfolio.inner {
+    padding-top: 5rem;
+  }
+}
+@media only screen and (min-width: 1400px) {
+  #tech .content__block.block-large {
+    margin-bottom: 2rem;
+  }
+  #portfolio.inner {
+    padding-top: 6rem;
+  }
+}
 .inner.inner-grid-top {
   padding: 3rem 0 6rem 0;
 }
@@ -2940,7 +2980,7 @@ form textarea:required:valid {
     width: -moz-calc(100% - 330px);
     width: calc(100% - 330px);
     height: 5rem;
-    padding: 0 3rem;
+    padding: 0 3rem 0 1.2rem;
     background-color: transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -2948,7 +2988,7 @@ form textarea:required:valid {
 }
 @media only screen and (min-width: 1200px) {
   .header {
-    padding: 0 6rem 0 3rem;
+    padding: 0 6rem 0 2rem;
     width: -moz-calc(100% - 360px);
     width: calc(100% - 360px);
   }
@@ -2958,7 +2998,7 @@ form textarea:required:valid {
     top: 5rem;
     width: -moz-calc(100% - 480px);
     width: calc(100% - 480px);
-    padding: 0 8rem 0 5rem;
+    padding: 0 8rem 0 3rem;
   }
 }
 @media only screen and (min-width: 1600px) {
@@ -2966,7 +3006,7 @@ form textarea:required:valid {
     width: -moz-calc(100% - 500px);
     width: calc(100% - 500px);
     height: 6rem;
-    padding: 0 10rem 0 5rem;
+    padding: 0 10rem 0 3rem;
   }
 }
 
@@ -3738,9 +3778,23 @@ form textarea:required:valid {
   -webkit-filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.32));
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.32));
 }
-/* Lift the tag overlay clear of the ragged bottom edge. */
+/* Position the chip overlay so the chips straddle the card's bottom edge
+   (half on the paper, half hanging below it) instead of sitting fully
+   inside the card. The vertical padding is dropped so the descr box hugs
+   the chip row, then translateY(50%) centres that row on the bottom edge. */
 .my-gallery .gallery__descr {
-  bottom: 1.6rem;
+  bottom: 0;
+  top: auto;
+  padding-top: 0;
+  padding-bottom: 0;
+  -webkit-transform: translateY(50%);
+  -moz-transform: translateY(50%);
+  transform: translateY(50%);
+}
+/* Reserve room below each paper so the overhanging chips don't collide
+   with the next row of cards. */
+.my-gallery > .gallery__item {
+  margin-bottom: 3.2rem;
 }
 /* Compact chips over the research papers — sized to fit their text. */
 .my-gallery .gallery__descr .rounded-tag {
@@ -4288,11 +4342,6 @@ form textarea:required:valid {
   padding: 0 0.5rem;
 }
 
-.tools-cards__item:hover .tools-cards__card {
-  transform: scale(1.05); /* Increase size on hover */
-  transition: transform 0.3s ease; /* Add smooth transition */
-}
-
 @media only screen and (min-width: 1400px) {
   .tools-cards {
     padding: 0 1.5rem;
@@ -4319,8 +4368,8 @@ form textarea:required:valid {
   padding: 1.5rem;
   background-color: var(--base);
   border: 1px solid var(--stroke-elements);
-  -moz-border-radius: var(--_radius-xl);
-  border-radius: var(--_radius-xl);
+  -moz-border-radius: var(--_radius-s);
+  border-radius: var(--_radius-s);
   text-align: center;
 }
 
@@ -4349,6 +4398,204 @@ form textarea:required:valid {
   font-size: 1.5rem; /* Reduce from default 1.6rem */
   line-height: 1;
   margin-top: 1.5rem;
+}
+
+/* ===== Tech stack MARQUEE carousel =====
+   Built by JS (buildTechMarquee in app.js): the flat grid is reflowed into
+   3 horizontally-scrolling rows (alternating direction) that loop forever.
+   Each row's content is duplicated once and the track translates -50%, so
+   the loop is seamless. The per-card right margin bakes the gap into the
+   width so -50% lands exactly. Pauses on hover (desktop). Phones show all
+   icons in colour (they just scroll past). */
+.tools-cards.tools-marquee {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  padding: 0.5rem 0;
+  overflow: hidden;
+  /* Melt the cards in/out at the left + right edges. */
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.tools-marquee__row {
+  display: flex;
+  overflow: hidden;
+}
+
+.tools-marquee__track {
+  display: flex;
+  flex: 0 0 auto;
+  width: -moz-max-content;
+  width: max-content;
+  will-change: transform;
+  animation: toolsMarquee var(--dur, 42s) linear infinite;
+}
+.tools-marquee__row--reverse .tools-marquee__track {
+  animation-direction: reverse;
+}
+/* No pause on hover — the rows keep moving while individual cards flee the
+   cursor (magnet-repel, driven by JS). */
+
+@keyframes toolsMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tools-marquee .tools-cards__item {
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0 1.6rem 0 0; /* gap baked into each card → seamless -50% loop */
+  /* Smooth glide back to rest once the cursor moves away (magnet release).
+     While the cursor is near, JS adds .is-repelling to the row for a snappier
+     near-instant follow. */
+  transition: transform 0.55s var(--_animbezier);
+}
+.tools-marquee__row.is-repelling .tools-cards__item {
+  transition: transform 0.12s linear;
+}
+
+.tools-marquee .tools-cards__card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  width: auto;
+  height: 7.2rem;
+  padding: 0 2.4rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Match the chatbot panel's glassy look: translucent dark fill, blur,
+     soft stroke + shadow. */
+  background: rgba(20, 20, 22, 0.78);
+  border: 1px solid var(--stroke-elements);
+  border-radius: 1.6rem;
+  box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--t-bright);
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+[color-scheme="light"] .tools-marquee .tools-cards__card {
+  background: rgba(240, 240, 244, 0.82);
+}
+.no-touch .tools-marquee .tools-cards__card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 18px 34px -18px
+    color-mix(in srgb, var(--accent) 30%, rgba(0, 0, 0, 0.6));
+}
+
+.tools-marquee .tools-cards__icon {
+  width: auto;
+  height: 3.4rem;
+  max-height: 3.4rem;
+  margin: 0;
+  flex-shrink: 0;
+  /* Always grayscale — looks classier and more cohesive than full colour. */
+  filter: grayscale(100%);
+  opacity: 0.92;
+  transition:
+    filter 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.tools-marquee .tools-cards__caption {
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--t-bright);
+}
+
+/* Click-to-pop: the card scales up with a flash, then collapses away. Since
+   the marquee is an endless loop, removing one card costs nothing. The item
+   is set to width:0 / margin:0 on animation end (JS) so the row reflows. */
+.tools-marquee .tools-cards__item.is-popping {
+  pointer-events: none;
+  animation: toolsCardPop 0.42s var(--_animbezier) forwards;
+}
+@keyframes toolsCardPop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1.18);
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+    filter: brightness(1.5);
+  }
+}
+
+/* Explosion: a short-lived burst of particles spawned (by JS) at the popped
+   card's centre. Each particle flies outward along its own --dx/--dy vector
+   and fades, giving a little firework. The layer is fixed + pointer-events
+   none so it never affects layout or clicks. */
+.tools-burst {
+  position: fixed;
+  z-index: 60;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.tools-burst__particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  will-change: transform, opacity;
+  animation: toolsBurst 0.6s ease-out forwards;
+}
+@keyframes toolsBurst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tools-marquee__track {
+    animation: none;
+  }
+  /* No motion → let rows wrap so every icon is still visible. */
+  .tools-marquee__row {
+    overflow: visible;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+  }
+  .tools-burst {
+    display: none;
+  }
+  .tools-marquee .tools-cards__item.is-popping {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 .tools-card {
@@ -4993,7 +5240,7 @@ form textarea:required:valid {
 .home-canvas-wrap {
   --mp-scale: 0.48;
   --mp-design-w: 820;
-  --mp-design-h: 510;
+  --mp-design-h: 517;
   position: relative;
   width: calc(var(--mp-design-w) * 1px * var(--mp-scale));
   height: calc(var(--mp-design-h) * 1px * var(--mp-scale));
@@ -5036,6 +5283,12 @@ form textarea:required:valid {
 }
 .home-canvas-wrap .ms-paint {
   animation: mpIntroOpen 0.6s var(--_animbezier) 0.7s both;
+}
+/* Once the intro has played (or the user grabs the titlebar), disable the
+   intro animation so re-attaching the wrap to <body> when it floats can't
+   restart it. */
+.home-canvas-wrap.mp-intro-done .ms-paint {
+  animation: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
   .home-canvas-wrap .ms-paint {
@@ -5093,11 +5346,11 @@ form textarea:required:valid {
 @media only screen and (max-width: 991.98px) {
   .home-canvas-wrap {
     margin-top: 4rem;
-    /* The .ms-paint widget's natural laid-out height is ~514px
+    /* The .ms-paint widget's natural laid-out height is ~517px
        (title + menu + body + palette + statusbar), not 510px.
        Use the real height here so the wrap doesn't clip the
        bottom color palette + statusbar on mobile. */
-    --mp-design-h: 514;
+    --mp-design-h: 517;
     /* On phones the canvas spans nearly the full viewport width
        with a comfortable side breathing room (1.6rem each side),
        and its height auto-adjusts from the 820:514 design ratio.
@@ -5162,11 +5415,11 @@ form textarea:required:valid {
     padding-right: 1.6rem;
   }
 
-  /* Tighten the gap from the canvas down to the Portfolio heading
+  /* Tighten the gap from the tech carousel down to the Portfolio heading
      on phones — .inner gives 6rem of padding-top by default which
      feels like a long blank scroll between the two sections. */
   #portfolio.inner {
-    padding-top: 4rem;
+    padding-top: 3rem;
   }
 
   /* Hard cap the Microsoft banner so it can NEVER push the page
@@ -5238,7 +5491,7 @@ form textarea:required:valid {
   }
 
   #home .headline {
-    padding-left: 1.5rem;
+    padding-left: 2rem;
     padding-right: 6rem;
   }
 
@@ -5261,7 +5514,7 @@ form textarea:required:valid {
 
   #home .headline {
     top: 12rem;
-    padding-left: 2rem;
+    padding-left: 3rem;
     padding-right: 8rem;
   }
 
@@ -5284,7 +5537,7 @@ form textarea:required:valid {
 
   #home .headline {
     top: 13rem;
-    padding-left: 2rem;
+    padding-left: 3rem;
     padding-right: 10rem;
   }
 
@@ -5630,6 +5883,59 @@ form textarea:required:valid {
 @media (prefers-reduced-motion: reduce) {
   .hc-body.is-greeting .hc-avatar-lg::before,
   .hc-body.is-greeting .hc-avatar-lg::after {
+    animation: none;
+  }
+}
+
+/* Click/tap ripples — a burst of extra sonar rings spawned in JS each
+   time the greeting avatar is clicked. Each ring removes itself when its
+   animation ends. Rendered behind the avatar glyph (z-index:-1) and
+   clipped by the chat panel's overflow:hidden, like the ambient rings. */
+.hc-avatar-lg .hc-click-ripple {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  animation: hcAvatarClickPing 1.1s ease-out both;
+}
+@keyframes hcAvatarClickPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  80% {
+    opacity: 0.06;
+  }
+  100% {
+    transform: scale(6);
+    opacity: 0;
+  }
+}
+/* A small springy pop on the avatar itself for tactile click feedback. */
+@keyframes hcAvatarPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.9);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.hc-avatar-lg.is-pinged {
+  animation: hcAvatarPop 0.4s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-avatar-lg .hc-click-ripple,
+  .hc-avatar-lg.is-pinged {
     animation: none;
   }
 }
@@ -6709,17 +7015,23 @@ form textarea:required:valid {
 
 /* The chat panel has a vertical scrollbar on its right edge, and
    .home-chat uses overflow:hidden (so resize handles pushed outside the
-   box get clipped). The default right-edge + right-corner handles end up
-   sitting on top of the scrollbar and steal its pointer events — you'd
-   resize the panel instead of scrolling. Since the chat's right edge sits
-   right next to the canvas widget (resizing rightward isn't useful), drop
-   the chat's right-side handles so the scrollbar stays fully grabbable.
-   Resize still works from the left, top, bottom and left-corner handles.
-   Scoped to .home-chat so the paint widget is unaffected. */
-.home-chat .rz-e,
-.home-chat .rz-ne,
+   box get clipped). The default right-edge + right-corner handles would
+   sit ON TOP of the scrollbar and steal its pointer events. Instead of
+   removing them, we re-anchor them INSIDE the panel, just to the LEFT of
+   the 6px scrollbar, so the right edge is still resizable while the
+   scrollbar stays fully grabbable. Scoped to .home-chat so the paint
+   widget keeps its default (outside) handles. */
+.home-chat .rz-e {
+  right: 7px;
+  width: 10px;
+}
+.home-chat .rz-ne {
+  top: 0;
+  right: 0;
+}
 .home-chat .rz-se {
-  display: none;
+  bottom: 0;
+  right: 0;
 }
 
 /* Subtle hover affordance on corner handles only — keeps the
@@ -6763,4 +7075,186 @@ body.rz-resizing-active * {
 .home-canvas-wrap.is-maximized .rz-handle,
 .home-canvas-wrap.is-minimized-bottom .rz-handle {
   display: none !important;
+}
+
+/* =========================================================================
+   Contact Me button — keeps its original accent-gradient fill, but adds a
+   minimal rounded-rectangle shape and a faint grid overlay on top of the
+   gradient (graph-paper feel) that complements the chat widget's grid.
+   ========================================================================= */
+.avatar__btnholder .btn-contact-grid {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+/* Match the smaller corner radius on the gradient layer (::before). */
+.btn-contact-grid.btn-hover::before {
+  border-radius: 1rem;
+}
+/* Faint grid drawn ON TOP of the accent gradient, below the caption. */
+.btn-contact-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 1rem;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 1.1rem 1.1rem;
+}
+/* Keep the caption above the grid overlay. */
+.btn-contact-grid .btn-caption {
+  z-index: 2;
+}
+
+/* =========================================================================
+   Portfolio cards — on phones, interleave the two desktop columns so the
+   visual order matches the laptop's alternating left/right reading order
+   (L1, R1, L2, R2, …) instead of all of column 1 then all of column 2.
+   Desktop layout (>=768px) is untouched.
+   ========================================================================= */
+@media only screen and (max-width: 767.98px) {
+  .portfolio .cards > .col-md-6,
+  .portfolio .cards > .col-md-6 > .row {
+    display: contents;
+  }
+  .portfolio .cards > .col-md-6:first-child > .row > .cards__item:nth-child(1) {
+    order: 1;
+  }
+  .portfolio .cards > .col-md-6:last-child > .row > .cards__item:nth-child(1) {
+    order: 2;
+  }
+  .portfolio .cards > .col-md-6:first-child > .row > .cards__item:nth-child(2) {
+    order: 3;
+  }
+  .portfolio .cards > .col-md-6:last-child > .row > .cards__item:nth-child(2) {
+    order: 4;
+  }
+  .portfolio .cards > .col-md-6:first-child > .row > .cards__item:nth-child(3) {
+    order: 5;
+  }
+  .portfolio .cards > .col-md-6:last-child > .row > .cards__item:nth-child(3) {
+    order: 6;
+  }
+  .portfolio .cards > .col-md-6:first-child > .row > .cards__item:nth-child(4) {
+    order: 7;
+  }
+}
+
+/* =========================================================================
+   Resume section — spacing between Research gallery and My Education, and a
+   tighter gap after Education before the About section.
+   ========================================================================= */
+#resume .resume-education {
+  margin-top: 8rem;
+  margin-bottom: 1rem;
+}
+@media only screen and (min-width: 992px) {
+  #resume .resume-education {
+    margin-top: 11rem;
+  }
+}
+#about.inner {
+  padding-top: 4rem;
+}
+@media only screen and (min-width: 992px) {
+  #about.inner {
+    padding-top: 4.5rem;
+  }
+}
+
+/* =========================================================================
+   Research gallery on phones — show two paper cards per row (instead of one
+   full-width per row) and keep only the first chip per card so the compact
+   cards don't overflow. Chips scale down but keep their paper-tag style and
+   stay within the row flow. Phones only (<=767.98px); desktop untouched.
+   ========================================================================= */
+@media only screen and (max-width: 767.98px) {
+  .my-gallery > .gallery__item {
+    flex: 0 0 50%;
+    max-width: 50%;
+    width: 50%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 2.6rem;
+  }
+  /* Keep only the first chip; hide the rest on mobile. */
+  .my-gallery .gallery__descr .card__tags .rounded-tag:not(:first-child) {
+    display: none;
+  }
+  /* Scale the surviving chip down and let it wrap so it fits the narrow
+     card without breaking the row or leaving the paper-tag style. The
+     chip still straddles the card's bottom edge (inherited translateY). */
+  .my-gallery .gallery__descr {
+    left: 1rem;
+    width: calc(100% - 2rem);
+    bottom: 0;
+  }
+  .my-gallery .gallery__descr .card__tags .rounded-tag {
+    display: inline-block;
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    padding: 0.4rem 0.6rem;
+    margin: 0.2rem 0.4rem 0.2rem 0;
+  }
+}
+
+/* =========================================================================
+   Breathing room between the last Project card and the Resume section.
+   ========================================================================= */
+#resume {
+  padding-top: 3rem;
+}
+@media only screen and (min-width: 768px) {
+  #resume {
+    padding-top: 4rem;
+  }
+}
+@media only screen and (min-width: 992px) {
+  #resume {
+    padding-top: 5.5rem;
+  }
+}
+
+/* =========================================================================
+   Playful GitHub "cat" — gently wags its head/tail on a loop so the icon
+   feels alive. Pauses on hover so the reveal animation stays clean.
+   ========================================================================= */
+@keyframes githubWag {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-9deg);
+  }
+  40% {
+    transform: rotate(6deg);
+  }
+  60% {
+    transform: rotate(-5deg);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+}
+.socials-square__link i.ph-github-logo {
+  -webkit-transform-origin: 50% 72%;
+  transform-origin: 50% 72%;
+  -webkit-animation: githubWag 2.6s ease-in-out infinite;
+  animation: githubWag 2.6s ease-in-out infinite;
+}
+.no-touch .socials-square__link:hover i.ph-github-logo {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .socials-square__link i.ph-github-logo {
+    -webkit-animation: none;
+    animation: none;
+  }
 }

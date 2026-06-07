@@ -1439,6 +1439,28 @@ p.additional-text a {
   }
 }
 
+/* ---- Light mode, PHONES only: soften the hero CTA buttons ----
+   In light mode the "My Projects" / "Download CV" buttons share almost the
+   exact same loud orange as the Microsoft status banner sitting just above
+   them, so they visually compete. Here (and only here — phones, light mode)
+   the button fill is a slightly warmer/lighter amber than the banner so the
+   two read as distinct without going dull. Desktop and dark mode keep the
+   full-strength accent gradient. Covers both the manual theme toggle
+   ([color-scheme="light"]) and the OS auto light theme (prefers-color-scheme,
+   unless manually overridden to dark). */
+@media only screen and (max-width: 991.98px) {
+  [color-scheme="light"] .btn-hover-accent::before,
+  [color-scheme="light"] .btn-hover-accent-mobile::before {
+    background: linear-gradient(135deg, #f3a45a 0%, #ee8c3a 100%);
+  }
+}
+@media only screen and (max-width: 991.98px) and (prefers-color-scheme: light) {
+  :root:not([color-scheme="dark"]) .btn-hover-accent::before,
+  :root:not([color-scheme="dark"]) .btn-hover-accent-mobile::before {
+    background: linear-gradient(135deg, #f3a45a 0%, #ee8c3a 100%);
+  }
+}
+
 .btn-accent-mobile {
   background: var(--accent);
   background: -moz-linear-gradient(
@@ -4522,6 +4544,30 @@ form textarea:required:valid {
   color: var(--t-bright);
 }
 
+/* Smaller marquee cards on phones — the desktop pills (7.2rem tall, 3.4rem
+   icons) are oversized on a narrow screen and only a couple fit at once. */
+@media only screen and (max-width: 767px) {
+  .tools-cards.tools-marquee {
+    gap: 1rem;
+  }
+  .tools-marquee .tools-cards__item {
+    margin: 0 1rem 0 0;
+  }
+  .tools-marquee .tools-cards__card {
+    gap: 0.8rem;
+    height: 5rem;
+    padding: 0 1.4rem;
+    border-radius: 1.2rem;
+  }
+  .tools-marquee .tools-cards__icon {
+    height: 2.4rem;
+    max-height: 2.4rem;
+  }
+  .tools-marquee .tools-cards__caption {
+    font-size: 1.25rem;
+  }
+}
+
 /* Click-to-pop: the card scales up with a flash, then collapses away. Since
    the marquee is an endless loop, removing one card costs nothing. The item
    is set to width:0 / margin:0 on animation end (JS) so the row reflows. */
@@ -4580,15 +4626,11 @@ form textarea:required:valid {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tools-marquee__track {
-    animation: none;
-  }
-  /* No motion → let rows wrap so every icon is still visible. */
-  .tools-marquee__row {
-    overflow: visible;
-    flex-wrap: wrap;
-    gap: 1.4rem;
-  }
+  /* The marquee is the only way to browse all the tools on a phone, so it
+     keeps scrolling even under Reduce Motion (just slower — the JS sets a
+     longer --dur). We intentionally do NOT freeze it here; freezing left
+     real phones with Reduce Motion enabled showing a static, half-hidden
+     row. Only the decorative burst + pop are disabled. */
   .tools-burst {
     display: none;
   }
@@ -5413,6 +5455,11 @@ form textarea:required:valid {
     padding-bottom: 3.2rem;
     padding-left: 1.6rem;
     padding-right: 1.6rem;
+    /* Extra top breathing room on phones so that tapping the Home menu
+       item (which scrolls to #home's top) lands with the "Hi There"
+       headline a comfortable distance below the screen top, with clean
+       space above it — rather than jammed right against the top edge. */
+    padding-top: 9rem;
   }
 
   /* Tighten the gap from the tech carousel down to the Portfolio heading
@@ -5880,12 +5927,10 @@ form textarea:required:valid {
     opacity: 0;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .hc-body.is-greeting .hc-avatar-lg::before,
-  .hc-body.is-greeting .hc-avatar-lg::after {
-    animation: none;
-  }
-}
+/* The avatar sonar rings are small, contained, and a signature touch of the
+   chat widget, so they keep pulsing even under Reduce Motion (mirrors the
+   tech marquee, which also keeps moving). Phones with Reduce Motion enabled
+   would otherwise show no rings at all. */
 
 /* Click/tap ripples — a burst of extra sonar rings spawned in JS each
    time the greeting avatar is clicked. Each ring removes itself when its
@@ -5932,12 +5977,6 @@ form textarea:required:valid {
 }
 .hc-avatar-lg.is-pinged {
   animation: hcAvatarPop 0.4s ease-out both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hc-avatar-lg .hc-click-ripple,
-  .hc-avatar-lg.is-pinged {
-    animation: none;
-  }
 }
 
 .hc-titles {

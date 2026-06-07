@@ -34,9 +34,9 @@
   <!-- Facebook Metadata End -->
 
   <!-- Styles Start -->
-  <link rel="stylesheet" href="css/loaders/loader.css?v=20260616">
-  <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260616">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260616">
+  <link rel="stylesheet" href="css/loaders/loader.css?v=20260620">
+  <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260620">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260620">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -3105,7 +3105,6 @@
       (function () {
         const av = chat.querySelector('.hc-avatar-lg');
         if (!av) return;
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const spawnRipple = (delay) => {
           const ring = document.createElement('span');
           ring.className = 'hc-click-ripple';
@@ -3116,8 +3115,9 @@
           setTimeout(() => ring.remove(), 1600 + delay);
         };
         const burst = () => {
-          if (reduceMotion) return;
-          // A single ring per click.
+          // A single ring per click. (Intentionally runs even under Reduce
+          // Motion — it's a small, contained, user-initiated feedback ring,
+          // and the ambient rings already animate under reduced motion.)
           spawnRipple(0);
           // A tiny pop on the avatar itself for tactile feedback.
           av.classList.remove('is-pinged');

@@ -88,8 +88,15 @@ $(function () {
 
       const track = document.createElement("div");
       track.className = "tools-marquee__track";
-      track.style.setProperty("--dur", baseDur + r * 5 + "s");
-      if (reduce) track.style.animation = "none";
+      // The marquee is the ONLY way to browse all the tools on a phone, so
+      // it must keep scrolling even under Reduce Motion — otherwise the
+      // section is frozen and most icons are unreachable (this is why it
+      // appeared static on real phones that have Reduce Motion enabled).
+      // Under reduced-motion we just scroll more gently (slower) instead of
+      // stopping. The interactive extras (cursor repel, scroll-roulette)
+      // remain disabled under reduced-motion.
+      const durSec = (reduce ? baseDur * 1.9 : baseDur) + r * 5;
+      track.style.setProperty("--dur", durSec + "s");
 
       // Original cards, then a cleaned clone of each for the seamless loop.
       rowItems.forEach((it) => {

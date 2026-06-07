@@ -7107,10 +7107,17 @@ form textarea:required:valid {
   }
 }
 
-/* The mascot is tappable (secret birthday surprise + star swoosh). */
+/* The mascot is tappable (secret birthday surprise + star swoosh).
+   touch-action: manipulation disables double-tap-to-zoom, which would
+   otherwise swallow rapid taps on phones. */
 .logo__image {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.logo__image .cute-mascot,
+.logo__image .cute-mascot * {
+  pointer-events: none;
 }
 
 /* On each click the scattered stars do a quick swoosh-twinkle and the
@@ -7131,19 +7138,6 @@ form textarea:required:valid {
   100% {
     transform: scale(1) rotate(360deg);
     opacity: 1;
-  }
-}
-.cute-mascot.cm-burst .cm-float {
-  animation: cmPop 0.5s ease-out;
-  transform-origin: 50% 92%;
-}
-@keyframes cmPop {
-  0%,
-  100% {
-    transform: scale(1) translateY(0);
-  }
-  40% {
-    transform: scale(1.13) translateY(-2px);
   }
 }
 
@@ -7237,31 +7231,102 @@ form textarea:required:valid {
   overflow: visible;
 }
 
-/* Candle flames flicker until tapped out. */
-.bday-flame {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: bdayFlicker 0.5s ease-in-out infinite alternate;
-  cursor: pointer;
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+/* ---- "Catch the love" mini-game ---- */
+.bday-game {
+  margin: 0.6rem auto 0.2rem;
 }
-.bday-flame.out {
-  opacity: 0;
-  transform: scale(0.2);
+
+/* Love meter that fills as hearts are caught. */
+.bday-meter {
+  position: relative;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: rgba(214, 51, 127, 0.15);
+  overflow: hidden;
+}
+.bday-meter > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff8ac0, #d6337f);
+  transition: width 0.35s cubic-bezier(0.23, 0.65, 0.74, 1.09);
+}
+.bday-count {
+  margin: 0.5rem 0 0.2rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #b14c80;
+}
+
+/* The play field where hearts float up. */
+.bday-field {
+  position: relative;
+  height: 240px;
+  margin-top: 0.4rem;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  background: radial-gradient(
+      circle at 50% 120%,
+      rgba(255, 158, 199, 0.35),
+      transparent 60%
+    ),
+    rgba(255, 255, 255, 0.4);
+  touch-action: manipulation;
+}
+
+/* A rising heart (button = tap target). The wrapper rises; the inner
+   emoji sways side to side so it drifts up like a real balloon. */
+.bday-rise {
+  position: absolute;
+  bottom: -10%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: bdayRise var(--d, 4s) linear forwards;
+  will-change: transform;
+}
+.bday-rise-inner {
+  display: inline-block;
+  filter: drop-shadow(0 3px 4px rgba(180, 40, 110, 0.25));
+  animation: bdaySway var(--sd, 1.2s) ease-in-out infinite alternate;
+}
+@keyframes bdayRise {
+  to {
+    transform: translateY(-300px);
+  }
+}
+@keyframes bdaySway {
+  from {
+    transform: translateX(-9px) rotate(-10deg);
+  }
+  to {
+    transform: translateX(9px) rotate(10deg);
+  }
+}
+/* Pop burst when caught. */
+.bday-rise.caught {
   animation: none;
   pointer-events: none;
 }
-.bday-tap {
-  cursor: pointer;
+.bday-rise.caught .bday-rise-inner {
+  animation: bdayCatchPop 0.45s ease-out forwards;
 }
-@keyframes bdayFlicker {
+@keyframes bdayCatchPop {
   0% {
-    transform: scale(1) translateY(0);
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.8);
+    opacity: 1;
   }
   100% {
-    transform: scale(0.82, 1.08) translateY(-1px);
+    transform: scale(0.2);
+    opacity: 0;
   }
 }
 
@@ -7288,6 +7353,7 @@ form textarea:required:valid {
   pointer-events: none;
   overflow: hidden;
   border-radius: inherit;
+  z-index: 4;
 }
 .bday-hearts span {
   position: absolute;
@@ -7311,9 +7377,6 @@ form textarea:required:valid {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bday-flame {
-    animation: none;
-  }
   .bday-hearts span {
     animation-duration: 0.01ms !important;
   }

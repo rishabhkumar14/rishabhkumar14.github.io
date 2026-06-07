@@ -36,7 +36,7 @@
   <!-- Styles Start -->
   <link rel="stylesheet" href="css/loaders/loader.css?v=20260624">
   <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260624">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260628">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260632">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -1837,7 +1837,7 @@
   <script src="js/gallery-init.js"></script>
 
   <!-- Secret birthday surprise (phone only): tap the cute mascot 30+ times.
-       A "make a wish & blow the candles" cake for a special someone. Every
+       A "catch the falling hearts" love game for a special someone. Every
        mascot tap also swooshes the stars around it. -->
   <div id="bdaySurprise" class="bday-surprise" role="dialog" aria-modal="true" aria-label="Birthday surprise"
     aria-hidden="true">
@@ -1845,46 +1845,11 @@
       <button class="bday-close" id="bdayClose" type="button" aria-label="Close">✕</button>
       <div class="bday-hearts" id="bdayHearts" aria-hidden="true"></div>
       <h3 class="bday-title">Happy Birthday,<br>my Subi Dubi 🎂💖</h3>
-      <p class="bday-sub" id="bdaySub">Close your eyes, make a wish… then tap each candle to blow it out 🕯️</p>
-      <div class="bday-cake" id="bdayCake">
-        <svg viewBox="0 0 200 180" role="img" aria-label="Birthday cake">
-          <!-- plate -->
-          <ellipse cx="100" cy="158" rx="86" ry="11" fill="#e8d9ec" />
-          <!-- bottom tier -->
-          <rect x="34" y="104" width="132" height="52" rx="10" fill="#ff9ec7" />
-          <path d="M34 116 q16 14 33 0 q16 14 33 0 q16 14 33 0 q16 14 33 0 v-12 h-132 z" fill="#fff6fb" />
-          <!-- sprinkles -->
-          <g fill="#c08bff">
-            <circle cx="60" cy="132" r="2" />
-            <circle cx="92" cy="140" r="2" />
-            <circle cx="126" cy="130" r="2" />
-            <circle cx="146" cy="142" r="2" />
-          </g>
-          <!-- top tier -->
-          <rect x="56" y="74" width="88" height="36" rx="8" fill="#c08bff" />
-          <path d="M56 84 q14 12 29 0 q15 12 30 0 q14 12 29 0 v-10 h-88 z" fill="#fff6fb" />
-          <!-- candles (stick + tappable flame) -->
-          <g>
-            <rect x="71" y="50" width="6" height="26" rx="2" fill="#ff6f9d" />
-            <rect x="97" y="46" width="6" height="30" rx="2" fill="#7ad0ff" />
-            <rect x="123" y="50" width="6" height="26" rx="2" fill="#ffd36f" />
-          </g>
-          <g class="bday-flame" data-flame tabindex="0" role="button" aria-label="Blow out candle">
-            <ellipse cx="74" cy="44" rx="5" ry="8" fill="#ff8a3d" />
-            <ellipse cx="74" cy="45" rx="2.4" ry="4.5" fill="#ffe08a" />
-            <circle cx="74" cy="44" r="11" fill="transparent" />
-          </g>
-          <g class="bday-flame" data-flame tabindex="0" role="button" aria-label="Blow out candle">
-            <ellipse cx="100" cy="40" rx="5" ry="8" fill="#ff8a3d" />
-            <ellipse cx="100" cy="41" rx="2.4" ry="4.5" fill="#ffe08a" />
-            <circle cx="100" cy="40" r="11" fill="transparent" />
-          </g>
-          <g class="bday-flame" data-flame tabindex="0" role="button" aria-label="Blow out candle">
-            <ellipse cx="126" cy="44" rx="5" ry="8" fill="#ff8a3d" />
-            <ellipse cx="126" cy="45" rx="2.4" ry="4.5" fill="#ffe08a" />
-            <circle cx="126" cy="44" r="11" fill="transparent" />
-          </g>
-        </svg>
+      <p class="bday-sub" id="bdaySub">Quick — catch the floating hearts before they fly away! 💕</p>
+      <div class="bday-game" id="bdayGame">
+        <div class="bday-meter" aria-hidden="true"><i id="bdayMeterFill"></i></div>
+        <div class="bday-count" id="bdayCount">0 / 12 hearts caught</div>
+        <div class="bday-field" id="bdayField" aria-hidden="true"></div>
       </div>
       <p class="bday-msg" id="bdayMsg"></p>
     </div>
@@ -1909,7 +1874,7 @@
       // --- Secret birthday surprise (phone only, 30+ taps) ---
       const overlay = document.getElementById('bdaySurprise');
       const isPhone = () => window.matchMedia('(max-width: 991px)').matches;
-      const TARGET = 30;
+      const TARGET = 10;
       let taps = 0;
       let opened = false;
 
@@ -1929,59 +1894,156 @@
         }
       };
 
+      // ----- "Catch the love" game -----
       const sub = document.getElementById('bdaySub');
       const msg = document.getElementById('bdayMsg');
-      const flames = Array.prototype.slice.call(overlay.querySelectorAll('.bday-flame'));
-      let out = 0;
+      const field = document.getElementById('bdayField');
+      const meterFill = document.getElementById('bdayMeterFill');
+      const countEl = document.getElementById('bdayCount');
+      const GOAL = 12;
+      const HEARTS = ['💖', '💗', '🩷', '💝', '💓', '🧡', '💕'];
+      const rand = (a, b) => Math.random() * (b - a) + a;
+      let caught = 0;
+      let spawnTimer = 0;
+      let won = false;
 
-      const finish = () => {
-        if (sub) sub.textContent = 'Yaaay! Wish made 🥳';
+      const updateMeter = () => {
+        if (meterFill) meterFill.style.width = Math.min(100, (caught / GOAL) * 100) + '%';
+        if (countEl) countEl.textContent = caught + ' / ' + GOAL + ' hearts caught';
+      };
+
+      const spawnRiser = () => {
+        if (won || !field) return;
+        const wrap = document.createElement('button');
+        wrap.type = 'button';
+        wrap.className = 'bday-rise';
+        wrap.setAttribute('aria-label', 'Catch heart');
+        const inner = document.createElement('span');
+        inner.className = 'bday-rise-inner';
+        inner.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
+        inner.style.fontSize = rand(26, 42).toFixed(0) + 'px';
+        wrap.style.left = rand(4, 84) + '%';
+        wrap.style.setProperty('--d', rand(3.2, 5).toFixed(2) + 's');
+        inner.style.setProperty('--sd', rand(0.8, 1.5).toFixed(2) + 's');
+        wrap.appendChild(inner);
+        field.appendChild(wrap);
+        wrap.addEventListener('animationend', (e) => {
+          if (e.animationName === 'bdayRise') wrap.remove();
+        });
+        const onCatch = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (wrap.dataset.caught || won) return;
+          wrap.dataset.caught = '1';
+          wrap.classList.add('caught');
+          setTimeout(() => wrap.remove(), 460);
+          caught++;
+          updateMeter();
+          if (caught >= GOAL) win();
+        };
+        wrap.addEventListener('click', onCatch);
+      };
+
+      const startGame = () => {
+        caught = 0;
+        won = false;
+        updateMeter();
+        clearInterval(spawnTimer);
+        // a couple to start, then a steady gentle stream
+        spawnRiser();
+        setTimeout(spawnRiser, 300);
+        spawnTimer = setInterval(spawnRiser, 620);
+      };
+
+      const win = () => {
+        if (won) return;
+        won = true;
+        clearInterval(spawnTimer);
+        if (sub) sub.textContent = 'You caught all my love 💕';
         if (msg) {
           msg.innerHTML =
             'Happy birthday, my Subi Dubi 💝<br>' +
-            'Thank you for being my favourite person. ' +
-            'I hope this year spoils you rotten — you deserve every bit of it. ' +
-            'I love you, always. 🎂🎈😘<br><span style="font-size:1.3rem;opacity:.8">— your Rishabh</span>';
+            'You catch my heart exactly like that — every single day. ' +
+            'Thank you for being my favourite person. I hope this year spoils ' +
+            'you rotten, because you deserve every bit of it. I love you, always. 🎂🎈😘';
           msg.classList.add('show');
         }
-        spawnHearts(34);
+        spawnHearts(40);
       };
 
-      const blowOut = (flame) => {
-        if (flame.classList.contains('out')) return;
-        flame.classList.add('out');
-        spawnHearts(3);
-        out++;
-        if (out >= flames.length) setTimeout(finish, 450);
+      // ----- Modal open/close (locked: only ✕ closes, no scroll) -----
+      // Pin the page in place while open. overflow:hidden alone isn't enough
+      // because the site uses Lenis smooth scroll (it intercepts wheel/touch
+      // on the window), so we also fix the body at its current scroll offset
+      // and block touchmove on the backdrop.
+      let savedScrollY = 0;
+      const lockScroll = () => {
+        savedScrollY = window.scrollY || window.pageYOffset || 0;
+        document.body.style.position = 'fixed';
+        document.body.style.top = -savedScrollY + 'px';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
       };
-      flames.forEach((f) => {
-        f.addEventListener('click', () => blowOut(f));
-        f.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); blowOut(f); }
-        });
-      });
+      const unlockScroll = () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        window.scrollTo(0, savedScrollY);
+      };
+      // Block background scroll/drag while open (allow scrolling inside the card only).
+      overlay.addEventListener('touchmove', (e) => {
+        if (!e.target.closest('.bday-card')) e.preventDefault();
+      }, { passive: false });
+      // Stop wheel scroll from leaking to the background on desktop too.
+      overlay.addEventListener('wheel', (e) => {
+        if (!e.target.closest('.bday-card')) e.preventDefault();
+      }, { passive: false });
 
       const openSurprise = () => {
         if (opened) return;
         opened = true;
         overlay.classList.add('is-open');
         overlay.setAttribute('aria-hidden', 'false');
-        spawnHearts(18);
+        lockScroll();
+        spawnHearts(16);
+        startGame();
       };
       const closeSurprise = () => {
         overlay.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
+        clearInterval(spawnTimer);
+        unlockScroll();
       };
       const closeBtn = document.getElementById('bdayClose');
       if (closeBtn) closeBtn.addEventListener('click', closeSurprise);
-      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeSurprise(); });
+      // NOTE: tapping the backdrop intentionally does nothing — only ✕ closes.
 
-      logo.addEventListener('click', () => {
+      // Use pointerdown (not click): on phones, rapid taps trigger the
+      // browser's double-tap-to-zoom gesture which CANCELS click events, so
+      // most taps were never counted. pointerdown fires immediately and
+      // reliably once per tap. Guard against the same tap also firing a
+      // synthetic click by handling pointer only.
+      let lastTap = 0;
+      const onTap = (e) => {
+        // Ignore duplicate events fired for the same physical tap.
+        const now = Date.now();
+        if (now - lastTap < 60) return;
+        lastTap = now;
         starBurst();
         if (!isPhone() || opened) return;
         taps++;
         if (taps >= TARGET) openSurprise();
-      });
+      };
+      logo.addEventListener('pointerdown', onTap);
+      // Fallback for very old browsers without Pointer Events.
+      if (!('PointerEvent' in window)) logo.addEventListener('click', onTap);
     })();
   </script>
 

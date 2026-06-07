@@ -5856,6 +5856,20 @@ form textarea:required:valid {
   width: var(--hc-avatar-lg-size, 5.6rem);
   height: var(--hc-avatar-lg-size, 5.6rem);
   font-size: calc(var(--hc-avatar-lg-size, 5.6rem) * 0.36);
+  /* The avatar is a focusable button (role=button, tabindex). On Android
+     Chrome, tapping it flashes a translucent BLUE SQUARE (the default
+     -webkit-tap-highlight drawn on the element's square box, not its
+     circular shape). Kill that highlight and the focus outline so only the
+     intended ripple shows. */
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.hc-avatar-lg:focus,
+.hc-avatar-lg:focus-visible {
+  outline: none;
 }
 
 /* Drop-in entrance for the greeting avatar. Plays on first paint

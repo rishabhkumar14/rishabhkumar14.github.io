@@ -127,7 +127,11 @@ $(function () {
       window.matchMedia("(any-hover: hover) and (any-pointer: fine)").matches ||
       window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     if (!canRepel) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // NOTE: intentionally NOT gated by prefers-reduced-motion. The repel only
+    // moves cards in direct response to the user's own cursor (no autonomous
+    // motion), and users with Reduce Motion on still expect the marquee +
+    // hover interaction to work — gating it left the tools feeling dead to
+    // the mouse on Reduce-Motion machines.
 
     const RADIUS = 210; // px: how close before a card starts fleeing
     const STRENGTH = 92; // px: max push at closest range

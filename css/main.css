@@ -5197,44 +5197,43 @@ form textarea:required:valid {
     color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
-/* ===== Phone auto-sweep: with no cursor to follow, run the edge light
-   around the card a couple of times when it scrolls into view. The
-   highlight travels clockwise around the perimeter while fading in/out.
-   Triggered by the .is-edge-sweeping class (added via IntersectionObserver
-   on touch devices). ===== */
+/* ===== Intro border-shine sweep =====
+   A diagonal highlight band sweeps across the card's masked border ring
+   once when it scrolls into view (triggered by .is-edge-sweeping, added in
+   JS). Implemented with an animated background-position rather than the
+   pointer's --gx/--gy radial gradient: animating registered custom
+   properties needs @property *interpolation*, which several mobile
+   browsers (Firefox/Samsung Internet/older WebView on Android) don't
+   support, so the highlight never moved there. background-position is
+   animatable everywhere, so the shine now plays on those phones too. ===== */
 @keyframes edgeSweep {
   0% {
     opacity: 0;
-    --gx: 50%;
-    --gy: 0%;
+    background-position: 130% 130%;
   }
-  8% {
+  12% {
     opacity: 1;
   }
-  25% {
-    --gx: 100%;
-    --gy: 50%;
-  }
-  50% {
-    --gx: 50%;
-    --gy: 100%;
-  }
-  75% {
-    --gx: 0%;
-    --gy: 50%;
-  }
-  92% {
+  88% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    --gx: 50%;
-    --gy: 0%;
+    background-position: -30% -30%;
   }
 }
 
 .avatar__container.is-edge-sweeping::after,
 .home-chat.is-edge-sweeping::after {
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    color-mix(in srgb, var(--accent) 92%, #fff) 47%,
+    var(--secondary) 50%,
+    transparent 70%
+  );
+  background-size: 250% 250%;
+  background-repeat: no-repeat;
   animation: edgeSweep 1.7s ease-in-out 1 both;
 }
 

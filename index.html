@@ -167,8 +167,8 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="256" height="256" role="img"
               aria-label="Cute mascot" class="cute-mascot">
               <defs>
-                <linearGradient id="gradientFill" gradientUnits="userSpaceOnUse" x1="9.9604" y1="75.0338"
-                  x2="75.0387" y2="9.9555">
+                <linearGradient id="gradientFill" gradientUnits="userSpaceOnUse" x1="9.9604" y1="75.0338" x2="75.0387"
+                  y2="9.9555">
                   <stop offset="0" style="stop-color:var(--accent)" />
                   <stop offset="1" style="stop-color:var(--secondary)" />
                 </linearGradient>
@@ -199,20 +199,16 @@
                   stroke-linecap="round" />
                 <!-- twinkling sparkles scattered around the mascot -->
                 <path class="cm-sparkle cm-sparkle-1"
-                  d="M50 13 Q50.7 16 53.5 16.7 Q50.7 17.4 50 20.4 Q49.3 17.4 46.5 16.7 Q49.3 16 50 13 Z"
-                  fill="#fff" />
+                  d="M50 13 Q50.7 16 53.5 16.7 Q50.7 17.4 50 20.4 Q49.3 17.4 46.5 16.7 Q49.3 16 50 13 Z" fill="#fff" />
                 <path class="cm-sparkle cm-sparkle-2"
-                  d="M11 19 Q11.6 21.4 14 22 Q11.6 22.6 11 25 Q10.4 22.6 8 22 Q10.4 21.4 11 19 Z"
-                  fill="#fff" />
+                  d="M11 19 Q11.6 21.4 14 22 Q11.6 22.6 11 25 Q10.4 22.6 8 22 Q10.4 21.4 11 19 Z" fill="#fff" />
                 <path class="cm-sparkle cm-sparkle-3"
                   d="M55 32 Q55.5 33.8 57.3 34.3 Q55.5 34.8 55 36.6 Q54.5 34.8 52.7 34.3 Q54.5 33.8 55 32 Z"
                   fill="#fff" />
                 <path class="cm-sparkle cm-sparkle-4"
-                  d="M8 38 Q8.5 39.8 10.3 40.3 Q8.5 40.8 8 42.6 Q7.5 40.8 5.7 40.3 Q7.5 39.8 8 38 Z"
-                  fill="#fff" />
+                  d="M8 38 Q8.5 39.8 10.3 40.3 Q8.5 40.8 8 42.6 Q7.5 40.8 5.7 40.3 Q7.5 39.8 8 38 Z" fill="#fff" />
                 <path class="cm-sparkle cm-sparkle-5"
-                  d="M44 9 Q44.4 10.5 46 10.9 Q44.4 11.3 44 12.8 Q43.6 11.3 42 10.9 Q43.6 10.5 44 9 Z"
-                  fill="#fff" />
+                  d="M44 9 Q44.4 10.5 46 10.9 Q44.4 11.3 44 12.8 Q43.6 11.3 42 10.9 Q43.6 10.5 44 9 Z" fill="#fff" />
                 <circle class="cm-dot cm-sparkle-6" cx="18" cy="13" r="1.1" fill="#fff" />
                 <circle class="cm-dot cm-sparkle-7" cx="58" cy="24" r="1.1" fill="#fff" />
                 <circle class="cm-dot cm-sparkle-8" cx="6" cy="29" r="1" fill="#fff" />
@@ -1982,6 +1978,22 @@
       // runs on ALL devices (touch + pointer) so laptops get the same
       // flowing-border intro the phones already had.
       if ('IntersectionObserver' in window) {
+        // Wait until the intro loader has been dismissed before sweeping.
+        // Otherwise the cards "intersect" immediately at page load while the
+        // loader still covers the screen, so the one-time sweep plays behind
+        // it and is never seen — which is exactly what happened on phones
+        // (slow loader, and no hover fallback like desktop has).
+        const loaderGone = new Promise((resolve) => {
+          const loader = document.getElementById('loader');
+          if (!loader || loader.classList.contains('loaded')) { resolve(); return; }
+          const mo = new MutationObserver(() => {
+            if (loader.classList.contains('loaded')) { mo.disconnect(); resolve(); }
+          });
+          mo.observe(loader, { attributes: true, attributeFilter: ['class'] });
+          // Safety net in case the 'loaded' class is never added.
+          setTimeout(resolve, 3500);
+        });
+
         const swept = new WeakSet();
         const startSweep = (card) => {
           if (swept.has(card)) return;
@@ -1999,9 +2011,9 @@
             if (!entry.isIntersecting) return;
             const card = entry.target;
             obs.unobserve(card); // run once per page load
-            // Delay so the sweep plays AFTER the card's intro fade/slide
-            // has settled, making the shine clearly visible.
-            setTimeout(() => startSweep(card), 700);
+            // Hold the sweep until the loader is gone AND the card's intro
+            // fade/slide has settled, so the shine is clearly visible.
+            loaderGone.then(() => setTimeout(() => startSweep(card), 900));
           });
         }, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
         cards.forEach((card) => io.observe(card));

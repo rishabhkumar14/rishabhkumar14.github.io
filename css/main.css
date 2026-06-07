@@ -7231,12 +7231,12 @@ form textarea:required:valid {
   overflow: visible;
 }
 
-/* ---- "Catch the love" mini-game ---- */
+/* ---- "Sweet Match" match-3 mini-game (Candy-Crush style) ---- */
 .bday-game {
   margin: 0.6rem auto 0.2rem;
 }
 
-/* Love meter that fills as hearts are caught. */
+/* Score meter that fills toward the target. */
 .bday-meter {
   position: relative;
   height: 1.4rem;
@@ -7259,74 +7259,81 @@ form textarea:required:valid {
   color: #b14c80;
 }
 
-/* The play field where hearts float up. */
+/* The match-3 board: a responsive square grid of candy tiles. */
 .bday-field {
   position: relative;
-  height: 240px;
-  margin-top: 0.4rem;
+  width: min(86vw, 340px);
+  margin: 0.4rem auto 0;
+  padding: 6px;
   border-radius: 1.6rem;
-  overflow: hidden;
   background: radial-gradient(
-      circle at 50% 120%,
-      rgba(255, 158, 199, 0.35),
-      transparent 60%
+      circle at 50% 0%,
+      rgba(255, 158, 199, 0.4),
+      transparent 65%
     ),
-    rgba(255, 255, 255, 0.4);
+    rgba(255, 255, 255, 0.5);
   touch-action: manipulation;
 }
-
-/* A rising heart (button = tap target). The wrapper rises; the inner
-   emoji sways side to side so it drifts up like a real balloon. */
-.bday-rise {
-  position: absolute;
-  bottom: -10%;
+.bday-board {
+  display: grid;
+  gap: 4px;
+  /* columns/rows set inline from JS via --n */
+  grid-template-columns: repeat(var(--n, 7), 1fr);
+}
+.bday-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   border: 0;
-  background: transparent;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.55);
+  font-size: clamp(16px, 5.4vw, 26px);
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  animation: bdayRise var(--d, 4s) linear forwards;
-  will-change: transform;
+  user-select: none;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
 }
-.bday-rise-inner {
-  display: inline-block;
-  filter: drop-shadow(0 3px 4px rgba(180, 40, 110, 0.25));
-  animation: bdaySway var(--sd, 1.2s) ease-in-out infinite alternate;
+.bday-tile:active {
+  transform: scale(0.92);
 }
-@keyframes bdayRise {
-  to {
-    transform: translateY(-300px);
-  }
+.bday-tile.sel {
+  background: #ffe3f0;
+  box-shadow: 0 0 0 2px #d6337f inset;
+  transform: scale(1.06);
 }
-@keyframes bdaySway {
-  from {
-    transform: translateX(-9px) rotate(-10deg);
-  }
-  to {
-    transform: translateX(9px) rotate(10deg);
-  }
+.bday-tile.pop {
+  animation: bdayTilePop 0.26s ease-out forwards;
 }
-/* Pop burst when caught. */
-.bday-rise.caught {
-  animation: none;
-  pointer-events: none;
-}
-.bday-rise.caught .bday-rise-inner {
-  animation: bdayCatchPop 0.45s ease-out forwards;
-}
-@keyframes bdayCatchPop {
+@keyframes bdayTilePop {
   0% {
     transform: scale(1);
-    opacity: 1;
   }
-  40% {
-    transform: scale(1.8);
-    opacity: 1;
+  55% {
+    transform: scale(1.35);
   }
   100% {
-    transform: scale(0.2);
+    transform: scale(0);
     opacity: 0;
+  }
+}
+.bday-tile.drop {
+  animation: bdayTileDrop 0.26s ease-out;
+}
+@keyframes bdayTileDrop {
+  from {
+    transform: translateY(-18px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 

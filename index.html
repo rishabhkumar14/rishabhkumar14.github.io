@@ -36,7 +36,7 @@
   <!-- Styles Start -->
   <link rel="stylesheet" href="css/loaders/loader.css?v=20260624">
   <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260624">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260632">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260633">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -1836,20 +1836,22 @@
   <script src="js/app.js?v=20260627"></script>
   <script src="js/gallery-init.js"></script>
 
-  <!-- Secret birthday surprise (phone only): tap the cute mascot 30+ times.
-       A "catch the falling hearts" love game for a special someone. Every
-       mascot tap also swooshes the stars around it. -->
+  <!-- Secret birthday surprise (phone only): tap the cute mascot 10+ times.
+       A "Sweet Match" Candy-Crush-style match-3 game for a special someone.
+       Every mascot tap also swooshes the stars around it. -->
   <div id="bdaySurprise" class="bday-surprise" role="dialog" aria-modal="true" aria-label="Birthday surprise"
     aria-hidden="true">
     <div class="bday-card">
       <button class="bday-close" id="bdayClose" type="button" aria-label="Close">✕</button>
       <div class="bday-hearts" id="bdayHearts" aria-hidden="true"></div>
       <h3 class="bday-title">Happy Birthday,<br>my Subi Dubi 🎂💖</h3>
-      <p class="bday-sub" id="bdaySub">Quick — catch the floating hearts before they fly away! 💕</p>
+      <p class="bday-sub" id="bdaySub">Swap two neighbours to match 3+ sweets 🍬 Fill the love meter!</p>
       <div class="bday-game" id="bdayGame">
         <div class="bday-meter" aria-hidden="true"><i id="bdayMeterFill"></i></div>
-        <div class="bday-count" id="bdayCount">0 / 12 hearts caught</div>
-        <div class="bday-field" id="bdayField" aria-hidden="true"></div>
+        <div class="bday-count" id="bdayCount">Score 0 / 600</div>
+        <div class="bday-field" id="bdayField">
+          <div class="bday-board" id="bdayBoard" aria-hidden="true"></div>
+        </div>
       </div>
       <p class="bday-msg" id="bdayMsg"></p>
     </div>
@@ -1862,13 +1864,30 @@
       if (!logo || !svg) return;
 
       // --- Star swoosh on every tap (all devices) ---
-      let burstT = 0;
+      // Use the Web Animations API per tap so each tap fires its OWN
+      // independent burst. The old approach toggled a shared CSS class with a
+      // forced reflow + single timeout, so rapid taps kept resetting one
+      // animation mid-flight — which felt laggy and like taps were dropped.
+      const stars = svg.querySelectorAll('.cm-sparkle, .cm-dot');
+      const supportsWAAPI = typeof svg.animate === 'function';
       const starBurst = () => {
-        svg.classList.remove('cm-burst');
-        void svg.offsetWidth; // reflow so the animation restarts each tap
-        svg.classList.add('cm-burst');
-        clearTimeout(burstT);
-        burstT = setTimeout(() => svg.classList.remove('cm-burst'), 720);
+        if (!supportsWAAPI) {
+          // Fallback: quick class retrigger for very old browsers.
+          svg.classList.remove('cm-burst');
+          void svg.offsetWidth;
+          svg.classList.add('cm-burst');
+          return;
+        }
+        stars.forEach((star, i) => {
+          star.animate(
+            [
+              { transform: 'scale(0.4) rotate(0deg)', opacity: 0.4 },
+              { transform: 'scale(1.7) rotate(140deg)', opacity: 1, offset: 0.45 },
+              { transform: 'scale(1) rotate(300deg)', opacity: 1 }
+            ],
+            { duration: 480, delay: i * 14, easing: 'ease-out', fill: 'none' }
+          );
+        });
       };
 
       // --- Secret birthday surprise (phone only, 30+ taps) ---
@@ -1894,76 +1913,188 @@
         }
       };
 
-      // ----- "Catch the love" game -----
+      // ----- "Sweet Match" — Candy-Crush-style match-3 game -----
       const sub = document.getElementById('bdaySub');
       const msg = document.getElementById('bdayMsg');
-      const field = document.getElementById('bdayField');
+      const board = document.getElementById('bdayBoard');
       const meterFill = document.getElementById('bdayMeterFill');
       const countEl = document.getElementById('bdayCount');
-      const GOAL = 12;
-      const HEARTS = ['💖', '💗', '🩷', '💝', '💓', '🧡', '💕'];
-      const rand = (a, b) => Math.random() * (b - a) + a;
-      let caught = 0;
-      let spawnTimer = 0;
-      let won = false;
+      const N = 7;                       // grid is N×N
+      const TYPES = ['🍓', '🍬', '🍭', '🧁', '🫐', '🍒'];
+      const WIN_SCORE = 600;             // score needed to win
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const rnd = () => Math.floor(Math.random() * TYPES.length);
 
+      let grid = [];     // length N*N of type indices (-1 = empty)
+      let tiles = [];    // DOM buttons, same order
+      let score = 0;
+      let won = false;
+      let busy = false;
+      let selIdx = -1;
+
+      const ix = (r, c) => r * N + c;
       const updateMeter = () => {
-        if (meterFill) meterFill.style.width = Math.min(100, (caught / GOAL) * 100) + '%';
-        if (countEl) countEl.textContent = caught + ' / ' + GOAL + ' hearts caught';
+        if (meterFill) meterFill.style.width = Math.min(100, (score / WIN_SCORE) * 100) + '%';
+        if (countEl) countEl.textContent = 'Score ' + score + ' / ' + WIN_SCORE;
       };
 
-      const spawnRiser = () => {
-        if (won || !field) return;
-        const wrap = document.createElement('button');
-        wrap.type = 'button';
-        wrap.className = 'bday-rise';
-        wrap.setAttribute('aria-label', 'Catch heart');
-        const inner = document.createElement('span');
-        inner.className = 'bday-rise-inner';
-        inner.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
-        inner.style.fontSize = rand(26, 42).toFixed(0) + 'px';
-        wrap.style.left = rand(4, 84) + '%';
-        wrap.style.setProperty('--d', rand(3.2, 5).toFixed(2) + 's');
-        inner.style.setProperty('--sd', rand(0.8, 1.5).toFixed(2) + 's');
-        wrap.appendChild(inner);
-        field.appendChild(wrap);
-        wrap.addEventListener('animationend', (e) => {
-          if (e.animationName === 'bdayRise') wrap.remove();
-        });
-        const onCatch = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (wrap.dataset.caught || won) return;
-          wrap.dataset.caught = '1';
-          wrap.classList.add('caught');
-          setTimeout(() => wrap.remove(), 460);
-          caught++;
+      // Fill the grid so there are NO matches to begin with.
+      const fillBoard = () => {
+        grid = new Array(N * N);
+        for (let r = 0; r < N; r++) {
+          for (let c = 0; c < N; c++) {
+            let t;
+            do {
+              t = rnd();
+            } while (
+              (c >= 2 && grid[ix(r, c - 1)] === t && grid[ix(r, c - 2)] === t) ||
+              (r >= 2 && grid[ix(r - 1, c)] === t && grid[ix(r - 2, c)] === t)
+            );
+            grid[ix(r, c)] = t;
+          }
+        }
+      };
+
+      const buildTiles = () => {
+        if (!board) return;
+        board.style.setProperty('--n', N);
+        board.innerHTML = '';
+        tiles = [];
+        for (let i = 0; i < N * N; i++) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'bday-tile';
+          b.addEventListener('pointerdown', (e) => { e.preventDefault(); onTileTap(i); });
+          board.appendChild(b);
+          tiles.push(b);
+        }
+      };
+
+      const render = () => {
+        for (let i = 0; i < N * N; i++) {
+          tiles[i].textContent = grid[i] >= 0 ? TYPES[grid[i]] : '';
+        }
+      };
+
+      // Returns a Set of indices that are part of any horizontal/vertical run ≥3.
+      const findMatches = () => {
+        const s = new Set();
+        for (let r = 0; r < N; r++) {
+          let start = 0;
+          for (let c = 1; c <= N; c++) {
+            if (c < N && grid[ix(r, c)] === grid[ix(r, c - 1)] && grid[ix(r, c)] >= 0) continue;
+            if (c - start >= 3) for (let k = start; k < c; k++) s.add(ix(r, k));
+            start = c;
+          }
+        }
+        for (let c = 0; c < N; c++) {
+          let start = 0;
+          for (let r = 1; r <= N; r++) {
+            if (r < N && grid[ix(r, c)] === grid[ix(r - 1, c)] && grid[ix(r, c)] >= 0) continue;
+            if (r - start >= 3) for (let k = start; k < r; k++) s.add(ix(k, c));
+            start = r;
+          }
+        }
+        return s;
+      };
+
+      // Gravity: drop tiles down each column, refill the top with new candies.
+      const collapse = () => {
+        const fresh = new Set();
+        for (let c = 0; c < N; c++) {
+          let write = N - 1;
+          for (let r = N - 1; r >= 0; r--) {
+            if (grid[ix(r, c)] >= 0) {
+              grid[ix(write, c)] = grid[ix(r, c)];
+              write--;
+            }
+          }
+          for (let r = write; r >= 0; r--) {
+            grid[ix(r, c)] = rnd();
+            fresh.add(ix(r, c));
+          }
+        }
+        return fresh;
+      };
+
+      const swapCells = (a, b) => { const t = grid[a]; grid[a] = grid[b]; grid[b] = t; };
+      const adjacent = (a, b) => {
+        const dr = Math.abs(Math.floor(a / N) - Math.floor(b / N));
+        const dc = Math.abs((a % N) - (b % N));
+        return dr + dc === 1;
+      };
+
+      const resolve = async () => {
+        let mult = 1;
+        while (true) {
+          const m = findMatches();
+          if (m.size === 0) break;
+          m.forEach((i) => tiles[i].classList.add('pop'));
+          score += m.size * 10 * mult;
           updateMeter();
-          if (caught >= GOAL) win();
-        };
-        wrap.addEventListener('click', onCatch);
+          await wait(260);
+          m.forEach((i) => { grid[i] = -1; tiles[i].classList.remove('pop'); });
+          const fresh = collapse();
+          render();
+          fresh.forEach((i) => {
+            tiles[i].classList.remove('drop');
+            void tiles[i].offsetWidth;
+            tiles[i].classList.add('drop');
+          });
+          await wait(240);
+          mult++;
+          if (score >= WIN_SCORE) { win(); return; }
+        }
+      };
+
+      const trySwap = async (a, b) => {
+        busy = true;
+        swapCells(a, b); render();
+        if (findMatches().size === 0) {
+          await wait(170);
+          swapCells(a, b); render(); // no match → swap back, no penalty
+          busy = false;
+          return;
+        }
+        await resolve();
+        busy = false;
+      };
+
+      const onTileTap = (i) => {
+        if (busy || won) return;
+        if (selIdx === -1) { selIdx = i; tiles[i].classList.add('sel'); return; }
+        if (selIdx === i) { tiles[i].classList.remove('sel'); selIdx = -1; return; }
+        tiles[selIdx].classList.remove('sel');
+        const a = selIdx;
+        selIdx = -1;
+        if (adjacent(a, i)) {
+          trySwap(a, i);
+        } else {
+          selIdx = i;
+          tiles[i].classList.add('sel');
+        }
       };
 
       const startGame = () => {
-        caught = 0;
+        score = 0;
         won = false;
+        busy = false;
+        selIdx = -1;
         updateMeter();
-        clearInterval(spawnTimer);
-        // a couple to start, then a steady gentle stream
-        spawnRiser();
-        setTimeout(spawnRiser, 300);
-        spawnTimer = setInterval(spawnRiser, 620);
+        buildTiles();
+        fillBoard();
+        render();
       };
 
       const win = () => {
         if (won) return;
         won = true;
-        clearInterval(spawnTimer);
-        if (sub) sub.textContent = 'You caught all my love 💕';
+        busy = true;
+        if (sub) sub.textContent = 'You filled my heart all the way 💕';
         if (msg) {
           msg.innerHTML =
             'Happy birthday, my Subi Dubi 💝<br>' +
-            'You catch my heart exactly like that — every single day. ' +
+            'You’re sweeter than every candy on that board. ' +
             'Thank you for being my favourite person. I hope this year spoils ' +
             'you rotten, because you deserve every bit of it. I love you, always. 🎂🎈😘';
           msg.classList.add('show');
@@ -2018,7 +2149,6 @@
       const closeSurprise = () => {
         overlay.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
-        clearInterval(spawnTimer);
         unlockScroll();
       };
       const closeBtn = document.getElementById('bdayClose');
@@ -2028,13 +2158,12 @@
       // Use pointerdown (not click): on phones, rapid taps trigger the
       // browser's double-tap-to-zoom gesture which CANCELS click events, so
       // most taps were never counted. pointerdown fires immediately and
-      // reliably once per tap. Guard against the same tap also firing a
-      // synthetic click by handling pointer only.
+      // reliably once per tap. A tiny 30ms guard only suppresses a synthetic
+      // click firing for the same physical tap (fallback path).
       let lastTap = 0;
       const onTap = (e) => {
-        // Ignore duplicate events fired for the same physical tap.
         const now = Date.now();
-        if (now - lastTap < 60) return;
+        if (now - lastTap < 30) return;
         lastTap = now;
         starBurst();
         if (!isPhone() || opened) return;

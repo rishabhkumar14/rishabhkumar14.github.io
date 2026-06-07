@@ -391,7 +391,7 @@
               style="width: 20px; height: 20px; flex-shrink: 0;">
             <p
               style="margin: 0; font-size: 0.95em; font-weight: 600; color: white; display: flex; align-items: center; white-space: nowrap;">
-              🚀 <span style="white-space: nowrap;"> Working on Microsoft AI Foundry Agent Service</span>
+              <span style="white-space: nowrap;"> Working on Microsoft AI Foundry Agent Service</span>
             </p>
           </div>
           <div id="confettiContainer"
@@ -513,9 +513,12 @@
               <div class="mp-help-body">
                 <ul>
                   <li><b>Pick a colour</b> from the palette, and a tool from the tool box on the left.</li>
-                  <li><b>&#8634; Redraw</b> replays the architecture animation; the <b>&#10005;</b> button clears the board.</li>
-                  <li>The <b>File</b> menu works too &mdash; <b>Open</b> an image, <b>Save</b> / <b>Save As</b> your drawing, or <b>Print</b> it.</li>
-                  <li class="mp-help-desktop-only"><b>Move</b> the window by dragging the blue title bar; <b>resize</b> from any edge or corner.</li>
+                  <li><b>&#8634; Redraw</b> replays the architecture animation; the <b>&#10005;</b> button clears the
+                    board.</li>
+                  <li>The <b>File</b> menu works too &mdash; <b>Open</b> an image, <b>Save</b> / <b>Save As</b> your
+                    drawing, or <b>Print</b> it.</li>
+                  <li class="mp-help-desktop-only"><b>Move</b> the window by dragging the blue title bar; <b>resize</b>
+                    from any edge or corner.</li>
                   <li><b>Minimize / Maximize</b> with the title-bar buttons.</li>
                 </ul>
               </div>
@@ -585,7 +588,8 @@
 
               <!-- Flat round blue "?" help button, anchored to the right end of
                    the menu row (classic Windows ribbon help affordance). -->
-              <div class="mp-help-btn" id="mpHelp" title="Help &mdash; what can I do here?" role="button" tabindex="0" aria-label="Help">?</div>
+              <div class="mp-help-btn" id="mpHelp" title="Help &mdash; what can I do here?" role="button" tabindex="0"
+                aria-label="Help">?</div>
             </div>
 
             <div class="mp-body">
@@ -2011,6 +2015,60 @@
           schedule();
         }
       }, 1000);
+    })();
+  </script>
+
+  <!-- Pointer-following "nearest edge glow" for the hero cards. As the
+       cursor moves over the avatar card or the chat card, we set --gx/--gy
+       so the masked border ring (see css) lights up the closest edge.
+       On touch devices (no cursor), instead run the edge light around the
+       card a couple of times when it first scrolls into view. -->
+  <script>
+    (function () {
+      const cards = [
+        document.querySelector('#avatar .avatar__container'),
+        document.getElementById('rishabhChat'),
+      ].filter(Boolean);
+      if (!cards.length) return;
+
+      const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+      if (isTouch) {
+        // No hover cursor — sweep the border light when each card enters view.
+        if (!('IntersectionObserver' in window)) return;
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const card = entry.target;
+            card.classList.add('is-edge-sweeping');
+            card.addEventListener('animationend', function onEnd(ev) {
+              // Ignore the card's own intro animation; only the sweep counts.
+              if (ev.animationName !== 'edgeSweep') return;
+              card.classList.remove('is-edge-sweeping');
+              card.removeEventListener('animationend', onEnd);
+            });
+            obs.unobserve(card); // run once per page load
+          });
+        }, { threshold: 0.45 });
+        cards.forEach((card) => io.observe(card));
+        return;
+      }
+
+      cards.forEach((card) => {
+        let raf = 0;
+        let px = 0, py = 0;
+        const paint = () => {
+          raf = 0;
+          card.style.setProperty('--gx', px + 'px');
+          card.style.setProperty('--gy', py + 'px');
+        };
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          px = e.clientX - r.left;
+          py = e.clientY - r.top;
+          if (!raf) raf = requestAnimationFrame(paint);
+        });
+      });
     })();
   </script>
 

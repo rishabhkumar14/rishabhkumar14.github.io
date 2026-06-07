@@ -3220,8 +3220,10 @@ form textarea:required:valid {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--base-tint);
-  border: 1px solid var(--stroke-elements);
+  background-color: color-mix(in srgb, var(--base-tint) 62%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
+  border: 1px solid color-mix(in srgb, var(--stroke-elements) 70%, transparent);
   -moz-border-radius: var(--_radius-xl);
   border-radius: var(--_radius-xl);
 }
@@ -4756,6 +4758,217 @@ form textarea:required:valid {
   }
 }
 
+/* ===== Hero card + social buttons intro choreography (runs once on load) =====
+   The whole profile card rises/fades in, then the five social buttons
+   weave in past each other (alternating swing directions) with a little
+   overshoot before settling back onto their final positions. */
+@keyframes avatarCardIn {
+  0% {
+    opacity: 0;
+    transform: translateY(34px) scale(0.965);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes socialSwingIn {
+  0% {
+    opacity: 0;
+    transform: translate(var(--sx), -22px) scale(0.3) rotate(var(--sr));
+  }
+  50% {
+    opacity: 1;
+    transform: translate(calc(var(--sx) * -0.4), 7px) scale(1.16)
+      rotate(calc(var(--sr) * -0.3));
+  }
+  75% {
+    transform: translate(0, -3px) scale(0.96) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0);
+  }
+}
+
+.avatar__container {
+  animation: avatarCardIn 0.85s var(--_animbezier) both;
+}
+
+.socials-square__item {
+  --sx: -34px;
+  --sr: -42deg;
+  animation: socialSwingIn 0.72s var(--_animbezier) both;
+}
+/* Alternate the entry direction so they appear to weave past one another. */
+.socials-square__item:nth-child(even) {
+  --sx: 34px;
+  --sr: 42deg;
+}
+.socials-square__item:nth-child(1) {
+  animation-delay: 0.5s;
+}
+.socials-square__item:nth-child(2) {
+  animation-delay: 0.6s;
+}
+.socials-square__item:nth-child(3) {
+  animation-delay: 0.7s;
+}
+.socials-square__item:nth-child(4) {
+  animation-delay: 0.8s;
+}
+.socials-square__item:nth-child(5) {
+  animation-delay: 0.9s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar__container,
+  .socials-square__item {
+    animation: none;
+  }
+}
+
+/* ===== Pointer-following "nearest edge glow" for the hero cards =====
+   A thin border-ring pseudo-element is painted with a radial gradient
+   centred on the cursor (--gx/--gy, set from JS). Masking keeps only the
+   1.5px border visible, so whichever edge the pointer is nearest lights
+   up. Cards also lift slightly and cast a warm accent shadow on hover. */
+
+/* Registered so --gx/--gy can be *animated* for the phone auto-sweep
+   below. inherits:true keeps the desktop pointer value (set on the card)
+   flowing down to the ::after ring as before. */
+@property --gx {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --gy {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+.avatar__container,
+.home-chat {
+  --gx: 50%;
+  --gy: 50%;
+  transition:
+    transform 0.4s var(--_animbezier),
+    box-shadow 0.4s var(--_animbezier);
+}
+
+.avatar__container::after,
+.home-chat::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: radial-gradient(
+    240px circle at var(--gx) var(--gy),
+    color-mix(in srgb, var(--accent) 92%, #fff),
+    var(--secondary) 30%,
+    transparent 62%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 3;
+  filter: drop-shadow(
+    0 0 1px color-mix(in srgb, var(--accent) 22%, transparent)
+  );
+}
+
+/* The avatar card's visible surface is its ::before; match that radius. */
+.avatar__container::after {
+  border-radius: var(--_radius-xl);
+}
+
+.no-touch .avatar__container:hover::after,
+.no-touch .home-chat:hover::after {
+  opacity: 1;
+}
+
+.no-touch .home-chat:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 36px 70px -24px rgba(0, 0, 0, 0.6),
+    0 0 16px -10px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.no-touch .avatar__container:hover {
+  transform: translateY(-4px);
+}
+.no-touch .avatar__container:hover::before {
+  box-shadow: 0 14px 30px -24px
+    color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* ===== Phone auto-sweep: with no cursor to follow, run the edge light
+   around the card a couple of times when it scrolls into view. The
+   highlight travels clockwise around the perimeter while fading in/out.
+   Triggered by the .is-edge-sweeping class (added via IntersectionObserver
+   on touch devices). ===== */
+@keyframes edgeSweep {
+  0% {
+    opacity: 0;
+    --gx: 50%;
+    --gy: 0%;
+  }
+  8% {
+    opacity: 1;
+  }
+  25% {
+    --gx: 100%;
+    --gy: 50%;
+  }
+  50% {
+    --gx: 50%;
+    --gy: 100%;
+  }
+  75% {
+    --gx: 0%;
+    --gy: 50%;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    --gx: 50%;
+    --gy: 0%;
+  }
+}
+
+.avatar__container.is-edge-sweeping::after,
+.home-chat.is-edge-sweeping::after {
+  animation: edgeSweep 1.7s ease-in-out 1 both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar__container,
+  .home-chat {
+    transition: none;
+  }
+  .no-touch .avatar__container:hover,
+  .no-touch .home-chat:hover {
+    transform: none;
+  }
+  .avatar__container.is-edge-sweeping::after,
+  .home-chat.is-edge-sweeping::after {
+    animation: none;
+  }
+}
+
 /* ------------------------------------------------*/
 /* Features Socials End */
 /* ------------------------------------------------*/
@@ -5112,7 +5325,7 @@ form textarea:required:valid {
   position: relative;
   width: 100%;
   height: 38rem;
-  margin: 2rem auto 0;
+  margin: 3.6rem auto 0;
 }
 
 [color-scheme="light"] .home-chat {
@@ -5462,13 +5675,23 @@ form textarea:required:valid {
   font-family: inherit;
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    color 0.15s ease;
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s var(--_animbezier),
+    box-shadow 0.18s ease;
 }
 
 .hc-chip:hover {
   background: var(--secondary-rgba);
   color: var(--t-bright);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--accent) 75%, transparent);
+}
+
+.hc-chip:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .hc-msg {
@@ -5844,19 +6067,6 @@ form textarea:required:valid {
 
 .ms-paint .mp-help-body li:last-child {
   margin-bottom: 0;
-}
-
-/* Drag/resize isn't available on phones, so hide that help line there. */
-@media (max-width: 991px) {
-  .ms-paint .mp-help-body li.mp-help-desktop-only {
-    display: none;
-  }
-  /* iOS Safari renders filter:blur() far more aggressively than Android
-     Chrome, making the small help text mushy. Drop the blur on phones and
-     keep just the faded colour/shadow for the old-ink look. */
-  .ms-paint .mp-help-body {
-    filter: none;
-  }
 }
 
 .ms-paint .mp-menubar {

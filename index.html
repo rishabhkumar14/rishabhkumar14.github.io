@@ -36,7 +36,7 @@
   <!-- Styles Start -->
   <link rel="stylesheet" href="css/loaders/loader.css?v=20260624">
   <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260624">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260633">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260634">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -1844,8 +1844,8 @@
     <div class="bday-card">
       <button class="bday-close" id="bdayClose" type="button" aria-label="Close">✕</button>
       <div class="bday-hearts" id="bdayHearts" aria-hidden="true"></div>
-      <h3 class="bday-title">Happy Birthday,<br>my Subi Dubi 🎂💖</h3>
-      <p class="bday-sub" id="bdaySub">Swap two neighbours to match 3+ sweets 🍬 Fill the love meter!</p>
+      <h3 class="bday-title">Happy Birthday,<br>my Subi Dubi</h3>
+      <p class="bday-sub" id="bdaySub">You know what to do..</p>
       <div class="bday-game" id="bdayGame">
         <div class="bday-meter" aria-hidden="true"><i id="bdayMeterFill"></i></div>
         <div class="bday-count" id="bdayCount">Score 0 / 600</div>
@@ -1964,6 +1964,7 @@
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'bday-tile';
+          b.style.setProperty('--i', i);
           b.addEventListener('pointerdown', (e) => { e.preventDefault(); onTileTap(i); });
           board.appendChild(b);
           tiles.push(b);
@@ -2082,6 +2083,7 @@
         selIdx = -1;
         updateMeter();
         buildTiles();
+        if (board) board.classList.remove('win');
         fillBoard();
         render();
       };
@@ -2090,6 +2092,8 @@
         if (won) return;
         won = true;
         busy = true;
+        selIdx = -1;
+        if (board) board.classList.add('win'); // all candies dance 🎉
         if (sub) sub.textContent = 'You filled my heart all the way 💕';
         if (msg) {
           msg.innerHTML =

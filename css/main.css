@@ -7107,6 +7107,218 @@ form textarea:required:valid {
   }
 }
 
+/* The mascot is tappable (secret birthday surprise + star swoosh). */
+.logo__image {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* On each click the scattered stars do a quick swoosh-twinkle and the
+   little character gives a happy bounce. JS toggles .cm-burst per click. */
+.cute-mascot.cm-burst .cm-sparkle,
+.cute-mascot.cm-burst .cm-dot {
+  animation: cmStarSwoosh 0.7s ease-out;
+}
+@keyframes cmStarSwoosh {
+  0% {
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0.25;
+  }
+  45% {
+    transform: scale(1.7) rotate(150deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 1;
+  }
+}
+.cute-mascot.cm-burst .cm-float {
+  animation: cmPop 0.5s ease-out;
+  transform-origin: 50% 92%;
+}
+@keyframes cmPop {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  40% {
+    transform: scale(1.13) translateY(-2px);
+  }
+}
+
+/* =================================================
+   Secret birthday surprise (phone only) — opens when
+   the cute mascot is tapped 30+ times. A tap-the-
+   candles "make a wish" cake for a special someone.
+   ================================================= */
+.bday-surprise {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 5vw;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 158, 199, 0.45),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 75% 80%,
+      rgba(170, 120, 255, 0.45),
+      transparent 55%
+    ),
+    rgba(20, 12, 28, 0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.bday-surprise.is-open {
+  display: flex;
+  opacity: 1;
+}
+
+.bday-card {
+  position: relative;
+  width: min(90vw, 420px);
+  max-height: 92vh;
+  overflow: hidden auto;
+  text-align: center;
+  padding: 3.2rem 2.2rem 2.6rem;
+  border-radius: 2.4rem;
+  background: linear-gradient(160deg, #fff7fb, #ffeaf4 55%, #f1e6ff);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6);
+  transform: translateY(18px) scale(0.96);
+  transition: transform 0.5s cubic-bezier(0.23, 0.65, 0.74, 1.09);
+}
+.bday-surprise.is-open .bday-card {
+  transform: translateY(0) scale(1);
+}
+
+.bday-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  color: #7a4a66;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bday-title {
+  margin: 0 0 0.6rem;
+  font: 700 2.6rem/1.15 var(--_font-accent, "Poppins", sans-serif);
+  color: #d6337f;
+}
+.bday-sub {
+  margin: 0 0 0.4rem;
+  font-size: 1.4rem;
+  color: #8a5a76;
+  min-height: 3.6rem;
+}
+
+.bday-cake {
+  margin: 0.4rem auto 0.6rem;
+  width: 220px;
+  max-width: 70vw;
+}
+.bday-cake svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Candle flames flicker until tapped out. */
+.bday-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bdayFlicker 0.5s ease-in-out infinite alternate;
+  cursor: pointer;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.bday-flame.out {
+  opacity: 0;
+  transform: scale(0.2);
+  animation: none;
+  pointer-events: none;
+}
+.bday-tap {
+  cursor: pointer;
+}
+@keyframes bdayFlicker {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(0.82, 1.08) translateY(-1px);
+  }
+}
+
+.bday-msg {
+  margin: 0.6rem 0 0;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: #7a3a5e;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+.bday-msg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Floating hearts/confetti inside the card. */
+.bday-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.bday-hearts span {
+  position: absolute;
+  bottom: -24px;
+  font-size: 18px;
+  opacity: 0;
+  animation: bdayFloat linear forwards;
+}
+@keyframes bdayFloat {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.7);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-460px) rotate(220deg) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bday-flame {
+    animation: none;
+  }
+  .bday-hearts span {
+    animation-duration: 0.01ms !important;
+  }
+}
+
 /* =================================================
    Resize handles for draggable widgets (chat + paint)
    8 handles per widget (4 edges + 4 corners). Each

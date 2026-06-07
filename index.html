@@ -36,7 +36,7 @@
   <!-- Styles Start -->
   <link rel="stylesheet" href="css/loaders/loader.css?v=20260624">
   <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260624">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260627">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260628">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -1835,6 +1835,156 @@
        third-party request + DNS round-trip on every page load. -->
   <script src="js/app.js?v=20260627"></script>
   <script src="js/gallery-init.js"></script>
+
+  <!-- Secret birthday surprise (phone only): tap the cute mascot 30+ times.
+       A "make a wish & blow the candles" cake for a special someone. Every
+       mascot tap also swooshes the stars around it. -->
+  <div id="bdaySurprise" class="bday-surprise" role="dialog" aria-modal="true" aria-label="Birthday surprise"
+    aria-hidden="true">
+    <div class="bday-card">
+      <button class="bday-close" id="bdayClose" type="button" aria-label="Close">✕</button>
+      <div class="bday-hearts" id="bdayHearts" aria-hidden="true"></div>
+      <h3 class="bday-title">Happy Birthday,<br>my Subi Dubi 🎂💖</h3>
+      <p class="bday-sub" id="bdaySub">Close your eyes, make a wish… then tap each candle to blow it out 🕯️</p>
+      <div class="bday-cake" id="bdayCake">
+        <svg viewBox="0 0 200 180" role="img" aria-label="Birthday cake">
+          <!-- plate -->
+          <ellipse cx="100" cy="158" rx="86" ry="11" fill="#e8d9ec" />
+          <!-- bottom tier -->
+          <rect x="34" y="104" width="132" height="52" rx="10" fill="#ff9ec7" />
+          <path d="M34 116 q16 14 33 0 q16 14 33 0 q16 14 33 0 q16 14 33 0 v-12 h-132 z" fill="#fff6fb" />
+          <!-- sprinkles -->
+          <g fill="#c08bff">
+            <circle cx="60" cy="132" r="2" />
+            <circle cx="92" cy="140" r="2" />
+            <circle cx="126" cy="130" r="2" />
+            <circle cx="146" cy="142" r="2" />
+          </g>
+          <!-- top tier -->
+          <rect x="56" y="74" width="88" height="36" rx="8" fill="#c08bff" />
+          <path d="M56 84 q14 12 29 0 q15 12 30 0 q14 12 29 0 v-10 h-88 z" fill="#fff6fb" />
+          <!-- candles (stick + tappable flame) -->
+          <g>
+            <rect x="71" y="50" width="6" height="26" rx="2" fill="#ff6f9d" />
+            <rect x="97" y="46" width="6" height="30" rx="2" fill="#7ad0ff" />
+            <rect x="123" y="50" width="6" height="26" rx="2" fill="#ffd36f" />
+          </g>
+          <g class="bday-flame" data-flame tabindex="0" role="button" aria-label="Blow out candle">
+            <ellipse cx="74" cy="44" rx="5" ry="8" fill="#ff8a3d" />
+            <ellipse cx="74" cy="45" rx="2.4" ry="4.5" fill="#ffe08a" />
+            <circle cx="74" cy="44" r="11" fill="transparent" />
+          </g>
+          <g class="bday-flame" data-flame tabindex="0" role="button" aria-label="Blow out candle">
+            <ellipse cx="100" cy="40" rx="5" ry="8" fill="#ff8a3d" />
+            <ellipse cx="100" cy="41" rx="2.4" ry="4.5" fill="#ffe08a" />
+            <circle cx="100" cy="40" r="11" fill="transparent" />
+          </g>
+          <g class="bday-flame" data-flame tabindex="0" role="button" aria-label="Blow out candle">
+            <ellipse cx="126" cy="44" rx="5" ry="8" fill="#ff8a3d" />
+            <ellipse cx="126" cy="45" rx="2.4" ry="4.5" fill="#ffe08a" />
+            <circle cx="126" cy="44" r="11" fill="transparent" />
+          </g>
+        </svg>
+      </div>
+      <p class="bday-msg" id="bdayMsg"></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const logo = document.querySelector('.avatar__logo .logo__image');
+      const svg = logo && logo.querySelector('.cute-mascot');
+      if (!logo || !svg) return;
+
+      // --- Star swoosh on every tap (all devices) ---
+      let burstT = 0;
+      const starBurst = () => {
+        svg.classList.remove('cm-burst');
+        void svg.offsetWidth; // reflow so the animation restarts each tap
+        svg.classList.add('cm-burst');
+        clearTimeout(burstT);
+        burstT = setTimeout(() => svg.classList.remove('cm-burst'), 720);
+      };
+
+      // --- Secret birthday surprise (phone only, 30+ taps) ---
+      const overlay = document.getElementById('bdaySurprise');
+      const isPhone = () => window.matchMedia('(max-width: 991px)').matches;
+      const TARGET = 30;
+      let taps = 0;
+      let opened = false;
+
+      const heartsBox = document.getElementById('bdayHearts');
+      const spawnHearts = (n) => {
+        if (!heartsBox) return;
+        const emojis = ['💖', '💗', '🎈', '✨', '🎀', '💝', '🩷'];
+        for (let i = 0; i < n; i++) {
+          const s = document.createElement('span');
+          s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          s.style.left = Math.random() * 90 + 4 + '%';
+          s.style.fontSize = (Math.random() * 12 + 14) + 'px';
+          s.style.animationDuration = (Math.random() * 2.5 + 3.5) + 's';
+          s.style.animationDelay = (Math.random() * 1.2) + 's';
+          heartsBox.appendChild(s);
+          setTimeout(() => s.remove(), 7000);
+        }
+      };
+
+      const sub = document.getElementById('bdaySub');
+      const msg = document.getElementById('bdayMsg');
+      const flames = Array.prototype.slice.call(overlay.querySelectorAll('.bday-flame'));
+      let out = 0;
+
+      const finish = () => {
+        if (sub) sub.textContent = 'Yaaay! Wish made 🥳';
+        if (msg) {
+          msg.innerHTML =
+            'Happy birthday, my Subi Dubi 💝<br>' +
+            'Thank you for being my favourite person. ' +
+            'I hope this year spoils you rotten — you deserve every bit of it. ' +
+            'I love you, always. 🎂🎈😘<br><span style="font-size:1.3rem;opacity:.8">— your Rishabh</span>';
+          msg.classList.add('show');
+        }
+        spawnHearts(34);
+      };
+
+      const blowOut = (flame) => {
+        if (flame.classList.contains('out')) return;
+        flame.classList.add('out');
+        spawnHearts(3);
+        out++;
+        if (out >= flames.length) setTimeout(finish, 450);
+      };
+      flames.forEach((f) => {
+        f.addEventListener('click', () => blowOut(f));
+        f.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); blowOut(f); }
+        });
+      });
+
+      const openSurprise = () => {
+        if (opened) return;
+        opened = true;
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        spawnHearts(18);
+      };
+      const closeSurprise = () => {
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      };
+      const closeBtn = document.getElementById('bdayClose');
+      if (closeBtn) closeBtn.addEventListener('click', closeSurprise);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeSurprise(); });
+
+      logo.addEventListener('click', () => {
+        starBurst();
+        if (!isPhone() || opened) return;
+        taps++;
+        if (taps >= TARGET) openSurprise();
+      });
+    })();
+  </script>
+
 
   <!-- Microsoft banner: width is decided by its text content (single line),
        not synced to the button row. On narrow viewports we also shrink the

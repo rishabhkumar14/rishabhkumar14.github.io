@@ -36,7 +36,7 @@
   <!-- Styles Start -->
   <link rel="stylesheet" href="css/loaders/loader.css?v=20260624">
   <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260624">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260626">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260627">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -1833,7 +1833,7 @@
   </script>
   <!-- smtp.js is now lazy-loaded inside js/app.js on form submit, saving a
        third-party request + DNS round-trip on every page load. -->
-  <script src="js/app.js?v=20260626"></script>
+  <script src="js/app.js?v=20260627"></script>
   <script src="js/gallery-init.js"></script>
 
   <!-- Microsoft banner: width is decided by its text content (single line),
@@ -2013,7 +2013,7 @@
             obs.unobserve(card); // run once per page load
             // Hold the sweep until the loader is gone AND the card's intro
             // fade/slide has settled, so the shine is clearly visible.
-            loaderGone.then(() => setTimeout(() => startSweep(card), 900));
+            loaderGone.then(() => setTimeout(() => startSweep(card), 400));
           });
         }, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
         cards.forEach((card) => io.observe(card));

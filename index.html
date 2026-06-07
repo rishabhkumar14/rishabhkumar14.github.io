@@ -36,7 +36,7 @@
   <!-- Styles Start -->
   <link rel="stylesheet" href="css/loaders/loader.css?v=20260624">
   <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260624">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260635">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260637">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -1853,6 +1853,7 @@
         <div class="bday-field" id="bdayField">
           <div class="bday-board" id="bdayBoard" aria-hidden="true"></div>
         </div>
+        <div class="bday-timer" id="bdayTimer" aria-hidden="true">⏳ Hurry! <b id="bdayClock">1:00</b> left 😈</div>
       </div>
       <p class="bday-msg" id="bdayMsg"></p>
     </div>
@@ -1920,6 +1921,8 @@
       const board = document.getElementById('bdayBoard');
       const meterFill = document.getElementById('bdayMeterFill');
       const countEl = document.getElementById('bdayCount');
+      const timerEl = document.getElementById('bdayTimer');
+      const clockEl = document.getElementById('bdayClock');
       const N = 7;                       // grid is N×N
       const TYPES = ['🍓', '🍬', '🍭', '🧁', '🫐', '🍒'];
       const WIN_SCORE = 600;             // score needed to win
@@ -1932,6 +1935,9 @@
       let won = false;
       let busy = false;
       let selIdx = -1;
+      let timeLeft = 60;     // fake "pressure" countdown (seconds)
+      let timerInt = 0;
+      let prankDone = false; // the "just kidding" reveal only happens once
 
       const ix = (r, c) => r * N + c;
       const updateMeter = () => {
@@ -2087,6 +2093,40 @@
         if (board) board.classList.remove('win');
         fillBoard();
         render();
+        startTimer();
+      };
+
+      // ----- Fake "pressure" countdown -----
+      // Counts down from 60s with a panicky vibe. When it hits zero it does
+      // NOT end the game — instead it reveals a sweet "just kidding" line and
+      // relaxes into "take all the time you want", so she can keep playing.
+      const fmt = (s) => '0:' + (s < 10 ? '0' : '') + s;
+      const stopTimer = () => { if (timerInt) { clearInterval(timerInt); timerInt = 0; } };
+      const startTimer = () => {
+        stopTimer();
+        timeLeft = 60;
+        if (clockEl) clockEl.textContent = '1:00';
+        if (timerEl) {
+          timerEl.classList.remove('relaxed', 'urgent');
+          timerEl.innerHTML = '⏳ Hurry! <b id="bdayClock">1:00</b> left 😈';
+        }
+        const clk = document.getElementById('bdayClock');
+        timerInt = setInterval(() => {
+          timeLeft--;
+          if (clk) clk.textContent = timeLeft >= 60 ? '1:00' : fmt(timeLeft);
+          if (timerEl && timeLeft <= 10 && timeLeft > 0) timerEl.classList.add('urgent');
+          if (timeLeft <= 0) { stopTimer(); timesUpPrank(); }
+        }, 1000);
+      };
+      const timesUpPrank = () => {
+        if (prankDone) return;
+        prankDone = true;
+        if (timerEl) {
+          timerEl.classList.remove('urgent');
+          timerEl.classList.add('relaxed');
+          timerEl.innerHTML = 'just kidding babe 💕 you could never lose — take all the time you want 🥰';
+        }
+        spawnHearts(14);
       };
 
       const win = () => {
@@ -2094,6 +2134,7 @@
         won = true;
         busy = true;
         selIdx = -1;
+        stopTimer();
         if (board) board.classList.add('win'); // all candies dance 🎉
         if (sub) sub.textContent = 'You filled my heart all the way 💕';
         if (msg) {
@@ -2154,6 +2195,7 @@
       const closeSurprise = () => {
         overlay.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
+        stopTimer();
         unlockScroll();
       };
       const closeBtn = document.getElementById('bdayClose');

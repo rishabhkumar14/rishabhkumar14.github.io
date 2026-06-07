@@ -7115,6 +7115,11 @@ form textarea:required:valid {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
+/* Nudge the mascot a touch right and down for better optical alignment
+   with the name beside it. */
+.logo__image .cute-mascot {
+  transform: translate(4px, 3px);
+}
 .logo__image .cute-mascot,
 .logo__image .cute-mascot * {
   pointer-events: none;
@@ -7306,13 +7311,47 @@ form textarea:required:valid {
   margin: 0.4rem auto 0;
   padding: 5px;
   border-radius: 1.6rem;
-  background: radial-gradient(
+  background:
+    radial-gradient(
       circle at 50% 0%,
       rgba(255, 158, 199, 0.4),
       transparent 65%
     ),
     rgba(255, 255, 255, 0.5);
   touch-action: manipulation;
+}
+
+/* Cute fake "pressure" countdown under the board. Pretends to rush her,
+   then flips to a sweet just-kidding line when it hits zero. */
+.bday-timer {
+  margin: 0.7rem auto 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #c25a86;
+}
+.bday-timer b {
+  font-variant-numeric: tabular-nums;
+  color: #d6337f;
+}
+.bday-timer.urgent {
+  color: #e23b6d;
+  animation: bdayTimerPulse 0.6s ease-in-out infinite;
+}
+.bday-timer.urgent b {
+  color: #e23b6d;
+}
+@keyframes bdayTimerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+.bday-timer.relaxed {
+  color: #b14c80;
+  animation: none;
 }
 .bday-board {
   display: grid;

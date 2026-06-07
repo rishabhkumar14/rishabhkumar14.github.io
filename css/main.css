@@ -5009,6 +5009,41 @@ form textarea:required:valid {
   transform-origin: top left;
 }
 
+/* Intro "open" on load: the widget starts mini in the BOTTOM-RIGHT corner
+   of its final box, then a beat later springs up-left while growing to its
+   default size (so it appears to emerge from the bottom-right). GSAP only
+   animates the wrap's opacity/translate (.animate-headline), so animating
+   the inner .ms-paint here doesn't conflict. transform-origin stays top-
+   left (the resting anchor); the mini state is placed via translate so its
+   bottom-right aligns with the final bottom-right. The 100% frame equals
+   the static scale(var(--mp-scale)), so it lands pixel-identical. */
+@keyframes mpIntroOpen {
+  0% {
+    transform:
+      translate(
+        calc(var(--mp-design-w) * 1px * var(--mp-scale) * 0.68),
+        calc(var(--mp-design-h) * 1px * var(--mp-scale) * 0.68)
+      )
+      scale(calc(var(--mp-scale) * 0.32));
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) scale(var(--mp-scale));
+    opacity: 1;
+  }
+}
+.home-canvas-wrap .ms-paint {
+  animation: mpIntroOpen 0.6s var(--_animbezier) 0.7s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-canvas-wrap .ms-paint {
+    animation: none;
+  }
+}
+
 .home-canvas-wrap .canvas-caption {
   /* Sits visually ABOVE the wrap but stays inside the wrap's DOM, so
      it contributes ZERO height to the wrap. This way the wrap's box
@@ -5027,6 +5062,29 @@ form textarea:required:valid {
 
 .home-canvas-wrap .canvas-caption b {
   opacity: 1;
+}
+
+/* Blinking caret after the typewriter caption text. */
+.home-canvas-wrap .canvas-caption .canvas-caption-text::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -2px;
+  background: currentColor;
+  opacity: 0.8;
+  animation: captionCaret 1s steps(1) infinite;
+}
+@keyframes captionCaret {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-canvas-wrap .canvas-caption .canvas-caption-text::after {
+    display: none;
+  }
 }
 
 /* Mobile-only spacing tweaks: push the canvas further away from the
@@ -5532,6 +5590,51 @@ form textarea:required:valid {
   }
 }
 
+/* Sonar-style ripple rings that pulse outward from the greeting avatar
+   at a steady interval. Scoped to the greeting state, so they stop
+   automatically the moment a conversation starts (the avatar is hidden
+   and .is-greeting is removed from the body). The chat panel uses
+   overflow:hidden, so the rings are clipped to the chatbot and never
+   spill outside it. */
+.hc-body.is-greeting .hc-avatar-lg {
+  position: relative;
+  isolation: isolate;
+}
+.hc-body.is-greeting .hc-avatar-lg::before,
+.hc-body.is-greeting .hc-avatar-lg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 0.75px solid var(--accent);
+  z-index: -1;
+  opacity: 0;
+  animation: hcAvatarPing 9s ease-out infinite;
+}
+.hc-body.is-greeting .hc-avatar-lg::after {
+  /* Second ring offset by half the cycle for a continuous ripple. */
+  animation-delay: 4.5s;
+}
+@keyframes hcAvatarPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.22;
+  }
+  85% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(5.5);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-body.is-greeting .hc-avatar-lg::before,
+  .hc-body.is-greeting .hc-avatar-lg::after {
+    animation: none;
+  }
+}
+
 .hc-titles {
   flex: 1;
   min-width: 0;
@@ -5626,6 +5729,20 @@ form textarea:required:valid {
   flex-direction: column;
   gap: 0.8rem;
   overflow-y: auto;
+  /* Subtle graph-paper grid behind the messages. Default background-
+     attachment keeps it pinned to the panel (it does not scroll with the
+     message list), so it reads as faint stationary stationery. Message
+     bubbles have their own fills so text stays perfectly legible. */
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+[color-scheme="light"] .hc-body {
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
 }
 
 .hc-body.is-greeting {
@@ -6589,6 +6706,21 @@ form textarea:required:valid {
   bottom: -5px;
   left: -5px;
   cursor: nesw-resize;
+}
+
+/* The chat panel has a vertical scrollbar on its right edge, and
+   .home-chat uses overflow:hidden (so resize handles pushed outside the
+   box get clipped). The default right-edge + right-corner handles end up
+   sitting on top of the scrollbar and steal its pointer events — you'd
+   resize the panel instead of scrolling. Since the chat's right edge sits
+   right next to the canvas widget (resizing rightward isn't useful), drop
+   the chat's right-side handles so the scrollbar stays fully grabbable.
+   Resize still works from the left, top, bottom and left-corner handles.
+   Scoped to .home-chat so the paint widget is unaffected. */
+.home-chat .rz-e,
+.home-chat .rz-ne,
+.home-chat .rz-se {
+  display: none;
 }
 
 /* Subtle hover affordance on corner handles only — keeps the

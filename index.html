@@ -34,9 +34,9 @@
   <!-- Facebook Metadata End -->
 
   <!-- Styles Start -->
-  <link rel="stylesheet" href="css/loaders/loader.css?v=20260606">
-  <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260606">
-  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260606">
+  <link rel="stylesheet" href="css/loaders/loader.css?v=20260607">
+  <link rel="stylesheet" type="text/css" href="css/plugins.css?v=20260607">
+  <link rel="stylesheet" type="text/css" href="css/main.css?v=20260607">
   <!-- Styles End -->
 
   <!-- Custom Browser Color Start -->
@@ -493,7 +493,7 @@
               <path
                 d="M5.6,12.6c-0.5-0.8-0.7-2.4-1.7-3.5c-1-1-2.7-1.2-3.5-1.7C-0.1,7-0.1,6,0.4,5.6c0.8-0.5,2.3-0.6,3.5-1.8 C5,2.8,5.1,1.2,5.6,0.4C6-0.1,7-0.1,7.4,0.4c0.5,0.8,0.7,2.4,1.8,3.5c1.2,1.2,2.6,1.2,3.5,1.7c0.6,0.4,0.6,1.4,0,1.7 C11.8,7.9,10.2,8,9.1,9.1c-1,1-1.2,2.7-1.7,3.5C7,13.1,6,13.1,5.6,12.6z" />
             </svg>
-            <b>Hi there!</b> Doodle over a mock Foundry architecture.
+            <span class="canvas-caption-text"><b>Hi there!</b> Doodle over a mock Foundry architecture.</span>
           </p>
 
           <div class="ms-paint" id="msPaint">
@@ -2072,6 +2072,65 @@
     })();
   </script>
 
+  <!-- Typewriter for the canvas caption: types out a line, pauses, erases,
+       then types the next, looping. The leading SVG heart stays static. -->
+  <script>
+    (function () {
+      const el = document.querySelector('.canvas-caption-text');
+      if (!el) return;
+
+      // Each message: an optional bold prefix + the rest of the line.
+      const MESSAGES = [
+        { bold: 'Hi there!', rest: ' Doodle over a mock Foundry architecture.' },
+        { bold: '', rest: 'This is basically what I do — but custom for your product.' },
+      ];
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        // Static first line, no animation.
+        el.innerHTML = '<b>' + MESSAGES[0].bold + '</b>' + MESSAGES[0].rest;
+        return;
+      }
+
+      const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      function render(msg, n) {
+        const bl = msg.bold.length;
+        const b = msg.bold.slice(0, Math.min(n, bl));
+        const r = n > bl ? msg.rest.slice(0, n - bl) : '';
+        el.innerHTML = (b ? '<b>' + esc(b) + '</b>' : '') + esc(r);
+      }
+
+      const TYPE_MS = 42;     // per character while typing
+      const ERASE_MS = 22;    // per character while erasing
+      const HOLD_MS = 2200;   // pause once a line is fully typed
+      const GAP_MS = 450;     // pause after erasing before the next line
+
+      let mi = 0;
+      function typeLine() {
+        const msg = MESSAGES[mi];
+        const total = msg.bold.length + msg.rest.length;
+        let n = 0;
+        (function typeTick() {
+          render(msg, n);
+          if (n < total) { n++; setTimeout(typeTick, TYPE_MS); }
+          else { setTimeout(eraseLine, HOLD_MS); }
+        })();
+      }
+      function eraseLine() {
+        const msg = MESSAGES[mi];
+        let n = msg.bold.length + msg.rest.length;
+        (function eraseTick() {
+          render(msg, n);
+          if (n > 0) { n--; setTimeout(eraseTick, ERASE_MS); }
+          else { mi = (mi + 1) % MESSAGES.length; setTimeout(typeLine, GAP_MS); }
+        })();
+      }
+
+      // Kick off from the static first line: hold it, then erase + cycle.
+      setTimeout(eraseLine, HOLD_MS);
+    })();
+  </script>
+
   <!-- Make the MS Paint widget draggable by its titlebar (like a real OS window) -->
   <script>
     (function () {
@@ -2525,8 +2584,12 @@
             msg.classList.remove('is-streaming');
             return;
           }
+          // Only auto-follow the stream if the user is already near the
+          // bottom. If they've scrolled up to re-read earlier messages,
+          // don't yank them back down on every token.
+          const stick = body.scrollHeight - body.scrollTop - body.clientHeight < 40;
           msg.textContent += tokens[i++];
-          body.scrollTop = body.scrollHeight;
+          if (stick) body.scrollTop = body.scrollHeight;
           // Slight randomness so it doesn't feel mechanical. Comma/period
           // tokens get a small extra pause to mimic natural cadence.
           const last = tokens[i - 1];
@@ -2925,24 +2988,15 @@
       }
 
       // When the first user message arrives we leave the greeting state.
-      // Restore all chips immediately so message history layout is clean,
-      // and clear the inline top/bottom/height so the panel snaps back to
-      // its CSS-defined box.
+      // Restore all chips immediately so message history layout is clean.
+      // We intentionally KEEP the stretched top/bottom/height that condense()
+      // set in greeting mode, so the panel doesn't visibly jump (shrink +
+      // drop its top) the moment the conversation starts. condense() self-
+      // bails once out of greeting, so the geometry simply stays put.
       const greetingObserver = new MutationObserver(() => {
         if (!body.classList.contains('is-greeting')) {
           chipsHidden = 0;
           applyChipsHidden();
-          // Only snap back to the CSS-defined box when the panel is in its
-          // normal anchored position. If the user has dragged the chat
-          // (is-floating), it's absolutely positioned on <body> via inline
-          // left/top/width/height — clearing those here would drop it to the
-          // bottom of the page (auto top) and collapse its width, so leave
-          // the floating geometry intact.
-          if (chat.classList.contains('is-floating')) return;
-          chat.style.top = '';
-          chat.style.bottom = '';
-          chat.style.height = '';
-          chat.style.removeProperty('--hc-avatar-lg-size');
         }
       });
       greetingObserver.observe(body, { attributes: true, attributeFilter: ['class'] });

@@ -7182,7 +7182,7 @@ form textarea:required:valid {
   max-height: 92vh;
   overflow: hidden auto;
   text-align: center;
-  padding: 3.2rem 2.2rem 2.6rem;
+  padding: 3.2rem 1.6rem 2.6rem;
   border-radius: 2.4rem;
   background: linear-gradient(160deg, #fff7fb, #ffeaf4 55%, #f1e6ff);
   box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6);
@@ -7259,12 +7259,15 @@ form textarea:required:valid {
   color: #b14c80;
 }
 
-/* The match-3 board: a responsive square grid of candy tiles. */
+/* The match-3 board: a responsive square grid of candy tiles. Width is
+   100% of the card's content box (not a vw value) so it can never poke past
+   the card edge on narrow phones. */
 .bday-field {
   position: relative;
-  width: min(86vw, 340px);
+  width: 100%;
+  max-width: 340px;
   margin: 0.4rem auto 0;
-  padding: 6px;
+  padding: 5px;
   border-radius: 1.6rem;
   background: radial-gradient(
       circle at 50% 0%,
@@ -7334,6 +7337,28 @@ form textarea:required:valid {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Victory dance: every tile bounces + wiggles in a staggered wave when the
+   score target is reached. Stagger comes from an inline --i (tile index). */
+.bday-board.win .bday-tile {
+  animation: bdayDance 0.62s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.045s);
+}
+@keyframes bdayDance {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-7px) rotate(-12deg) scale(1.12);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  75% {
+    transform: translateY(-4px) rotate(12deg) scale(1.08);
   }
 }
 

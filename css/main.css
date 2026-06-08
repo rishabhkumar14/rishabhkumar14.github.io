@@ -7126,6 +7126,29 @@ form textarea:required:valid {
   width: 100%;
   height: auto;
   overflow: visible;
+  /* Mascot body gradient stops. By default they follow the theme
+     accent → secondary, whose soft peachy DARK-theme tones look great.
+     In LIGHT theme the raw accent/secondary are a harsh burnt orange
+     (#e8843a → #e0641c) that feels out of place against the airy light
+     palette, so the light overrides below swap in a warmer, softer
+     golden orange. These are mascot-scoped so global buttons/links keep
+     the original accent. */
+  --mascot-c1: var(--accent);
+  --mascot-c2: var(--secondary);
+}
+
+/* Soften the mascot's orange in light theme only. Covers both the OS auto
+   light scheme (when no manual override is set) and the manual light
+   toggle, mirroring the pattern used elsewhere for light-only tweaks. */
+@media (prefers-color-scheme: light) {
+  :root:not([color-scheme="dark"]) .cute-mascot {
+    --mascot-c1: #f4ab63;
+    --mascot-c2: #ea8a3e;
+  }
+}
+[color-scheme="light"] .cute-mascot {
+  --mascot-c1: #f4ab63;
+  --mascot-c2: #ea8a3e;
 }
 
 /* Whole character gently floats up/down with a soft jelly squish. */
@@ -7752,6 +7775,54 @@ body.rz-resizing-active * {
 /* Match the smaller corner radius on the gradient layer (::before). */
 .btn-contact-grid.btn-hover::before {
   border-radius: 1rem;
+  /* Animated "streaming" gradient: a periodic accent→secondary→accent
+     pattern twice as wide as the button. Sliding it by exactly one full
+     image width loops seamlessly, so the darker --secondary band keeps
+     flowing across the button left→right, over and over. */
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--secondary) 25%,
+    var(--accent) 50%,
+    var(--secondary) 75%,
+    var(--accent) 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: repeat;
+  animation: contactGradientStream 3s linear infinite;
+}
+@keyframes contactGradientStream {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-contact-grid.btn-hover::before {
+    animation: none;
+    background-position: 0% 0;
+  }
+}
+/* Dark theme: no streaming animation — keep the original static
+   accent→secondary diagonal fill. Covers both the manual dark toggle and
+   the OS auto dark scheme (when no manual light override is set). */
+[color-scheme="dark"] .btn-contact-grid.btn-hover::before {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+  background-size: auto;
+  animation: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([color-scheme="light"]) .btn-contact-grid.btn-hover::before {
+    background: linear-gradient(
+      135deg,
+      var(--accent) 0%,
+      var(--secondary) 100%
+    );
+    background-size: auto;
+    animation: none;
+  }
 }
 /* Faint grid drawn ON TOP of the accent gradient, below the caption. */
 .btn-contact-grid::after {

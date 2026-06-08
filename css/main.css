@@ -331,13 +331,23 @@ html {
   font-size: 62.5%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Clip horizontal overflow so widgets dragged past the right edge simply
+     disappear off-screen instead of widening the page and spawning a
+     bottom scrollbar. `clip` (unlike `hidden`) does NOT create a scroll
+     container, so vertical scrolling and in-page anchors keep working. */
+  overflow-x: clip;
 }
 
 body {
   position: relative;
   width: 100%;
   min-width: 360px;
-  overflow-x: unset !important;
+  /* `clip` (not `hidden`) prevents horizontal overflow — e.g. a widget
+     dragged past the right edge — from creating a bottom scrollbar, while
+     NOT establishing a scroll container, so it won't break scroll anchoring
+     or in-page anchor jumps the way `overflow:hidden` would. Must override
+     the previous `unset !important`. */
+  overflow-x: clip !important;
   font: normal 400 var(--_size) / 1.4 var(--_font-default);
   text-rendering: optimizeLegibility;
   background-color: var(--base);
@@ -5377,6 +5387,21 @@ form textarea:required:valid {
   opacity: 1;
 }
 
+/* When the canvas widget is dragged it floats away, but the caption is
+   detached to <body> and pinned (page-absolute) at the spot where it
+   originally loaded, so it stays exactly where the user first saw it and
+   does not travel with the window. */
+.canvas-caption.is-caption-pinned {
+  position: absolute;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--t-bright, #555);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 4;
+}
+
 /* Blinking caret after the typewriter caption text. */
 .home-canvas-wrap .canvas-caption .canvas-caption-text::after {
   content: "";
@@ -6380,6 +6405,74 @@ form textarea:required:valid {
 
 .ms-paint .mp-titlebar.dragging {
   cursor: grabbing;
+}
+
+/* ===== Windows-XP "Not Responding" smear trail =====
+   While the canvas window is dragged, we spawn lightweight ghost copies of
+   its title bar at each sampled position. They linger briefly, then fade —
+   recreating the classic title-bar smear you got when dragging a hung XP
+   window across the desktop. Ghosts are inert (no pointer events) and remove
+   themselves when their fade animation ends. */
+.mp-drag-ghost {
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #2e8def, #0a64ad);
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  padding: 4px 6px 4px 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  /* Match the real window's rounded top corners (.ms-paint has
+     border-radius: 8px 8px 0 0). JS rescales this per ghost so it tracks
+     the title bar's current --mp-scale. */
+  border-radius: 8px 8px 0 0;
+  z-index: 8999;
+  will-change: opacity;
+  animation: mpDragGhostFade 0.6s ease-out forwards;
+}
+.mp-drag-ghost .mp-drag-ghost-logo {
+  display: inline-grid;
+  grid-template-columns: 7px 7px;
+  grid-template-rows: 7px 7px;
+  gap: 1px;
+  margin-right: 7px;
+  flex: 0 0 auto;
+}
+.mp-drag-ghost .mp-drag-ghost-logo i {
+  display: block;
+  border-radius: 1px;
+}
+.mp-drag-ghost .mp-drag-ghost-logo i:nth-child(1) {
+  background: #f25022;
+}
+.mp-drag-ghost .mp-drag-ghost-logo i:nth-child(2) {
+  background: #7fba00;
+}
+.mp-drag-ghost .mp-drag-ghost-logo i:nth-child(3) {
+  background: #00a4ef;
+}
+.mp-drag-ghost .mp-drag-ghost-logo i:nth-child(4) {
+  background: #ffb900;
+}
+@keyframes mpDragGhostFade {
+  0% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mp-drag-ghost {
+    display: none;
+  }
 }
 
 /* When user drags the window, the wrapper is moved to <body> and

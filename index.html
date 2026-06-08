@@ -2564,6 +2564,64 @@
 
       const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
+      // ----- XP "Not Responding" smear trail -----
+      // The window title (e.g. "vNet-RAG-architecture") shown inside each ghost.
+      const titleTextEl = paint.querySelector('.mp-title');
+      const ghostTitle = (titleTextEl ? titleTextEl.textContent : '').trim();
+      // Last page point where we dropped a ghost, so we sample by distance
+      // (a smear every ~18px) rather than on every pointermove.
+      let lastGhostX = null, lastGhostY = null;
+      const GHOST_STEP = 18;
+
+      function spawnGhost() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // Measure the live title bar so the ghost matches its on-screen size
+        // and position exactly (the title bar is scaled by --mp-scale).
+        const tb = titlebar.getBoundingClientRect();
+        if (tb.width <= 0 || tb.height <= 0) return;
+        const g = document.createElement('div');
+        g.className = 'mp-drag-ghost';
+        g.style.left = (tb.left + window.scrollX) + 'px';
+        g.style.top = (tb.top + window.scrollY) + 'px';
+        g.style.width = tb.width + 'px';
+        g.style.height = tb.height + 'px';
+        // Scale the inner text/logo to match the title bar's render scale so
+        // the smear reads as a faithful copy of the bar.
+        const scale = tb.height / 30; // 30px is the title bar's design height
+        g.innerHTML =
+          '<span class="mp-drag-ghost-logo"><i></i><i></i><i></i><i></i></span>'
+          + '<span class="mp-drag-ghost-label"></span>';
+        g.querySelector('.mp-drag-ghost-label').textContent = ghostTitle;
+        g.style.fontSize = (13 * scale).toFixed(1) + 'px';
+        g.style.padding = (4 * scale).toFixed(1) + 'px ' + (8 * scale).toFixed(1) + 'px';
+        // Scale the rounded top corners to match the live window (.ms-paint
+        // uses border-radius: 8px 8px 0 0), so the smear isn't a hard rect.
+        g.style.borderRadius = (8 * scale).toFixed(1) + 'px ' + (8 * scale).toFixed(1) + 'px 0 0';
+        const logo = g.querySelector('.mp-drag-ghost-logo');
+        if (logo) {
+          const cell = (7 * scale).toFixed(2) + 'px';
+          logo.style.gridTemplateColumns = cell + ' ' + cell;
+          logo.style.gridTemplateRows = cell + ' ' + cell;
+          logo.style.marginRight = (7 * scale).toFixed(1) + 'px';
+        }
+        document.body.appendChild(g);
+        // Self-remove once the fade finishes (fallback timer in case the
+        // animationend event is missed, e.g. tab backgrounded mid-drag).
+        const remove = () => { if (g.parentNode) g.parentNode.removeChild(g); };
+        g.addEventListener('animationend', remove);
+        setTimeout(remove, 800);
+      }
+
+      function maybeSpawnGhost(pageX, pageY) {
+        if (lastGhostX === null) { lastGhostX = pageX; lastGhostY = pageY; spawnGhost(); return; }
+        const dist = Math.hypot(pageX - lastGhostX, pageY - lastGhostY);
+        if (dist >= GHOST_STEP) {
+          lastGhostX = pageX;
+          lastGhostY = pageY;
+          spawnGhost();
+        }
+      }
+
       const onPointerDown = (e) => {
         // Disable drag on mobile (in-flow layout below 992px — same
         // breakpoint used to hide resize handles).
@@ -2589,6 +2647,7 @@
         dx = (e.clientX + window.scrollX) - (r.left + window.scrollX);
         dy = (e.clientY + window.scrollY) - (r.top + window.scrollY);
         dragging = true;
+        lastGhostX = null; lastGhostY = null;
         titlebar.classList.add('dragging');
         titlebar.setPointerCapture && titlebar.setPointerCapture(e.pointerId);
         e.preventDefault();
@@ -2601,11 +2660,15 @@
         const pageY = e.clientY + window.scrollY;
         // Clamp only against the LEFT edge of the page so the user can't
         // push the widget off-screen on the side. Vertical and right-side
-        // movement are unrestricted — the page can scroll to it.
+        // movement are unrestricted — the user can drag it past the right
+        // wall; the overflow is clipped (html { overflow-x: clip }) so it
+        // simply disappears off-screen without spawning a scrollbar.
         const left = Math.max(0, pageX - dx);
         const top = Math.max(0, pageY - dy);
         wrap.style.left = left + 'px';
         wrap.style.top = top + 'px';
+        // Drop a fading title-bar smear behind the window as it moves.
+        maybeSpawnGhost(pageX, pageY);
       };
 
       const onPointerUp = (e) => {
@@ -2661,10 +2724,68 @@
         // bounding-rect dimensions map 1:1 to width/height.
         el.style.width = r.width + 'px';
         el.style.height = r.height + 'px';
+
+        // Keep the "Hi there! Doodle..." caption anchored where it loaded.
+        // It normally lives inside the wrap (position:absolute; bottom:100%)
+        // so it would travel with the widget when dragged. Detach it to
+        // <body> at its current page position so it stays put and is not
+        // draggable along with the canvas.
+        const caption = el.querySelector(':scope > .canvas-caption');
+        if (caption && !caption._pinned) {
+          const cr = caption.getBoundingClientRect();
+          caption._origPlacement = {
+            parent: caption.parentNode,
+            nextSibling: caption.nextSibling,
+          };
+          caption._pinned = true;
+          el._pinnedCaption = caption;
+          document.body.appendChild(caption);
+          caption.classList.add('is-caption-pinned');
+          caption.style.left = (cr.left + window.scrollX) + 'px';
+          caption.style.top = (cr.top + window.scrollY) + 'px';
+          caption.style.width = cr.width + 'px';
+        }
+      };
+
+      // Return the pinned caption to its original slot inside the wrap and
+      // clear the inline overrides. Used when the widget is reset/unfloated.
+      function __restoreCaption(el) {
+        const caption = el && el._pinnedCaption;
+        if (!caption) return;
+        caption.classList.remove('is-caption-pinned');
+        caption.style.left = '';
+        caption.style.top = '';
+        caption.style.width = '';
+        caption.style.display = '';
+        const op = caption._origPlacement;
+        if (op && op.parent && caption.parentNode !== op.parent) {
+          if (op.nextSibling && op.nextSibling.parentNode === op.parent) {
+            op.parent.insertBefore(caption, op.nextSibling);
+          } else {
+            op.parent.appendChild(caption);
+          }
+        }
+        caption._origPlacement = null;
+        caption._pinned = false;
+        el._pinnedCaption = null;
+      }
+
+      // Hide/show the pinned caption when the widget enters/leaves a state
+      // (maximized / docked) where the in-wrap caption is normally hidden.
+      // The pinned caption is a <body> child, so the CSS rules that hide the
+      // in-wrap caption don't reach it — toggle it explicitly here.
+      window.__syncPinnedCaption = function (el) {
+        const caption = el && el._pinnedCaption;
+        if (!caption) return;
+        const hide = el.classList.contains('is-maximized')
+          || el.classList.contains('is-minimized-bottom')
+          || el.style.display === 'none';
+        caption.style.display = hide ? 'none' : '';
       };
 
       window.__unfloatWidget = function (el) {
         if (!el) return;
+        __restoreCaption(el);
         el.classList.remove('is-floating');
         el.style.left = '';
         el.style.top = '';
@@ -3280,8 +3401,9 @@
         const pageX = e.clientX + window.scrollX;
         const pageY = e.clientY + window.scrollY;
         // Only clamp against the left/top edges of the page so the user
-        // can't shove it off-screen on those sides. The page can scroll
-        // to it on the right/bottom.
+        // can't shove it off-screen on those sides. The right/bottom are
+        // free — the overflow is clipped (html { overflow-x: clip }) so
+        // dragging past the right wall hides it without a scrollbar.
         const left = Math.max(0, pageX - dx);
         const top = Math.max(0, pageY - dy);
         chat.style.left = left + 'px';
@@ -4618,6 +4740,7 @@
           paintRoot.classList.add('minimized');
           wrapEl.classList.add('is-minimized-bottom');
         }
+        if (typeof window.__syncPinnedCaption === 'function') window.__syncPinnedCaption(wrapEl);
       });
 
       if (maxBtn) maxBtn.addEventListener('click', (e) => {
@@ -4646,6 +4769,7 @@
               preMinState = null;
             }
             refitAndRedrawIfPossible();
+            if (typeof window.__syncPinnedCaption === 'function') window.__syncPinnedCaption(wrapEl);
             return;
           }
           preMaxState = {
@@ -4660,6 +4784,7 @@
         // Reading clientWidth in fitCanvas() forces a layout flush, so calling it synchronously
         // here picks up the new size. rAF was unreliable (paused in background tabs).
         refitAndRedrawIfPossible();
+        if (typeof window.__syncPinnedCaption === 'function') window.__syncPinnedCaption(wrapEl);
       });
 
       // Keep canvas crisp when the maximized window changes size

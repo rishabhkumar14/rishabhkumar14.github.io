@@ -3069,12 +3069,30 @@
       const minBtn = document.getElementById('hcMinBtn');
       const head = chat.querySelector('.hc-head');
 
+      /* ============================================================
+         LIVE CHATBOT CONFIG
+         ------------------------------------------------------------
+         Point this at your deployed Cloudflare Worker (see worker.js).
+         Example: 'https://rishabh-chat.<your-subdomain>.workers.dev'
+         The OpenRouter API key lives ONLY on that Worker, never here.
+         ============================================================ */
+      const CHAT_API_URL = 'https://rishabh-chat.rishabhkumar140999.workers.dev';
+
+      const MAX_USER_MESSAGES = 10; // hard cap per chat session
+
+      // Cached replies used only if the backend is unreachable / errors,
+      // so the widget still feels alive instead of dead-ending.
       const REPLIES = {
-        "Who are you?": "I'm Rishabh — I work as a Cloud & AI Architect at Microsoft. I help businesses and clients design scalable AI solutions using Azure AI Foundry, helping them with building robust AI architectures and the even hands on support.",
-        "What do you work on?": "Right now: Using the Azure AI Foundry agent service — to orchestrate multimodal agents with tools, mcps, vector indexes, sharepoint, blob storage and  AI Search binding it all together.",
-        "Tell me about Foundry": "Microsoft AI Foundry is our platform for building, evaluating and orchestrating AI agents end-to-end. I work majorly with my clients on the AI Search service that makes it all click.",
+        "Who are you?": "I'm Rishabh — I work as a Cloud & AI Solutions Engineer at Microsoft. I help clients design scalable AI solutions on Azure AI Foundry, from architecture to hands-on build.",
+        "What do you work on?": "Right now: the Azure AI Foundry Agent Service — orchestrating multimodal agents with tools, MCPs, vector indexes, SharePoint, Blob Storage and AI Search.",
+        "Tell me about Foundry": "Microsoft AI Foundry is our platform for building, evaluating and orchestrating AI agents end-to-end. I work a lot with the AI Search service that binds it together.",
       };
-      const FALLBACK = "Looks like my LLM tokens for this session are exhausted — serving you a cached reply instead. Try asking another time, or ping me directly via the contact section below.";
+      const FALLBACK = "I'm having trouble reaching my brain right now — try again in a moment, or ping me directly via the contact section below.";
+
+      // Running conversation history sent to the backend (roles user/assistant).
+      const history = [];
+      let userMessageCount = 0;
+      let isAwaiting = false;
 
       function appendMessage(text, who) {
         // First message: switch the body from greeting layout to chat layout
@@ -3144,18 +3162,126 @@
       }
 
       function respond(question) {
+        if (isAwaiting) return; // ignore while a reply is in-flight
         appendMessage(question, 'user');
         // Hide chips once the user has asked something
         if (chipsWrap) chipsWrap.style.display = 'none';
-        const reply = REPLIES[question] || FALLBACK;
-        // 'Thinking' delay before the stream starts, then stream the reply.
-        const removeTyping = showTyping();
-        const thinkMs = 350 + Math.random() * 400;
-        setTimeout(() => {
-          removeTyping();
-          streamBotMessage(reply);
-        }, thinkMs);
+
+        // Enforce a hard per-session cap (protects API budget + matches guide).
+        userMessageCount++;
+        if (userMessageCount > MAX_USER_MESSAGES) {
+          const removeTyping = showTyping();
+          setTimeout(() => {
+            removeTyping();
+            streamBotMessage("That's my limit for this chat session 🙂 — reset the chat (top-right) to start over, or reach me via the contact section below.");
+          }, 300);
+          if (input) input.disabled = true;
+          return;
+        }
+
+        history.push({ role: 'user', content: question });
+        askBackend();
       }
+
+      // Open a live bot bubble; returns { push(token), done(), fail() }.
+      function openBotBubble() {
+        if (body.classList.contains('is-greeting')) {
+          body.classList.remove('is-greeting');
+          chat.querySelectorAll('.hc-avatar-lg, .hc-greet, .hc-greet-sub').forEach(el => {
+            el.style.display = 'none';
+          });
+        }
+        const msg = document.createElement('div');
+        msg.className = 'hc-msg hc-msg-bot is-streaming';
+        body.appendChild(msg);
+        body.scrollTop = body.scrollHeight;
+        let text = '';
+        return {
+          push(token) {
+            const stick = body.scrollHeight - body.scrollTop - body.clientHeight < 40;
+            text += token;
+            msg.textContent = text;
+            if (stick) body.scrollTop = body.scrollHeight;
+          },
+          done() {
+            msg.classList.remove('is-streaming');
+            return text;
+          },
+          fail() { msg.remove(); },
+        };
+      }
+
+      // Call the Worker backend and stream the reply token-by-token.
+      async function askBackend() {
+        isAwaiting = true;
+        if (input) input.disabled = false;
+        const removeTyping = showTyping();
+        let bubble = null;
+        let firstToken = true;
+
+        const useFallback = () => {
+          if (bubble) bubble.fail();
+          const last = history[history.length - 1];
+          const cached = (last && REPLIES[last.content]) || FALLBACK;
+          streamBotMessage(cached);
+        };
+
+        try {
+          const resp = await fetch(CHAT_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: history }),
+          });
+
+          if (resp.status === 429) {
+            removeTyping();
+            streamBotMessage("You're sending messages a bit fast — give it a minute and try again 🙂");
+            isAwaiting = false;
+            return;
+          }
+          if (!resp.ok || !resp.body) throw new Error('bad response');
+
+          const reader = resp.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+          let full = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith('data:')) continue;
+              const payload = trimmed.slice(5).trim();
+              if (payload === '[DONE]') continue;
+              try {
+                const { text } = JSON.parse(payload);
+                if (!text) continue;
+                if (firstToken) { removeTyping(); bubble = openBotBubble(); firstToken = false; }
+                full += text;
+                bubble.push(text);
+              } catch { /* ignore non-JSON keep-alives */ }
+            }
+          }
+
+          if (firstToken) { // never got any tokens
+            removeTyping();
+            useFallback();
+          } else {
+            bubble.done();
+            history.push({ role: 'assistant', content: full });
+          }
+        } catch {
+          removeTyping();
+          useFallback();
+        } finally {
+          isAwaiting = false;
+        }
+      }
+
 
       chat.querySelectorAll('.hc-chip').forEach(chip => {
         chip.addEventListener('click', () => {
@@ -3295,6 +3421,10 @@
         e.stopPropagation();
         // Remove every message bubble and any in-flight typing indicator
         body.querySelectorAll('.hc-msg, .hc-typing').forEach(el => el.remove());
+        // Wipe conversation state so a fresh session starts.
+        history.length = 0;
+        userMessageCount = 0;
+        isAwaiting = false;
         // Put the greeting layout back in place
         body.classList.add('is-greeting');
         chat.querySelectorAll('.hc-avatar-lg, .hc-greet, .hc-greet-sub').forEach(el => {
@@ -3303,6 +3433,7 @@
         if (chipsWrap) chipsWrap.style.display = '';
         if (input) {
           input.value = '';
+          input.disabled = false;
           input.placeholder = 'Ask me anything…';
         }
         body.scrollTop = 0;

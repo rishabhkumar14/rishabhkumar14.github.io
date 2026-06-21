@@ -1,2 +1,15 @@
 # Internal agent/developer handoff notes — keep local, do not publish.
 AGENT_CONTEXT.md
+
+# Local scratch file holding a raw API key — never publish.
+bot.py
+
+# Server-side chatbot backend (deployed to Cloudflare, not GitHub Pages).
+# Keep the system prompt + logic out of the public repo.
+worker.js
+wrangler.toml
+
+# Cloudflare Worker local config / secrets
+.dev.vars
+.wrangler/
+

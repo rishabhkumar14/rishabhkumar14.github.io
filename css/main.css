@@ -3381,6 +3381,72 @@ form textarea:required:valid {
   margin-bottom: 1rem;
 }
 
+/* Icon-led meta rows (Specialization / Based in) -- re-orients the plain
+   stacked captions into a tile-icon + label/value row for a cleaner, more
+   deliberate profile-card layout. */
+.avatar__meta {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.avatar__meta-icon {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  font-size: 2rem;
+  color: var(--accent);
+  background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  -moz-border-radius: 1.3rem;
+  border-radius: 1.3rem;
+  -webkit-transition:
+    -webkit-transform 0.3s ease,
+    background-color 0.3s ease;
+  transition:
+    -webkit-transform 0.3s ease,
+    background-color 0.3s ease;
+  -moz-transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.avatar__meta:hover .avatar__meta-icon {
+  background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+  -webkit-transform: translateY(-2px);
+  -moz-transform: translateY(-2px);
+  transform: translateY(-2px);
+}
+
+.avatar__meta-text {
+  margin: 0;
+}
+@media only screen and (min-width: 1400px) {
+  .avatar__meta-icon {
+    width: 5rem;
+    height: 5rem;
+    font-size: 2.4rem;
+  }
+}
+
 /* ------------------------------------------------*/
 /* Blocks Avatar End */
 /* ------------------------------------------------*/
@@ -6249,17 +6315,32 @@ form textarea:required:valid {
 /* Caret that blinks at the end of a streaming bot message so it
    feels like the LLM is still typing. Removed once streaming ends. */
 .hc-msg-bot.is-streaming::after {
-  content: "▏";
+  content: "";
   display: inline-block;
-  margin-left: 1px;
-  color: var(--accent);
-  animation: hcCaret 0.9s steps(2) infinite;
-  transform: translateY(1px);
+  width: 2px;
+  height: 1.05em;
+  margin-left: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: hcCaret 1.1s ease-in-out infinite;
 }
 
 @keyframes hcCaret {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+
   50% {
-    opacity: 0;
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-msg-bot.is-streaming::after {
+    animation: none;
+    opacity: 0.6;
   }
 }
 

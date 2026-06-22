@@ -344,17 +344,23 @@
       </div>
       <!-- data caption #1 -->
       <div class="avatar__block">
-        <h6>
-          <small class="top">Specialization:</small>
-          Full Stack Developer,<br> AI | ML and Cloud
-        </h6>
+        <div class="avatar__meta">
+          <span class="avatar__meta-icon" aria-hidden="true"><i class="ph-bold ph-briefcase"></i></span>
+          <h6 class="avatar__meta-text">
+            <small class="top">Specialization</small>
+            Full Stack Developer,<br> AI | ML and Cloud
+          </h6>
+        </div>
       </div>
       <!-- data caption #2 -->
       <div class="avatar__block">
-        <h6>
-          <small class="top">Based in:</small>
-          Boston, MA | USA
-        </h6>
+        <div class="avatar__meta">
+          <span class="avatar__meta-icon" aria-hidden="true"><i class="ph-bold ph-map-pin"></i></span>
+          <h6 class="avatar__meta-text">
+            <small class="top">Based in</small>
+            Boston, MA | USA
+          </h6>
+        </div>
       </div>
       <!-- socials and CTA button -->
       <div class="avatar__block">
@@ -482,7 +488,8 @@
             <div class="hc-chips" id="hcChips">
               <button class="hc-chip" type="button" data-q="Who are you?">Who are you?</button>
               <button class="hc-chip" type="button" data-q="What do you work on?">What do you work on?</button>
-              <button class="hc-chip" type="button" data-q="Why is the latency of this chat agent so low?">Why's the latency so low?</button>
+              <button class="hc-chip" type="button" data-q="Why is the latency of this chat agent so low?">Why's the
+                latency so low?</button>
             </div>
           </div>
           <form class="hc-footer" id="hcForm" autocomplete="off">
@@ -3120,44 +3127,14 @@
         return () => t.remove();
       }
 
-      // Stream `text` into a bot bubble token-by-token to simulate an LLM
-      // typing. Tokens are word-sized chunks with a small jitter between
-      // them. A blinking caret is shown via the .is-streaming class.
+      // Reveal a complete, pre-written reply (cached answers, the session
+      // limit notice, rate-limit notice, offline fallbacks) using the very
+      // same smooth typewriter the live stream uses, so every bot message
+      // reads with one consistent, classy cadence.
       function streamBotMessage(text) {
-        if (body.classList.contains('is-greeting')) {
-          body.classList.remove('is-greeting');
-          chat.querySelectorAll('.hc-avatar-lg, .hc-greet, .hc-greet-sub').forEach(el => {
-            el.style.display = 'none';
-          });
-        }
-        const msg = document.createElement('div');
-        msg.className = 'hc-msg hc-msg-bot is-streaming';
-        body.appendChild(msg);
-        body.scrollTop = body.scrollHeight;
-
-        // Tokenise as words + their trailing whitespace so spacing is
-        // preserved exactly when we re-assemble.
-        const tokens = text.match(/\S+\s*/g) || [text];
-        let i = 0;
-        function tick() {
-          if (i >= tokens.length) {
-            msg.classList.remove('is-streaming');
-            return;
-          }
-          // Only auto-follow the stream if the user is already near the
-          // bottom. If they've scrolled up to re-read earlier messages,
-          // don't yank them back down on every token.
-          const stick = body.scrollHeight - body.scrollTop - body.clientHeight < 40;
-          msg.textContent += tokens[i++];
-          if (stick) body.scrollTop = body.scrollHeight;
-          // Slight randomness so it doesn't feel mechanical. Comma/period
-          // tokens get a small extra pause to mimic natural cadence.
-          const last = tokens[i - 1];
-          const base = 28 + Math.random() * 55;
-          const punctPause = /[,;:]\s*$/.test(last) ? 110 : /[.!?]\s*$/.test(last) ? 200 : 0;
-          setTimeout(tick, base + punctPause);
-        }
-        tick();
+        const bubble = openBotBubble();
+        bubble.push(text);
+        bubble.done();
       }
 
       function respond(question) {
@@ -3182,7 +3159,16 @@
         askBackend();
       }
 
-      // Open a live bot bubble; returns { push(token), done(), fail() }.
+      // Open a live bot bubble that paints with a smooth "typewriter" and
+      // returns { push(token), done(), fail() }.
+      //
+      // The reveal is deliberately decoupled from the network. Tokens from
+      // the Worker arrive in uneven, bursty chunks; rather than dumping them
+      // straight into the DOM we buffer them and paint characters on a
+      // requestAnimationFrame loop at an even pace. The speed adapts to how
+      // far behind we are -- a calm cadence when keeping up, accelerating as
+      // the backlog grows so it never crawls, capped so a big burst never
+      // flashes. Quick, but classy.
       function openBotBubble() {
         if (body.classList.contains('is-greeting')) {
           body.classList.remove('is-greeting');
@@ -3194,19 +3180,76 @@
         msg.className = 'hc-msg hc-msg-bot is-streaming';
         body.appendChild(msg);
         body.scrollTop = body.scrollHeight;
-        let text = '';
+
+        // Honour reduced-motion: paint instantly, with no animated reveal.
+        const reduceMotion = window.matchMedia &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const BASE_CPS = 65;   // calm baseline characters / second
+        const ACCEL = 7;    // extra cps per buffered character
+        const MAX_CPS = 540;  // ceiling so big bursts never flash
+
+        let target = '';    // everything received so far
+        let shown = 0;      // characters currently painted
+        let ended = false;  // upstream finished sending
+        let raf = null;
+        let prevTs = 0;
+        let carry = 0;      // fractional-character accumulator
+
+        function follow() {
+          // Only auto-scroll when the user is already near the bottom, so we
+          // don't yank them down while they re-read earlier messages.
+          if (body.scrollHeight - body.scrollTop - body.clientHeight < 60) {
+            body.scrollTop = body.scrollHeight;
+          }
+        }
+
+        function paint(ts) {
+          const dt = prevTs ? Math.min(ts - prevTs, 48) : 16;
+          prevTs = ts;
+          const pending = target.length - shown;
+          if (pending > 0) {
+            const cps = Math.min(BASE_CPS + pending * ACCEL, MAX_CPS);
+            carry += (cps * dt) / 1000;
+            const step = Math.floor(carry);
+            if (step > 0) {
+              carry -= step;
+              shown = Math.min(target.length, shown + step);
+              msg.textContent = target.slice(0, shown);
+              follow();
+            }
+            raf = requestAnimationFrame(paint);
+            return;
+          }
+          if (ended) {            // fully painted and nothing more coming
+            msg.classList.remove('is-streaming');
+            raf = null;
+            return;
+          }
+          raf = null;             // caught up -- idle until the next token
+          prevTs = 0;
+        }
+
+        function kick() {
+          if (raf === null) { prevTs = 0; raf = requestAnimationFrame(paint); }
+        }
+
         return {
           push(token) {
-            const stick = body.scrollHeight - body.scrollTop - body.clientHeight < 40;
-            text += token;
-            msg.textContent = text;
-            if (stick) body.scrollTop = body.scrollHeight;
+            target += token;
+            if (reduceMotion) { shown = target.length; msg.textContent = target; follow(); }
+            else kick();
           },
           done() {
-            msg.classList.remove('is-streaming');
-            return text;
+            ended = true;
+            if (reduceMotion) msg.classList.remove('is-streaming');
+            else kick();
+            return target;
           },
-          fail() { msg.remove(); },
+          fail() {
+            if (raf !== null) cancelAnimationFrame(raf);
+            msg.remove();
+          },
         };
       }
 

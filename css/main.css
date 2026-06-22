@@ -6312,6 +6312,39 @@ form textarea:required:valid {
   background: rgba(0, 0, 0, 0.04);
 }
 
+/* Inline markdown rendered into a finished bot reply: links stay
+   clickable (accent), plus light emphasis and inline code. */
+.hc-msg-bot a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+  -webkit-transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease;
+}
+.hc-msg-bot a:hover {
+  opacity: 0.78;
+}
+.hc-msg-bot strong {
+  font-weight: 700;
+  color: var(--t-bright);
+}
+.hc-msg-bot em {
+  font-style: italic;
+}
+.hc-msg-bot code {
+  font-family:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  padding: 0.1em 0.4em;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+}
+[color-scheme="light"] .hc-msg-bot code {
+  background: rgba(0, 0, 0, 0.08);
+}
+
 /* Caret that blinks at the end of a streaming bot message so it
    feels like the LLM is still typing. Removed once streaming ends. */
 .hc-msg-bot.is-streaming::after {

@@ -3127,6 +3127,40 @@
         return () => t.remove();
       }
 
+      // ---- Minimal, XSS-safe markdown for finished bot replies ----
+      // The model may answer with light markdown (**bold**, _italic_,
+      // `code`, [text](url), - bullets). We ONLY render it after fully
+      // escaping the raw text, then inject a fixed whitelist of tags.
+      // Links are restricted to http(s)/mailto, so the LLM output can't
+      // smuggle in <script>, javascript: URIs, or attribute break-outs.
+      function escapeHtml(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function renderMarkdown(raw) {
+        let s = escapeHtml(raw);
+        // [text](url) -- safe schemes only
+        s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g,
+          (_m, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`);
+        // bare http(s) URLs (guarded so we never touch text already in a tag)
+        s = s.replace(/(^|[\s(])(https?:\/\/[^\s<>")]+)/g,
+          (_m, pre, url) => `${pre}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
+        // **bold** / __bold__
+        s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/__([^_]+)__/g, '<strong>$1</strong>');
+        // *italic* / _italic_
+        s = s.replace(/(^|[^*])\*(?!\s)([^*\n]+?)\*/g, '$1<em>$2</em>')
+          .replace(/(^|[^_])_(?!\s)([^_\n]+?)_/g, '$1<em>$2</em>');
+        // `code`
+        s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // line-start bullets (- or *) -> bullet glyph
+        s = s.replace(/^[ \t]*[-*][ \t]+/gm, '\u2022 ');
+        // newlines
+        s = s.replace(/\n/g, '<br>');
+        return s;
+      }
+
       // Reveal a complete, pre-written reply (cached answers, the session
       // limit notice, rate-limit notice, offline fallbacks) using the very
       // same smooth typewriter the live stream uses, so every bot message
@@ -3222,6 +3256,7 @@
             return;
           }
           if (ended) {            // fully painted and nothing more coming
+            msg.innerHTML = renderMarkdown(target);
             msg.classList.remove('is-streaming');
             raf = null;
             return;
@@ -3242,8 +3277,10 @@
           },
           done() {
             ended = true;
-            if (reduceMotion) msg.classList.remove('is-streaming');
-            else kick();
+            if (reduceMotion) {
+              msg.innerHTML = renderMarkdown(target);
+              msg.classList.remove('is-streaming');
+            } else kick();
             return target;
           },
           fail() {
